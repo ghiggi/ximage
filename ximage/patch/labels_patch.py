@@ -11,6 +11,16 @@ import numpy as np
 import xarray as xr
 
 from ximage.labels.labels import highlight_label
+from ximage.patch.checks import (
+    are_all_natural_numbers,
+    check_buffer,
+    check_kernel_size,
+    check_padding,
+    check_partitioning_method,
+    check_patch_size,
+    check_stride,
+)
+from ximage.patch.plot2d import add_label_patches_boundaries, plot_2d_label_partitions_boundaries
 from ximage.patch.slices import (
     enlarge_slices,
     get_nd_partitions_list_slices,
@@ -18,17 +28,6 @@ from ximage.patch.slices import (
     get_slice_from_idx_bounds,
     pad_slices,
 )
-from ximage.patch.checks import (
-    are_all_natural_numbers,
-    check_patch_size,
-    check_buffer,
-    check_padding,
-    check_stride,
-    check_kernel_size,
-    check_partitioning_method,
-)
-from ximage.patch.plot2d import plot_2d_label_partitions_boundaries, add_label_patches_boundaries
-
 
 # -----------------------------------------------------------------------------.
 #### TODOs
@@ -57,7 +56,6 @@ from ximage.patch.plot2d import plot_2d_label_partitions_boundaries, add_label_p
 #   This for when merging !
 
 ####--------------------------------------------------------------------------.
-
 
 
 def _check_label_arr(label_arr):
@@ -467,7 +465,6 @@ def _extract_xr_patch(xr_obj, isel_dict, label_name, label_id, highlight_label_i
     if highlight_label_id:
         xr_obj_patch = highlight_label(xr_obj_patch, label_name=label_name, label_id=label_id)
     return xr_obj_patch
-
 
 
 def _get_patches_isel_dict_generator(

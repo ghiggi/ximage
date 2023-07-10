@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Created on Mon Jul 10 14:07:16 2023
 
 @author: ghiggi
 """
-import numpy as np 
+import numpy as np
 
 
 def are_all_integers(arr, negative_allowed=True):
