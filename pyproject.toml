@@ -41,8 +41,7 @@ dependencies = [
     "scikit-image",
 ]
 requires-python = ">=3.8"
-version = "0.0.1"
-# dynamic = ["version"]
+dynamic = ["version"]
 
 [project.optional-dependencies]
 dev = ["pre-commit",
