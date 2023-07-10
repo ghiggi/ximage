@@ -5,7 +5,7 @@ requires = ["setuptools>=61.0.0", "setuptools_scm[toml]>=6.2", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "x-image"
+name = "ximage"
 description = "xarray-based tools for image/video processing"
 readme = "README.md"
 authors = [
@@ -41,7 +41,8 @@ dependencies = [
     "scikit-image",
 ]
 requires-python = ">=3.8"
-dynamic = ["version"]
+version = "0.0.1"
+# dynamic = ["version"]
 
 [project.optional-dependencies]
 dev = ["pre-commit",
@@ -52,14 +53,14 @@ dev = ["pre-commit",
        "sphinx", "sphinx-gallery", "sphinx_rtd_theme", "nbsphinx"]
 
 [project.urls]
-Homepage = "https://github.com/ghiggi/x-image"
-Source = "https://github.com/ghiggi/x-image"
-Tracker = "https://github.com/ghiggi/x-image/issues"
-Documentation = "https://x-image.readthedocs.io"
-changelog = "https://github.com/ghiggi/x-image/CHANGELOG.md"
+Homepage = "https://github.com/ghiggi/ximage"
+Source = "https://github.com/ghiggi/ximage"
+Tracker = "https://github.com/ghiggi/ximage/issues"
+Documentation = "https://ximage.readthedocs.io"
+changelog = "https://github.com/ghiggi/ximage/CHANGELOG.md"
 
 [tool.setuptools_scm]
-write_to = "x-image/_version.py"
+write_to = "ximage/_version.py"
 
 [tool.setuptools]
 license-files = ["LICENSE"]

@@ -1,6 +1,6 @@
-# x-image
+# ximage
 
-x-image is available on [GitHub](https://github.com/ghiggi/x-image) and was created by following people.
+ximage is available on [GitHub](https://github.com/ghiggi/ximage) and was created by following people.
 
 ## Main Authors
 
