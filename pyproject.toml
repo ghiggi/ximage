@@ -37,7 +37,7 @@ keywords = ["image", "video", "labelling", "patch", "extraction"]
 dependencies = [
     "xarray",
     "dask",
-    "dask-image", 
+    "dask-image",
     "scikit-image",
 ]
 requires-python = ">=3.8"
@@ -64,7 +64,7 @@ write_to = "x-image/_version.py"
 [tool.setuptools]
 license-files = ["LICENSE"]
 packages = ["ximage"] # explicitly list the packages in modules
- 
+
 [tool.black]
 line-length = 100
 # skip-string-normalization = true

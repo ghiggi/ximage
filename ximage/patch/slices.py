@@ -198,7 +198,6 @@ def enlarge_slices(list_slices, min_size, valid_shape):
     return list_slices
 
 
-
 def get_slice_around_index(index, size, min_start=0, max_stop=np.inf):
     """
     Get a slice object of `size` around `index` value.

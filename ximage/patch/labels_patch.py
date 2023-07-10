@@ -5,17 +5,18 @@ Created on Wed Oct 19 19:40:12 2022
 @author: ghiggi
 """
 import random
+
+import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
-import matplotlib.pyplot as plt
 
 from ximage.labels import highlight_label
 from ximage.patch.slices import (
-    pad_slices,
     enlarge_slices,
     get_nd_partitions_list_slices,
     get_slice_around_index,
     get_slice_from_idx_bounds,
+    pad_slices,
 )
 
 # -----------------------------------------------------------------------------.
@@ -1229,5 +1230,3 @@ def get_patches_from_labels(
 
         # Return the patch around the label
         yield label_id, xr_obj_patch
-
-

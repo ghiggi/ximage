@@ -10,7 +10,7 @@ from ximage.labels import get_patches_from_labels as label_patches
 from importlib.metadata import PackageNotFoundError, version
 
 
-__all__ = ['label', 'label_patches']
+__all__ = ["label", "label_patches"]
 
 # Get version
 try:

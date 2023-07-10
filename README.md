@@ -13,8 +13,8 @@ The ximage is still in development. Feel free to try it out and to report issues
 ## Quick start
 
 ximage provides an easy-to-use interface to manipulate image, videos and n-dimensional arrays
-with classical image processing techniques. 
- 
+with classical image processing techniques.
+
 Look at the [Tutorials][tutorial_link] to have an overview of the software !
 
 ## Installation
@@ -75,7 +75,7 @@ If you want to cite a specific version, have a look at the [Zenodo site](https:/
 - [dask_image](https://image.dask.org/en/latest/)
 - [skimage](https://scikit-image.org/)
 
- 
+
 ## License
 
 The content of this repository is released under the terms of the [MIT](LICENSE) license.
