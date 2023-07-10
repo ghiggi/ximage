@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
 
-from ximage.labels import highlight_label
+from ximage.labels.labels import highlight_label
 from ximage.patch.slices import (
     enlarge_slices,
     get_nd_partitions_list_slices,
@@ -18,6 +18,17 @@ from ximage.patch.slices import (
     get_slice_from_idx_bounds,
     pad_slices,
 )
+from ximage.patch.checks import (
+    are_all_natural_numbers,
+    check_patch_size,
+    check_buffer,
+    check_padding,
+    check_stride,
+    check_kernel_size,
+    check_partitioning_method,
+)
+from ximage.patch.plot2d import plot_2d_label_partitions_boundaries, add_label_patches_boundaries
+
 
 # -----------------------------------------------------------------------------.
 #### TODOs
@@ -48,81 +59,8 @@ from ximage.patch.slices import (
 ####--------------------------------------------------------------------------.
 
 
-def are_all_integers(arr, negative_allowed=True):
-    """
-    Check if all values in the input numpy array are integers.
 
-    Parameters
-    ----------
-    arr : (list, tuple, np.ndarray)
-       List, tuple or array of values to be checked.
-    negative_allowed: bool, optional
-        If False, return True only for integers >=1 (natural numbers)
-
-    Returns
-    -------
-    bool
-        True if all values in the array are integers, False otherwise.
-
-    """
-    is_integer = np.isclose(arr, np.round(arr), atol=1e-12, rtol=1e-12)
-    if negative_allowed:
-        return bool(np.all(is_integer))
-    else:
-        return bool(np.all(np.logical_and(np.greater(arr, 0), is_integer)))
-
-
-def are_all_natural_numbers(arr):
-    """
-    Check if all values in the input numpy array are natural numbers (>1).
-
-    Parameters
-    ----------
-    arr : (list, tuple, np.ndarray)
-       List, tuple or array of values to be checked.
-
-    Returns
-    -------
-    bool
-        True if all values in the array are natural numbers. False otherwise.
-
-    """
-    return are_all_integers(arr, negative_allowed=False)
-
-
-def _ensure_is_dict_argument(arg, dims, arg_name):
-    """Ensure argument is a dictionary with same order as dims."""
-    if isinstance(arg, (int, float)):
-        arg = {dim: arg for dim in dims}
-    if isinstance(arg, (list, tuple)):
-        if len(arg) != len(dims):
-            raise ValueError(f"{arg_name} must match the number of dimensions of the label array.")
-        arg = dict(zip(dims, arg))
-    if isinstance(arg, dict):
-        dict_dims = np.array(list(arg))
-        invalid_dims = dict_dims[np.isin(dict_dims, dims, invert=True)].tolist()
-        if len(invalid_dims) > 0:
-            raise ValueError(
-                f"{arg_name} must not contain dimensions {invalid_dims}. It expects only {dims}."
-            )
-        missing_dims = np.array(dims)[np.isin(dims, dict_dims, invert=True)].tolist()
-        if len(missing_dims) > 0:
-            raise ValueError(f"{arg_name} must contain also dimensions {missing_dims}")
-    else:
-        type_str = type(arg)
-        raise TypeError(f"Unrecognized type {type_str} for argument {arg_name}.")
-    # Reorder as function of dims
-    arg = {dim: arg[dim] for dim in dims}
-    return arg
-
-
-def _replace_full_dimension_flag_value(arg, shape):
-    """Replace -1 values with the corresponding dimension shape."""
-    arg = {dim: shape[i] if value == -1 else value for i, (dim, value) in enumerate(arg.items())}
-    return arg
-
-
-def check_label_arr(label_arr):
+def _check_label_arr(label_arr):
     """Check label_arr."""
     # Note: If label array is all zero or nan, labels_id will be []
 
@@ -141,7 +79,7 @@ def check_label_arr(label_arr):
     return label_arr
 
 
-def check_labels_id(labels_id, label_arr):
+def _check_labels_id(labels_id, label_arr):
     """Check labels_id."""
     # Check labels_id type
     if not isinstance(labels_id, (type(None), int, list, np.ndarray)):
@@ -171,141 +109,6 @@ def check_labels_id(labels_id, label_arr):
     if n_labels == 0:
         raise ValueError("No labels available.")
     return labels_id
-
-
-def check_patch_size(patch_size, dims, shape):
-    """
-    Check the validity of the patch_size argument based on the array shape.
-
-    Parameters
-    ----------
-    patch_size : (int, list, tuple, dict)
-        The size of the patch to extract from the array.
-        If int or float, the patch is a hypercube of size patch_size across all dimensions.
-        If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, it must have has keys all array dimensions.
-        The value -1 can be used to specify the full array dimension shape.
-        Otherwise, only positive integers values (>1) are accepted.
-    dims : tuple
-        The names of the array dimensions.
-    shape : tuple
-        The shape of the array.
-
-    Returns
-    -------
-    patch_size : dict
-        The shape of the patch.
-    """
-    patch_size = _ensure_is_dict_argument(patch_size, dims=dims, arg_name="patch_size")
-    patch_size = _replace_full_dimension_flag_value(patch_size, shape)
-    # Check natural number
-    for dim, value in patch_size.items():
-        if not are_all_natural_numbers(value):
-            raise ValueError(
-                "Invalid 'patch_size' values. They must be only positive integer values."
-            )
-    # Check patch size is smaller than array shape
-    idx_valid = [value <= max_value for value, max_value in zip(patch_size.values(), shape)]
-    max_allowed_patch_size = {dim: value for dim, value in zip(dims, shape)}
-    if not all(idx_valid):
-        raise ValueError(f"The maximum allowed patch_size values are {max_allowed_patch_size}")
-    return patch_size
-
-
-def check_kernel_size(kernel_size, dims, shape):
-    """
-    Check the validity of the kernel_size argument based on the array shape.
-
-    Parameters
-    ----------
-    kernel_size : (int, list, tuple, dict)
-        The size of the kernel to extract from the array.
-        If int or float, the kernel is a hypercube of size patch_size across all dimensions.
-        If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, it must have has keys all array dimensions.
-        The value -1 can be used to specify the full array dimension shape.
-        Otherwise, only positive integers values (>1) are accepted.
-    dims : tuple
-        The names of the array dimensions.
-    shape : tuple
-        The shape of the array.
-
-    Returns
-    -------
-    kernel_size : dict
-        The shape of the kernel.
-    """
-    kernel_size = _ensure_is_dict_argument(kernel_size, dims=dims, arg_name="kernel_size")
-    kernel_size = _replace_full_dimension_flag_value(kernel_size, shape)
-    # Check natural number
-    for dim, value in kernel_size.items():
-        if not are_all_natural_numbers(value):
-            raise ValueError(
-                "Invalid 'kernel_size' values. They must be only positive integer values."
-            )
-    # Check patch size is smaller than array shape
-    idx_valid = [value <= max_value for value, max_value in zip(kernel_size.values(), shape)]
-    max_allowed_kernel_size = {dim: value for dim, value in zip(dims, shape)}
-    if not all(idx_valid):
-        raise ValueError(f"The maximum allowed patch_size values are {max_allowed_kernel_size}")
-    return kernel_size
-
-
-def check_buffer(buffer, dims, shape):
-    """
-    Check the validity of the buffer argument based on the array shape.
-
-    Parameters
-    ----------
-    buffer : (int, float, list, tuple or dict)
-        The size of the buffer to apply to the array.
-        If int or float, equal buffer is set on each dimension of the array.
-        If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, it must have has keys all array dimensions.
-    dims : tuple
-        The names of the array dimensions.
-    shape : tuple
-        The shape of the array.
-
-    Returns
-    -------
-    buffer : dict
-        The buffer to apply on each dimension.
-    """
-    buffer = _ensure_is_dict_argument(buffer, dims=dims, arg_name="buffer")
-    for dim, value in buffer.items():
-        if not are_all_integers(value):
-            raise ValueError("Invalid 'buffer' values. They must be only integer values.")
-    return buffer
-
-
-def check_padding(padding, dims, shape):
-    """
-    Check the validity of the padding argument based on the array shape.
-
-    Parameters
-    ----------
-    padding : (int, float, list, tuple or dict)
-        The size of the padding to apply to the array.
-        If None, zero padding is assumed.
-        If int or float, equal padding is set on each dimension of the array.
-        If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, it must have has keys all array dimensions.
-    dims : tuple
-        The names of the array dimensions.
-    shape : tuple
-        The shape of the array.
-
-    Returns
-    -------
-    padding : dict
-        The padding to apply on each dimension.
-    """
-    padding = _ensure_is_dict_argument(padding, dims=dims, arg_name="padding")
-    for dim, value in padding.items():
-        if not are_all_integers(value):
-            raise ValueError("Invalid 'padding' values. They must be only integer values.")
-    return padding
 
 
 def _check_n_patches_per_partition(n_patches_per_partition, centered_on):
@@ -343,63 +146,6 @@ def _check_n_patches_per_label(n_patches_per_label, n_patches_per_partition):
     return n_patches_per_label
 
 
-def check_partitioning_method(partitioning_method):
-    """Check partitioning method."""
-    if not isinstance(partitioning_method, (str, type(None))):
-        raise TypeError("'partitioning_method' must be either a string or None.")
-    if isinstance(partitioning_method, str):
-        valid_methods = ["sliding", "tiling"]
-        if partitioning_method not in valid_methods:
-            raise ValueError(f"Valid 'partitioning_method' are {valid_methods}")
-    return partitioning_method
-
-
-def check_stride(stride, dims, shape, partitioning_method):
-    """
-    Check the validity of the stride argument based on the array shape.
-
-    Parameters
-    ----------
-    stride : (None, int, float, list, tuple, dict)
-        The size of the stride to apply to the array.
-        If None, no striding is assumed.
-        If int or float, equal stride is set on each dimension of the array.
-        If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, it must have has keys all array dimensions.
-    dims : tuple
-        The names of the array dimensions.
-    shape : tuple
-        The shape of the array.
-    partitioning_method: (None, str)
-        The optional partitioning method (tiling or sliding) to use.
-
-    Returns
-    -------
-    stride : dict
-        The stride to apply on each dimension.
-    """
-    if partitioning_method is None:
-        return None
-    # Set default arguments
-    if stride is None:
-        if partitioning_method == "tiling":
-            stride = 0
-        else:  # sliding
-            stride = 1
-    stride = _ensure_is_dict_argument(stride, dims=dims, arg_name="stride")
-    if partitioning_method == "tiling":
-        for dim, value in stride.items():
-            if not are_all_integers(value):
-                raise ValueError("Invalid 'stride' values. They must be only integer values.")
-    else:  # sliding
-        for dim, value in stride.items():
-            if not are_all_natural_numbers(value):
-                raise ValueError(
-                    "Invalid 'stride' values. They must be only positive integer (>=1) values."
-                )
-    return stride
-
-
 def _check_callable_centered_on(centered_on):
     """Check validity of callable centered_on."""
     input_shape = (2, 3)
@@ -430,7 +176,7 @@ def _check_callable_centered_on(centered_on):
         raise ValueError("The 'centered_on' function should be able to deal with a np.nan ndarray.")
 
 
-def check_centered_on(centered_on):
+def _check_centered_on(centered_on):
     """Check valid centered_on to identify a point in an array."""
     if not (callable(centered_on) or isinstance(centered_on, str)):
         raise TypeError("'centered_on' must be a string or a function.")
@@ -478,9 +224,6 @@ def _check_variable_arr(variable_arr, label_arr):
     return variable_arr
 
 
-####--------------------------------------------------------------------------.
-
-
 def _get_point_centroid(arr):
     """Get the coordinate of label bounding box center.
 
@@ -494,7 +237,7 @@ def _get_point_centroid(arr):
     return centroid
 
 
-def get_point_random(arr):
+def _get_point_random(arr):
     """Get random point with finite value."""
     is_finite = np.isfinite(arr)
     if np.all(~is_finite):
@@ -504,7 +247,7 @@ def get_point_random(arr):
     return random_point
 
 
-def get_point_with_max_value(arr):
+def _get_point_with_max_value(arr):
     """Get point with maximum value."""
     point = np.argwhere(arr == np.nanmax(arr))
     if len(point) == 0:
@@ -514,7 +257,7 @@ def get_point_with_max_value(arr):
     return point
 
 
-def get_point_with_min_value(arr):
+def _get_point_with_min_value(arr):
     """Get point with minimum value."""
     point = np.argwhere(arr == np.nanmin(arr))
     if len(point) == 0:
@@ -524,7 +267,7 @@ def get_point_with_min_value(arr):
     return point
 
 
-def get_point_center_of_mass(arr, integer_index=True):
+def _get_point_center_of_mass(arr, integer_index=True):
     """Get the coordinate of the label center of mass.
 
     It uses all cells which have finite values.
@@ -541,21 +284,21 @@ def get_point_center_of_mass(arr, integer_index=True):
     return center_of_mass
 
 
-def _find_point(arr, centered_on="max"):
+def find_point(arr, centered_on="max"):
     """Find a specific point coordinate of the array.
 
     If the coordinate can't be find, return None.
     """
     if centered_on == "max":
-        point = get_point_with_max_value(arr)
+        point = _get_point_with_max_value(arr)
     elif centered_on == "min":
-        point = get_point_with_min_value(arr)
+        point = _get_point_with_min_value(arr)
     elif centered_on == "centroid":
         point = _get_point_centroid(arr)
     elif centered_on == "center_of_mass":
-        point = get_point_center_of_mass(arr)
+        point = _get_point_center_of_mass(arr)
     elif centered_on == "random":
-        point = get_point_random(arr)
+        point = _get_point_random(arr)
     else:  # callable centered_on
         point = centered_on(arr)
     return point
@@ -611,7 +354,7 @@ def _get_patch_list_slices_around_label_point(
     # Mask variable arr outside the label
     variable_subset_arr[label_subset_arr != label_id] = np.nan
     # Find point of subset array
-    point_subset_arr = _find_point(arr=variable_subset_arr, centered_on=centered_on)
+    point_subset_arr = find_point(arr=variable_subset_arr, centered_on=centered_on)
     # Define patch list_slices
     if point_subset_arr is not None:
         # Find point in original array
@@ -638,7 +381,7 @@ def _get_patch_list_slices_around_label(label_arr, label_id, padding, min_patch_
     return list_slices
 
 
-def get_patch_list_slices(label_arr, label_id, variable_arr, patch_size, centered_on, padding):
+def _get_patch_list_slices(label_arr, label_id, variable_arr, patch_size, centered_on, padding):
     """Get patch n-dimensional list slices."""
     if not callable(centered_on) and centered_on == "label_bbox":
         list_slices = _get_patch_list_slices_around_label(
@@ -669,7 +412,7 @@ def _get_masked_arrays(label_arr, variable_arr, partition_list_slices):
     return masked_partition_label_arr, masked_partition_variable_arr
 
 
-def get_patches_from_partitions_list_slices(
+def _get_patches_from_partitions_list_slices(
     partitions_list_slices,
     label_arr,
     variable_arr,
@@ -692,7 +435,7 @@ def get_patches_from_partitions_list_slices(
         )
         n = 0
         while n < n_patches_per_partition:
-            patch_list_slices = get_patch_list_slices(
+            patch_list_slices = _get_patch_list_slices(
                 label_arr=masked_label_arr,
                 variable_arr=masked_variable_arr,
                 label_id=label_id,
@@ -706,7 +449,7 @@ def get_patches_from_partitions_list_slices(
     return patches_list_slices
 
 
-def get_list_isel_dicts(patches_list_slices, dims):
+def _get_list_isel_dicts(patches_list_slices, dims):
     """Return a list with isel dictionaries."""
     list_isel_dicts = []
     for patch_list_slices in patches_list_slices:
@@ -725,110 +468,6 @@ def _extract_xr_patch(xr_obj, isel_dict, label_name, label_id, highlight_label_i
         xr_obj_patch = highlight_label(xr_obj_patch, label_name=label_name, label_id=label_id)
     return xr_obj_patch
 
-
-def plot_rectangle_from_list_slices(ax, list_slices, edgecolor="red", facecolor="None", **kwargs):
-    """Plot rectangles from 2D patch list slices."""
-    if len(list_slices) != 2:
-        raise ValueError("Required 2 slices.")
-    # Extract the start and stop values from the slice
-    y_start, y_stop = (list_slices[0].start, list_slices[0].stop)
-    x_start, x_stop = (list_slices[1].start, list_slices[1].stop)
-    # Calculate the width and height of the rectangle
-    width = x_stop - x_start
-    height = y_stop - y_start
-    # Plot rectangle
-    rectangle = plt.Rectangle(
-        (x_start, y_start), width, height, edgecolor=edgecolor, facecolor=facecolor, **kwargs
-    )
-    ax.add_patch(rectangle)
-    return ax
-
-
-def plot_2d_label_partitions_boundaries(
-    partitions_list_slices, label_arr, edgecolor="red", facecolor="None", **kwargs
-):
-    """Plot partitions from 2D list slices."""
-    # Define plot limits
-    xmin = min([patch_list_slices[1].start for patch_list_slices in partitions_list_slices])
-    xmax = max([patch_list_slices[1].stop for patch_list_slices in partitions_list_slices])
-    ymin = min([patch_list_slices[0].start for patch_list_slices in partitions_list_slices])
-    ymax = max([patch_list_slices[0].stop for patch_list_slices in partitions_list_slices])
-
-    # Plot patches boundaries
-    fig, ax = plt.subplots()
-    ax.imshow(label_arr, origin="upper")
-    for partition_list_slices in partitions_list_slices:
-        _ = plot_rectangle_from_list_slices(
-            ax=ax,
-            list_slices=partition_list_slices,
-            edgecolor=edgecolor,
-            facecolor=facecolor,
-            **kwargs,
-        )
-    # Set plot limits
-    ax.set_xlim(xmin - 5, xmax + 5)
-    ax.set_ylim(ymax + 5, ymin - 5)
-    return fig
-
-
-def _add_label_patches_boundaries(
-    fig, patches_list_slices, edgecolor="red", facecolor="None", **kwargs
-):
-
-    # Retrieve axis
-    ax = fig.axes[0]
-
-    # Define patches limits
-    xmin = min([patch_list_slices[1].start for patch_list_slices in patches_list_slices])
-    xmax = max([patch_list_slices[1].stop for patch_list_slices in patches_list_slices])
-    ymin = min([patch_list_slices[0].start for patch_list_slices in patches_list_slices])
-    ymax = max([patch_list_slices[0].stop for patch_list_slices in patches_list_slices])
-
-    # Get current plot axis limits
-    plot_xmin, plot_xmax = ax.get_xlim()
-    plot_ymin, plot_ymax = ax.get_ylim()
-
-    # Define final plot axis limits
-    xmin = min(xmin, plot_xmin)
-    xmax = max(xmax, plot_xmax)
-    ymin = min(ymin, plot_ymin)
-    ymax = max(ymax, plot_ymax)
-
-    # Plot patch boundaries
-    for patch_list_slices in patches_list_slices:
-        _ = plot_rectangle_from_list_slices(
-            ax=ax, list_slices=patch_list_slices, edgecolor=edgecolor, facecolor=facecolor, **kwargs
-        )
-    # Set plot limits
-    ax.set_xlim(xmin - 5, xmax + 5)
-    ax.set_ylim(ymax + 5, ymin - 5)
-
-    return fig
-
-
-def plot_2d_label_patches_boundaries(patches_list_slices, label_arr):
-    """Plot patches from  from 2D list slices."""
-    # Define plot limits
-    xmin = min([patch_list_slices[1].start for patch_list_slices in patches_list_slices])
-    xmax = max([patch_list_slices[1].stop for patch_list_slices in patches_list_slices])
-    ymin = min([patch_list_slices[0].start for patch_list_slices in patches_list_slices])
-    ymax = max([patch_list_slices[0].stop for patch_list_slices in patches_list_slices])
-
-    # Plot patches boundaries
-    fig, ax = plt.subplots()
-    ax.imshow(label_arr, origin="upper")
-    for patch_list_slices in patches_list_slices:
-        plot_rectangle_from_list_slices(ax, patch_list_slices)
-
-    # Set plot limits
-    ax.set_xlim(xmin - 5, xmax + 5)
-    ax.set_ylim(ymax + 5, ymin - 5)
-
-    # Show plot
-    plt.show()
-
-    # Return figure
-    return fig
 
 
 def _get_patches_isel_dict_generator(
@@ -866,7 +505,6 @@ def _get_patches_isel_dict_generator(
         raise ValueError("Specify either n_labels or labels_id.")
     if kernel_size is None:
         kernel_size = patch_size
-
     patch_size = check_patch_size(patch_size, dims, shape)
     buffer = check_buffer(buffer, dims, shape)
     padding = check_padding(padding, dims, shape)
@@ -875,12 +513,12 @@ def _get_patches_isel_dict_generator(
     stride = check_stride(stride, dims, shape, partitioning_method)
     kernel_size = check_kernel_size(kernel_size, dims, shape)
 
-    centered_on = check_centered_on(centered_on)
+    centered_on = _check_centered_on(centered_on)
     n_patches_per_partition = _check_n_patches_per_partition(n_patches_per_partition, centered_on)
     n_patches_per_label = _check_n_patches_per_label(n_patches_per_label, n_patches_per_partition)
 
-    label_arr = check_label_arr(label_arr)  # output is np.array !
-    labels_id = check_labels_id(labels_id=labels_id, label_arr=label_arr)
+    label_arr = _check_label_arr(label_arr)  # output is np.array !
+    labels_id = _check_labels_id(labels_id=labels_id, label_arr=label_arr)
     variable_arr = _get_variable_arr(xr_obj, variable, centered_on)  # if required
     variable_arr = _check_variable_arr(variable_arr, label_arr)
 
@@ -929,7 +567,7 @@ def _get_patches_isel_dict_generator(
 
         # --------------------------------------------------------------------.
         # Retrieve patches list_slices from partitions list slices
-        patches_list_slices = get_patches_from_partitions_list_slices(
+        patches_list_slices = _get_patches_from_partitions_list_slices(
             partitions_list_slices=partitions_list_slices,
             label_arr=label_arr,
             variable_arr=variable_arr,
@@ -942,14 +580,14 @@ def _get_patches_isel_dict_generator(
 
         # If debug=True, plot patches boundaries
         if debug and label_arr.ndim == 2:
-            _ = _add_label_patches_boundaries(
+            _ = add_label_patches_boundaries(
                 fig=fig, patches_list_slices=patches_list_slices, edgecolor="red"
             )
             plt.show()
 
         # ---------------------------------------------------------------------.
         # Retrieve patches isel_dictionaries
-        patches_isel_dicts = get_list_isel_dicts(patches_list_slices, dims=dims)
+        patches_isel_dicts = _get_list_isel_dicts(patches_list_slices, dims=dims)
         n_to_select = min(len(patches_isel_dicts), n_patches_per_label)
         patches_isel_dicts = patches_isel_dicts[0:n_to_select]
 

@@ -13,17 +13,10 @@ from skimage.measure import label as label_image
 from skimage.morphology import binary_dilation, disk
 
 # TODO:
-# - xr_get_label_stats
 # - Enable to label in n-dimensions
 #   - (2D+VERTICAL) --> CORE PROFILES
 #   - (2D+TIME) --> TRACKING
 
-# Future internal renaming:
-# - get_labels --> get_labels
-# - _xr_get_labels --> xr_get_labels
-
-# Note
-# - label_xarray_object available as ds.ximage.label_object
 
 ####--------------------------------------------------------------------------.
 
@@ -74,7 +67,7 @@ def _no_labels_result(arr):
     return labels, n_labels, values
 
 
-def check_sort_by(stats):
+def _check_sort_by(stats):
     """Check 'sort_by' argument."""
     if not (callable(stats) or isinstance(stats, str)):
         raise TypeError("'sort_by' must be a string or a function.")
@@ -144,7 +137,7 @@ def _get_label_value_stats(arr, label_arr, label_indices=None, stats="area"):
     return values
 
 
-def get_labels_stats(arr, label_arr, label_indices=None, stats="area", sort_decreasing=True):
+def _get_labels_stats(arr, label_arr, label_indices=None, stats="area", sort_decreasing=True):
     """Return label and label statistics sorted by statistic value."""
     # Get labels area values
     values = _get_label_value_stats(
@@ -170,7 +163,7 @@ def _vec_translate(arr, my_dict):
     return np.vectorize(my_dict.__getitem__)(arr)
 
 
-def get_labels_with_requested_occurrence(label_arr, vmin, vmax):
+def _get_labels_with_requested_occurrence(label_arr, vmin, vmax):
     "Get label indices with requested occurrence."
     # Compute label occurrence
     label_indices, label_occurrence = np.unique(label_arr, return_counts=True)
@@ -188,7 +181,7 @@ def get_labels_with_requested_occurrence(label_arr, vmin, vmax):
     return label_indices
 
 
-def redefine_label_array(label_arr, label_indices=None):
+def _redefine_label_array(label_arr, label_indices=None):
     """Redefine labels of a label array from 0 to len(label_indices).
 
     If label_indices is None, it takes the unique values of label_arr.
@@ -324,7 +317,7 @@ def _get_labels(
     arr = _check_array(arr)
 
     # Check input arguments
-    check_sort_by(sort_by)
+    _check_sort_by(sort_by)
 
     # ---------------------------------.
     # Define masks
@@ -362,7 +355,7 @@ def _get_labels(
 
     # ---------------------------------.
     # Filter label by area
-    label_indices = get_labels_with_requested_occurrence(
+    label_indices = _get_labels_with_requested_occurrence(
         label_arr=label_arr, vmin=min_area_threshold, vmax=max_area_threshold
     )
     if len(label_indices) == 0:
@@ -370,7 +363,7 @@ def _get_labels(
 
     # ---------------------------------.
     # Sort labels by statistics (i.e. label area, label max value ...)
-    label_indices, values = get_labels_stats(
+    label_indices, values = _get_labels_stats(
         arr=arr,
         label_arr=label_arr,
         label_indices=label_indices,
@@ -383,7 +376,7 @@ def _get_labels(
 
     # ---------------------------------.
     # Relabel labels array (from 1 to n_labels)
-    labels_arr = redefine_label_array(label_arr=label_arr, label_indices=label_indices)
+    labels_arr = _redefine_label_array(label_arr=label_arr, label_indices=label_indices)
     n_labels = len(label_indices)
     # ---------------------------------.
     # Return infos
