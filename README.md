@@ -1,5 +1,5 @@
 # Welcome to ximage
-[![DOI](https://zenodo.org/badge/286664485.svg)](https://zenodo.org/badge/latestdoi/286664485)
+[![DOI](https://zenodo.org/badge/664629093.svg)](https://zenodo.org/badge/latestdoi/664629093)
 [![PyPI version](https://badge.fury.io/py/ximage.svg)](https://badge.fury.io/py/ximage)
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/ximage.svg)](https://anaconda.org/conda-forge/ximage)
 [![Tests](https://github.com/ghiggi/ximage/actions/workflows/tests.yml/badge.svg)](https://github.com/ghiggi/ximage/actions/workflows/tests.yml)
@@ -64,7 +64,7 @@ TODO: GMD
 
 You can cite the Zenodo code publication of ximage by:
 
-> Ghiggi Gionata & XXXX . ghiggi/ximage. Zenodo. https://doi.org/10.5281/zenodo.7753488
+> Ghiggi Gionata & XXXX . ghiggi/ximage. Zenodo. https://doi.org/10.5281/zenodo.8131552
 
 If you want to cite a specific version, have a look at the [Zenodo site](https://doi.org/10.5281/zenodo.7753488).
 
