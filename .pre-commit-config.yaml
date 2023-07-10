@@ -1,0 +1,30 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.257
+    hooks:
+      - id: ruff
+        args: [--fix]
+
+  - repo: https://github.com/psf/black
+    rev: 22.8.0
+    hooks:
+    - id: black
+      language_version: python3
+
+  - repo: https://github.com/keewis/blackdoc
+    rev: v0.3.8
+    hooks:
+    - id: blackdoc
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.4
+    hooks:
+    -   id: codespell
+        types_or: [python, markdown]
+        additional_dependencies: [tomli]
