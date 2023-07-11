@@ -43,7 +43,7 @@ class XImage_Base_Accessor:
             sort_decreasing=sort_decreasing,
         )
         return xr_obj
-    
+
     # TODO: extract_label_patches
     def label_patches(
         self,
@@ -113,10 +113,26 @@ class XImage_Dataset_Accessor(XImage_Base_Accessor):
 class XImage_DataArray_Accessor(XImage_Base_Accessor):
     def __init__(self, xarray_obj):
         super().__init__(xarray_obj)
-        
-    def plot_labels(self, x=None, y=None, ax=None, max_n_labels=50, 
-                   add_colorbar="True", cmap="Paired", **plot_kwargs):
+
+    def plot_labels(
+        self,
+        x=None,
+        y=None,
+        ax=None,
+        max_n_labels=50,
+        add_colorbar="True",
+        cmap="Paired",
+        **plot_kwargs,
+    ):
         from ximage.labels.plot_labels import plot_labels
-        
-        return plot_labels(self._obj, x=x, y=y, ax=ax, max_n_labels=max_n_labels, 
-                           add_colorbar=add_colorbar, cmap=cmap, **plot_kwargs)
+
+        return plot_labels(
+            self._obj,
+            x=x,
+            y=y,
+            ax=ax,
+            max_n_labels=max_n_labels,
+            add_colorbar=add_colorbar,
+            cmap=cmap,
+            **plot_kwargs,
+        )

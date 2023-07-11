@@ -12,6 +12,7 @@ import numpy as np
 import xarray as xr
 from skimage.measure import label as label_image
 from skimage.morphology import binary_dilation, disk
+
 from ximage.utils.checks import are_all_natural_numbers
 
 # TODO:
@@ -185,42 +186,42 @@ def _get_labels_with_requested_occurrence(label_arr, vmin, vmax):
 
 
 def _ensure_valid_label_arr(label_arr):
-    """Ensure label_arr does contain only positive values. 
-    
-    NaN values are converted to 0. 
+    """Ensure label_arr does contain only positive values.
+
+    NaN values are converted to 0.
     The output array type is int.
     """
     # Ensure data are numpy
     label_arr = np.asanyarray(label_arr)
-    
-    # Set NaN to 0 
+
+    # Set NaN to 0
     label_arr[np.isnan(label_arr)] = 0
-     
-    # Check that label arr values are positive integers 
+
+    # Check that label arr values are positive integers
     if not are_all_natural_numbers(label_arr.flatten(), zero_allowed=True):
         raise ValueError("The label array must contain only positive integers.")
 
     # Ensure label array is integer dtype
-    label_arr = label_arr.astype(int)   
+    label_arr = label_arr.astype(int)
     return label_arr
 
 
-def _ensure_valid_label_indices(label_indices): 
+def _ensure_valid_label_indices(label_indices):
     """Ensure valid label indices are integers and does not contains 0 and NaN."""
     label_indices = np.delete(label_indices, np.where(label_indices == 0)[0].flatten())
     label_indices = np.delete(label_indices, np.where(np.isnan(label_indices))[0].flatten())
     label_indices = label_indices.astype(int)
-    return label_indices 
+    return label_indices
 
 
 def get_label_indices(arr):
     """Get label indices from numpy.ndarray, dask.Array and xr.DataArray.
-    
+
     It removes 0 and NaN values. Output type is int.
     """
     arr = np.asanyarray(arr)
     arr = arr[~np.isnan(arr)]
-    arr = arr.astype(int) # otherwise precision error in unique 
+    arr = arr.astype(int)  # otherwise precision error in unique
     label_indices = np.unique(arr)
     label_indices = _ensure_valid_label_indices(label_indices)
     return label_indices
@@ -246,7 +247,7 @@ def _get_new_label_value_dict(label_indices, max_label):
         val_dict[k] = v
     return val_dict
 
-    
+
 def _np_redefine_label_array(label_arr, label_indices=None):
     """Relabel a numpy/dask array from 0 to len(label_indices)."""
     # Ensure data are numpy
@@ -259,21 +260,21 @@ def _np_redefine_label_array(label_arr, label_indices=None):
 
     # Ensure label indices are integer, without 0 and NaN
     label_indices = _ensure_valid_label_indices(label_indices)
-    
+
     # Ensure label array values are integer
-    label_arr = _ensure_valid_label_arr(label_arr) # ouput is int, without NaN
-    
-    # Check there are label_indices 
-    if len(label_indices) == 0: 
+    label_arr = _ensure_valid_label_arr(label_arr)  # output is int, without NaN
+
+    # Check there are label_indices
+    if len(label_indices) == 0:
         raise ValueError("No labels available.")
-        
+
     # Compute max label index
-    max_label = max(label_indices)   
+    max_label = max(label_indices)
 
     # Set to 0 labels in label_arr larger than max_label
     # - These are some of the labels that were set to 0 because of mask or area filtering
     label_arr[label_arr > max_label] = 0
-    
+
     # Initialize dictionary with keys corresponding to all possible labels indices
     val_dict = _get_new_label_value_dict(label_indices, max_label)
 
@@ -301,14 +302,14 @@ def redefine_label_array(data, label_indices=None):
     Native label values not present in label_indices are set to 0.
     The first label in label_indices becomes 1, the second 2, and so on.
     """
-    if isinstance(data, xr.DataArray): 
+    if isinstance(data, xr.DataArray):
         return _xr_redefine_label_array(data, label_indices=label_indices)
     elif isinstance(data, (np.ndarray, dask.array.Array)):
         return _np_redefine_label_array(data, label_indices=label_indices)
-    else: 
+    else:
         type_data = type(data)
         raise TypeError(f"This method does not accept {type_data}")
-    
+
 
 def _check_xr_obj(xr_obj, variable):
     """Check xarray object and variable validity."""

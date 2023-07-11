@@ -5,8 +5,9 @@ Created on Mon Jul 10 14:07:16 2023
 @author: ghiggi
 """
 import numpy as np
+
 from ximage.utils.checks import are_all_integers, are_all_natural_numbers
- 
+
 
 def _ensure_is_dict_argument(arg, dims, arg_name):
     """Ensure argument is a dictionary with same order as dims."""

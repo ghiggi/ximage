@@ -321,10 +321,10 @@ def _get_labels_bbox_slices(arr):
     list_slices : list
         List of slices to extract the region with non-zero elements in the input array.
     """
-    # Return None if all values are zeros 
-    if not np.any(arr): 
-        return None 
-    
+    # Return None if all values are zeros
+    if not np.any(arr):
+        return None
+
     ndims = arr.ndim
     coords = np.nonzero(arr)
     list_slices = [
@@ -347,8 +347,8 @@ def _get_patch_list_slices_around_label_point(
     """
     # Subset variable_arr around label
     list_slices = _get_labels_bbox_slices(label_arr == label_id)
-    if list_slices is None: 
-        return None 
+    if list_slices is None:
+        return None
     label_subset_arr = label_arr[tuple(list_slices)]
     variable_subset_arr = variable_arr[tuple(list_slices)]
     variable_subset_arr = np.asarray(variable_subset_arr)  # if dask, make numpy
@@ -375,8 +375,8 @@ def _get_patch_list_slices_around_label(label_arr, label_id, padding, min_patch_
     """Get list_slices to extract patch around a label."""
     # Get label bounding box slices
     list_slices = _get_labels_bbox_slices(label_arr == label_id)
-    if list_slices is None: 
-        return None 
+    if list_slices is None:
+        return None
     # Apply padding to the slices
     list_slices = pad_slices(list_slices, padding=padding, valid_shape=label_arr.shape)
     # Increase slices to match min_patch_size
@@ -432,7 +432,7 @@ def _get_patches_from_partitions_list_slices(
     """
     patches_list_slices = []
     for partition_list_slices in partitions_list_slices:
-        if verbose: 
+        if verbose:
             print(f" -  partition: {partition_list_slices}")
         masked_label_arr, masked_variable_arr = _get_masked_arrays(
             label_arr=label_arr,
@@ -531,14 +531,14 @@ def _get_patches_isel_dict_generator(
     # Define number of labels from which to extract patches
     available_n_labels = len(labels_id)
     n_labels = min(available_n_labels, n_labels) if n_labels else available_n_labels
-    if verbose: 
+    if verbose:
         print(f"Extracting patches from {n_labels} labels.")
     # -------------------------------------------------------------------------.
     # Extract patch(es) around the label
     patch_counter = 0
     break_flag = False
     for i, label_id in enumerate(labels_id[0:n_labels]):
-        if verbose: 
+        if verbose:
             print(f"Label ID: {label_id} ({i}/{n_labels})")
 
         # Subset label_arr around the given label
@@ -567,7 +567,7 @@ def _get_patches_isel_dict_generator(
                 partitions_list_slices = partitions_list_slices[0:n_to_select]
         else:
             partitions_list_slices = [label_bbox_slices]
-    
+
         # --------------------------------------------------------------------.
         # Retrieve patches list_slices from partitions list slices
         patches_list_slices = _get_patches_from_partitions_list_slices(
@@ -581,22 +581,23 @@ def _get_patches_isel_dict_generator(
             padding=list(padding.values()),
             verbose=verbose,
         )
-        
+
         # ---------------------------------------------------------------------.
         # Retrieve patches isel_dictionaries
         partitions_isel_dicts = _get_list_isel_dicts(partitions_list_slices, dims=dims)
         patches_isel_dicts = _get_list_isel_dicts(patches_list_slices, dims=dims)
-  
+
         n_to_select = min(len(patches_isel_dicts), n_patches_per_label)
         patches_isel_dicts = patches_isel_dicts[0:n_to_select]
-        
+
         # --------------------------------------------------------------------.
         # If debug=True, plot patches boundaries
         if debug and label_arr.ndim == 2:
             _ = plot_label_patch_extraction_areas(
-                xr_obj, label_name=label_name,
-                patches_isel_dicts=patches_isel_dicts,  
-                partitions_isel_dicts=partitions_isel_dicts
+                xr_obj,
+                label_name=label_name,
+                patches_isel_dicts=patches_isel_dicts,
+                partitions_isel_dicts=partitions_isel_dicts,
             )
             plt.show()
 
@@ -605,15 +606,15 @@ def _get_patches_isel_dict_generator(
         if grouped_by_labels_id:
             patch_counter += 1
             if patch_counter > n_patches:
-                break_flag = True 
-            else: 
+                break_flag = True
+            else:
                 yield label_id, patches_isel_dicts
         else:
             for isel_dict in patches_isel_dicts:
                 patch_counter += 1
                 if patch_counter > n_patches:
                     break_flag = True
-                else: 
+                else:
                     yield label_id, isel_dict
         if break_flag:
             break
