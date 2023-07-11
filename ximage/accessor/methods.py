@@ -28,7 +28,7 @@ class XImage_Base_Accessor:
         sort_decreasing=True,
         label_name="label",
     ):
-        from ximage.label import label
+        from ximage.labels.labels import label
 
         xr_obj = label(
             self._obj,
@@ -43,7 +43,8 @@ class XImage_Base_Accessor:
             sort_decreasing=sort_decreasing,
         )
         return xr_obj
-
+    
+    # TODO: extract_label_patches
     def label_patches(
         self,
         patch_size,
@@ -68,8 +69,9 @@ class XImage_Base_Accessor:
         include_last=True,
         ensure_slice_size=True,
         debug=False,
+        verbose=False,
     ):
-        from ximage.label import get_patches_from_labels
+        from ximage.patch.labels_patch import get_patches_from_labels
 
         gen = get_patches_from_labels(
             self._obj,
@@ -94,6 +96,9 @@ class XImage_Base_Accessor:
             stride=stride,
             include_last=include_last,
             ensure_slice_size=ensure_slice_size,
+            # Other Options
+            verbose=verbose,
+            debug=debug,
         )
         return gen
 
@@ -108,3 +113,10 @@ class XImage_Dataset_Accessor(XImage_Base_Accessor):
 class XImage_DataArray_Accessor(XImage_Base_Accessor):
     def __init__(self, xarray_obj):
         super().__init__(xarray_obj)
+        
+    def plot_labels(self, x=None, y=None, ax=None, max_n_labels=50, 
+                   add_colorbar="True", cmap="Paired", **plot_kwargs):
+        from ximage.labels.plot_labels import plot_labels
+        
+        return plot_labels(self._obj, x=x, y=y, ax=ax, max_n_labels=max_n_labels, 
+                           add_colorbar=add_colorbar, cmap=cmap, **plot_kwargs)

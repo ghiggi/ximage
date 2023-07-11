@@ -6,11 +6,13 @@ Created on Wed Oct 19 19:34:53 2022
 """
 # import dask_image.ndmeasure
 # from dask_image.ndmeasure import as dask_label_image
+import dask.array
 import dask_image.ndmeasure
 import numpy as np
 import xarray as xr
 from skimage.measure import label as label_image
 from skimage.morphology import binary_dilation, disk
+from ximage.utils.checks import are_all_natural_numbers
 
 # TODO:
 # - Enable to label in n-dimensions
@@ -160,6 +162,7 @@ def _vec_translate(arr, my_dict):
     label area_size/max_intensity value.
 
     """
+    # TODO:  Remove keys not in arr to speed up maybe
     return np.vectorize(my_dict.__getitem__)(arr)
 
 
@@ -181,7 +184,114 @@ def _get_labels_with_requested_occurrence(label_arr, vmin, vmax):
     return label_indices
 
 
-def _redefine_label_array(label_arr, label_indices=None):
+def _ensure_valid_label_arr(label_arr):
+    """Ensure label_arr does contain only positive values. 
+    
+    NaN values are converted to 0. 
+    The output array type is int.
+    """
+    # Ensure data are numpy
+    label_arr = np.asanyarray(label_arr)
+    
+    # Set NaN to 0 
+    label_arr[np.isnan(label_arr)] = 0
+     
+    # Check that label arr values are positive integers 
+    if not are_all_natural_numbers(label_arr.flatten(), zero_allowed=True):
+        raise ValueError("The label array must contain only positive integers.")
+
+    # Ensure label array is integer dtype
+    label_arr = label_arr.astype(int)   
+    return label_arr
+
+
+def _ensure_valid_label_indices(label_indices): 
+    """Ensure valid label indices are integers and does not contains 0 and NaN."""
+    label_indices = np.delete(label_indices, np.where(label_indices == 0)[0].flatten())
+    label_indices = np.delete(label_indices, np.where(np.isnan(label_indices))[0].flatten())
+    label_indices = label_indices.astype(int)
+    return label_indices 
+
+
+def get_label_indices(arr):
+    """Get label indices from numpy.ndarray, dask.Array and xr.DataArray.
+    
+    It removes 0 and NaN values. Output type is int.
+    """
+    arr = np.asanyarray(arr)
+    arr = arr[~np.isnan(arr)]
+    arr = arr.astype(int) # otherwise precision error in unique 
+    label_indices = np.unique(arr)
+    label_indices = _ensure_valid_label_indices(label_indices)
+    return label_indices
+
+
+def _check_unique_label_indices(label_indices):
+    _, c = np.unique(label_indices, return_counts=True)
+    if np.any(c > 1):
+        raise ValueError("'label_indices' must be uniques.")
+
+
+def _get_new_label_value_dict(label_indices, max_label):
+    """Create dictionary mapping from current label value to new label value."""
+    # Initialize dictionary with keys corresponding to all possible labels indices
+    val_dict = {k: 0 for k in range(0, max_label + 1)}
+
+    # Update the dictionary keys with the selected label_indices
+    # - Assume 0 not in label_indices
+    n_labels = len(label_indices)
+    label_indices = label_indices.tolist()
+    label_indices_new = np.arange(1, n_labels + 1, dtype=int).tolist()
+    for k, v in zip(label_indices, label_indices_new):
+        val_dict[k] = v
+    return val_dict
+
+    
+def _np_redefine_label_array(label_arr, label_indices=None):
+    """Relabel a numpy/dask array from 0 to len(label_indices)."""
+    # Ensure data are numpy
+    label_arr = np.asanyarray(label_arr)
+
+    if label_indices is None:
+        label_indices = np.unique(label_arr)
+    else:
+        _check_unique_label_indices(label_indices)
+
+    # Ensure label indices are integer, without 0 and NaN
+    label_indices = _ensure_valid_label_indices(label_indices)
+    
+    # Ensure label array values are integer
+    label_arr = _ensure_valid_label_arr(label_arr) # ouput is int, without NaN
+    
+    # Check there are label_indices 
+    if len(label_indices) == 0: 
+        raise ValueError("No labels available.")
+        
+    # Compute max label index
+    max_label = max(label_indices)   
+
+    # Set to 0 labels in label_arr larger than max_label
+    # - These are some of the labels that were set to 0 because of mask or area filtering
+    label_arr[label_arr > max_label] = 0
+    
+    # Initialize dictionary with keys corresponding to all possible labels indices
+    val_dict = _get_new_label_value_dict(label_indices, max_label)
+
+    # Redefine the id of the labels
+    labels_arr = _vec_translate(label_arr, val_dict)
+
+    return labels_arr
+
+
+def _xr_redefine_label_array(dataarray, label_indices=None):
+    """Relabel a xr.DataArray from 0 to len(label_indices)."""
+    relabeled_arr = _np_redefine_label_array(dataarray.data, label_indices=label_indices)
+    da_label = dataarray.copy()
+    da_label.data = relabeled_arr
+    return da_label
+
+
+def redefine_label_array(data, label_indices=None):
     """Redefine labels of a label array from 0 to len(label_indices).
 
     If label_indices is None, it takes the unique values of label_arr.
@@ -191,50 +301,14 @@ def _redefine_label_array(label_arr, label_indices=None):
     Native label values not present in label_indices are set to 0.
     The first label in label_indices becomes 1, the second 2, and so on.
     """
-    if label_indices is None:
-        label_indices = np.unique(label_arr)
-    else:
-        # Check unique values are provided
-        _, c = np.unique(label_indices, return_counts=True)
-        if np.any(c > 1):
-            raise ValueError("'label_indices' must be uniques.")
-
-    # Remove 0 and nan if present in label_indices
-    label_indices = np.delete(label_indices, np.where(label_indices == 0)[0].flatten())
-    label_indices = np.delete(label_indices, np.where(np.isnan(label_indices))[0].flatten())
-
-    # Ensure label indices are integer
-    label_indices = label_indices.astype(int)
-
-    # Remove nan from label_arr
-    label_arr[np.isnan(label_arr)] = 0
-
-    # Compute max label index
-    max_label = max(label_indices)
-
-    # Set to 0 labels in label_arr larger than max_label
-    # - These are some of the labels that were set to 0 because of mask or area filtering
-    label_arr[label_arr > max_label] = 0
-
-    # Initialize dictionary with keys corresponding to all possible labels indices
-    val_dict = {k: 0 for k in range(0, max_label + 1)}
-
-    # Update the dictionary keys with the selected label_indices
-    # - Assume 0 not in label_indices
-    n_labels = len(label_indices)
-    label_indices = label_indices.tolist()
-    label_indices_new = np.arange(1, n_labels + 1).tolist()
-    for k, v in zip(label_indices, label_indices_new):
-        val_dict[k] = v
-
-    # Remove keys not in label_arr
-    # TODO: to speed up _vec_translate maybe
-
-    # Redefine the id of the labels
-    labels_arr = _vec_translate(label_arr, val_dict)
-
-    return labels_arr
-
+    if isinstance(data, xr.DataArray): 
+        return _xr_redefine_label_array(data, label_indices=label_indices)
+    elif isinstance(data, (np.ndarray, dask.array.Array)):
+        return _np_redefine_label_array(data, label_indices=label_indices)
+    else: 
+        type_data = type(data)
+        raise TypeError(f"This method does not accept {type_data}")
+    
 
 def _check_xr_obj(xr_obj, variable):
     """Check xarray object and variable validity."""
@@ -376,7 +450,7 @@ def _get_labels(
 
     # ---------------------------------.
     # Relabel labels array (from 1 to n_labels)
-    labels_arr = _redefine_label_array(label_arr=label_arr, label_indices=label_indices)
+    labels_arr = redefine_label_array(label_arr, label_indices=label_indices)
     n_labels = len(label_indices)
     # ---------------------------------.
     # Return infos

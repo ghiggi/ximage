@@ -20,7 +20,7 @@ from ximage.patch.checks import (
     check_patch_size,
     check_stride,
 )
-from ximage.patch.plot2d import add_label_patches_boundaries, plot_2d_label_partitions_boundaries
+from ximage.patch.plot2d import plot_label_patch_extraction_areas
 from ximage.patch.slices import (
     enlarge_slices,
     get_nd_partitions_list_slices,
@@ -31,15 +31,14 @@ from ximage.patch.slices import (
 
 # -----------------------------------------------------------------------------.
 #### TODOs
+## Partitioning
 # - Option to bound min_start and max_stop to labels bbox
-# - Improve partitions_list_slices
-#   --> Change start and stop (if allowed by min_start and max_stop)
-#       to be divisible by patch_size + stride ...
+# - Option to define min_start and max_stop to be divisible by patch_size + stride
+# - When tiling ... define start so to center tiles around label_bbox, instead of starting at label bbox start
+# - Option: partition_only_when_label_bbox_exceed_patch_size
+
 # - Add option that returns a flag if the point center is the actual identified one,
 #   or was close to the boundary !
-
-# - Check case where tiling kernel_size larger or equal to label_bbox
-# - Option: partition_only_on_label_bbox_patch_size_exceedance
 
 # -----------------------------------------------------------------------------.
 # - Implement dilate option (to subset pixel within partitions).
@@ -85,7 +84,7 @@ def _check_labels_id(labels_id, label_arr):
     if isinstance(labels_id, int):
         labels_id = [labels_id]
     # Get list of valid labels
-    valid_labels = np.unique(label_arr[~np.isnan(label_arr)])
+    valid_labels = np.unique(label_arr[~np.isnan(label_arr)]).astype(int)
     # If labels_id is None, assign the valid_labels
     if isinstance(labels_id, type(None)):
         labels_id = valid_labels
@@ -198,7 +197,7 @@ def _check_centered_on(centered_on):
 def _get_variable_arr(xr_obj, variable, centered_on):
     """Get variable array (in memory)."""
     if isinstance(xr_obj, xr.DataArray):
-        variable_arr = xr_obj.data
+        variable_arr = np.asanyarray(xr_obj.data)
         return variable_arr
     else:
         if centered_on is not None:
@@ -299,6 +298,7 @@ def find_point(arr, centered_on="max"):
         point = _get_point_random(arr)
     else:  # callable centered_on
         point = centered_on(arr)
+    point = tuple(int(p) for p in point)
     return point
 
 
@@ -321,6 +321,10 @@ def _get_labels_bbox_slices(arr):
     list_slices : list
         List of slices to extract the region with non-zero elements in the input array.
     """
+    # Return None if all values are zeros 
+    if not np.any(arr): 
+        return None 
+    
     ndims = arr.ndim
     coords = np.nonzero(arr)
     list_slices = [
@@ -341,11 +345,10 @@ def _get_patch_list_slices_around_label_point(
     Assume label_arr must match variable_arr shape.
     Assume patch_size shape must match variable_arr shape .
     """
-    is_label = label_arr == label_id
-    if not np.any(is_label):
-        return None
     # Subset variable_arr around label
-    list_slices = _get_labels_bbox_slices(is_label)
+    list_slices = _get_labels_bbox_slices(label_arr == label_id)
+    if list_slices is None: 
+        return None 
     label_subset_arr = label_arr[tuple(list_slices)]
     variable_subset_arr = variable_arr[tuple(list_slices)]
     variable_subset_arr = np.asarray(variable_subset_arr)  # if dask, make numpy
@@ -372,6 +375,8 @@ def _get_patch_list_slices_around_label(label_arr, label_id, padding, min_patch_
     """Get list_slices to extract patch around a label."""
     # Get label bounding box slices
     list_slices = _get_labels_bbox_slices(label_arr == label_id)
+    if list_slices is None: 
+        return None 
     # Apply padding to the slices
     list_slices = pad_slices(list_slices, padding=padding, valid_shape=label_arr.shape)
     # Increase slices to match min_patch_size
@@ -419,6 +424,7 @@ def _get_patches_from_partitions_list_slices(
     centered_on,
     n_patches_per_partition,
     padding,
+    verbose=False,
 ):
     """Return patches list slices from list of partitions list_slices.
 
@@ -426,13 +432,15 @@ def _get_patches_from_partitions_list_slices(
     """
     patches_list_slices = []
     for partition_list_slices in partitions_list_slices:
+        if verbose: 
+            print(f" -  partition: {partition_list_slices}")
         masked_label_arr, masked_variable_arr = _get_masked_arrays(
             label_arr=label_arr,
             variable_arr=variable_arr,
             partition_list_slices=partition_list_slices,
         )
         n = 0
-        while n < n_patches_per_partition:
+        for n in range(n_patches_per_partition):
             patch_list_slices = _get_patch_list_slices(
                 label_arr=masked_label_arr,
                 variable_arr=masked_variable_arr,
@@ -491,6 +499,7 @@ def _get_patches_isel_dict_generator(
     stride=None,
     include_last=True,
     ensure_slice_size=True,
+    verbose=False,
 ):
     # Get label array information
     label_arr = xr_obj[label_name].data
@@ -522,11 +531,15 @@ def _get_patches_isel_dict_generator(
     # Define number of labels from which to extract patches
     available_n_labels = len(labels_id)
     n_labels = min(available_n_labels, n_labels) if n_labels else available_n_labels
-
+    if verbose: 
+        print(f"Extracting patches from {n_labels} labels.")
     # -------------------------------------------------------------------------.
     # Extract patch(es) around the label
     patch_counter = 0
-    for label_id in labels_id[0:n_labels]:
+    break_flag = False
+    for i, label_id in enumerate(labels_id[0:n_labels]):
+        if verbose: 
+            print(f"Label ID: {label_id} ({i}/{n_labels})")
 
         # Subset label_arr around the given label
         label_bbox_slices = _get_labels_bbox_slices(label_arr == label_id)
@@ -543,9 +556,9 @@ def _get_patches_isel_dict_generator(
                 label_bbox_slices,
                 arr_shape=label_arr.shape,
                 method=partitioning_method,
-                kernel_size=kernel_size,
-                stride=stride,
-                buffer=buffer,
+                kernel_size=list(kernel_size.values()),
+                stride=list(stride.values()),
+                buffer=list(buffer.values()),
                 include_last=include_last,
                 ensure_slice_size=ensure_slice_size,
             )
@@ -554,14 +567,7 @@ def _get_patches_isel_dict_generator(
                 partitions_list_slices = partitions_list_slices[0:n_to_select]
         else:
             partitions_list_slices = [label_bbox_slices]
-
-        # --------------------------------------------------------------------.
-        # If debug=True, plot tile (or label bbox) boundaries
-        if debug and label_arr.ndim == 2:
-            fig = plot_2d_label_partitions_boundaries(
-                partitions_list_slices, label_arr, edgecolor="black"
-            )
-
+    
         # --------------------------------------------------------------------.
         # Retrieve patches list_slices from partitions list slices
         patches_list_slices = _get_patches_from_partitions_list_slices(
@@ -569,40 +575,49 @@ def _get_patches_isel_dict_generator(
             label_arr=label_arr,
             variable_arr=variable_arr,
             label_id=label_id,
-            patch_size=patch_size.values(),
+            patch_size=list(patch_size.values()),
             centered_on=centered_on,
             n_patches_per_partition=n_patches_per_partition,
-            padding=padding.values(),
+            padding=list(padding.values()),
+            verbose=verbose,
         )
-
-        # If debug=True, plot patches boundaries
-        if debug and label_arr.ndim == 2:
-            _ = add_label_patches_boundaries(
-                fig=fig, patches_list_slices=patches_list_slices, edgecolor="red"
-            )
-            plt.show()
-
+        
         # ---------------------------------------------------------------------.
         # Retrieve patches isel_dictionaries
+        partitions_isel_dicts = _get_list_isel_dicts(partitions_list_slices, dims=dims)
         patches_isel_dicts = _get_list_isel_dicts(patches_list_slices, dims=dims)
+  
         n_to_select = min(len(patches_isel_dicts), n_patches_per_label)
         patches_isel_dicts = patches_isel_dicts[0:n_to_select]
+        
+        # --------------------------------------------------------------------.
+        # If debug=True, plot patches boundaries
+        if debug and label_arr.ndim == 2:
+            _ = plot_label_patch_extraction_areas(
+                xr_obj, label_name=label_name,
+                patches_isel_dicts=patches_isel_dicts,  
+                partitions_isel_dicts=partitions_isel_dicts
+            )
+            plt.show()
 
         # ---------------------------------------------------------------------.
         # Return isel_dicts
         if grouped_by_labels_id:
             patch_counter += 1
             if patch_counter > n_patches:
-                break
-            yield label_id, patches_isel_dicts
+                break_flag = True 
+            else: 
+                yield label_id, patches_isel_dicts
         else:
             for isel_dict in patches_isel_dicts:
                 patch_counter += 1
                 if patch_counter > n_patches:
-                    break
-                yield label_id, isel_dict
-
-        # ---------------------------------------------------------------------.
+                    break_flag = True
+                else: 
+                    yield label_id, isel_dict
+        if break_flag:
+            break
+    # ---------------------------------------------------------------------.
 
 
 def get_patches_isel_dict_from_labels(
@@ -628,6 +643,7 @@ def get_patches_isel_dict_from_labels(
     include_last=True,
     ensure_slice_size=True,
     debug=False,
+    verbose=False,
 ):
     gen = _get_patches_isel_dict_generator(
         xr_obj=xr_obj,
@@ -652,6 +668,7 @@ def get_patches_isel_dict_from_labels(
         include_last=include_last,
         ensure_slice_size=ensure_slice_size,
         debug=debug,
+        verbose=verbose,
     )
     dict_isel_dicts = {int(label_id): list_isel_dicts for label_id, list_isel_dicts in gen}
     return dict_isel_dicts
@@ -681,6 +698,7 @@ def get_patches_from_labels(
     include_last=True,
     ensure_slice_size=True,
     debug=False,
+    verbose=False,
 ):
     """
     Routines to extract patches around labels.
@@ -851,6 +869,7 @@ def get_patches_from_labels(
         include_last=include_last,
         ensure_slice_size=ensure_slice_size,
         debug=debug,
+        verbose=verbose,
     )
 
     # Extract the patches

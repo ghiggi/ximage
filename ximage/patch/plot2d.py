@@ -7,13 +7,11 @@ Created on Mon Jul 10 14:13:49 2023
 import matplotlib.pyplot as plt
 
 
-def plot_rectangle_from_list_slices(ax, list_slices, edgecolor="red", facecolor="None", **kwargs):
+def _plot_rectangle(ax, xlim, ylim, edgecolor="red", facecolor="None", **kwargs):
     """Plot rectangles from 2D patch list slices."""
-    if len(list_slices) != 2:
-        raise ValueError("Required 2 slices.")
     # Extract the start and stop values from the slice
-    y_start, y_stop = (list_slices[0].start, list_slices[0].stop)
-    x_start, x_stop = (list_slices[1].start, list_slices[1].stop)
+    x_start, x_stop = xlim 
+    y_start, y_stop = ylim  
     # Calculate the width and height of the rectangle
     width = x_stop - x_start
     height = y_stop - y_start
@@ -25,88 +23,75 @@ def plot_rectangle_from_list_slices(ax, list_slices, edgecolor="red", facecolor=
     return ax
 
 
-def plot_2d_label_partitions_boundaries(
-    partitions_list_slices, label_arr, edgecolor="red", facecolor="None", **kwargs
-):
-    """Plot partitions from 2D list slices."""
-    # Define plot limits
-    xmin = min([patch_list_slices[1].start for patch_list_slices in partitions_list_slices])
-    xmax = max([patch_list_slices[1].stop for patch_list_slices in partitions_list_slices])
-    ymin = min([patch_list_slices[0].start for patch_list_slices in partitions_list_slices])
-    ymax = max([patch_list_slices[0].stop for patch_list_slices in partitions_list_slices])
-
-    # Plot patches boundaries
-    fig, ax = plt.subplots()
-    ax.imshow(label_arr, origin="upper")
-    for partition_list_slices in partitions_list_slices:
-        _ = plot_rectangle_from_list_slices(
+def _plot_xr_isel_dict_rectangle(ax, xr_obj, label_name, isel_dicts, 
+                                 edgecolor="red", facecolor="None", **kwargs):
+    """Plot xarray 2D isel_dicts rectangles."""
+    y, x = list(xr_obj[label_name].dims)
+    for isel_dict in isel_dicts:
+        xr_subset = xr_obj[label_name].isel(isel_dict)
+        _ = _plot_rectangle(
             ax=ax,
-            list_slices=partition_list_slices,
+            xlim=xr_subset[x].data[[0,-1]],
+            ylim=xr_subset[y].data[[0,-1]],
             edgecolor=edgecolor,
             facecolor=facecolor,
             **kwargs,
         )
-    # Set plot limits
-    ax.set_xlim(xmin - 5, xmax + 5)
-    ax.set_ylim(ymax + 5, ymin - 5)
-    return fig
+    return None 
+        
+
+def _get_nice_extent_isel_dict(patches_isel_dicts, partitions_isel_dicts, 
+                               shape_dict):
+    # Retrieve name of dimensions 
+    y, x = list(patches_isel_dicts[0].keys())
+    # Retrieve isel_dicts
+    isel_dicts = patches_isel_dicts + partitions_isel_dicts
+    # Get isel dict covering all isel_dicts 
+    subset_isel_dicts = {}
+    for dim in [y, x]:
+        min_start = min([isel_dict[dim].start for isel_dict in isel_dicts])
+        max_stop = max([isel_dict[dim].stop for isel_dict in isel_dicts])
+        # Extend a bit 
+        min_start = max(min_start-2, 0)
+        max_stop = min(max_stop+2, shape_dict[dim])
+        subset_isel_dicts[dim] = slice(min_start, max_stop) 
+    return subset_isel_dicts
 
 
-def add_label_patches_boundaries(
-    fig, patches_list_slices, edgecolor="red", facecolor="None", **kwargs
-):
+def plot_label_patch_extraction_areas(xr_obj, label_name,
+                                      patches_isel_dicts, 
+                                      partitions_isel_dicts,
+                                      **kwargs):
+    """Plot for debugging label patch extraction."""
+    from ximage.labels.plot_labels import plot_labels
 
-    # Retrieve axis
-    ax = fig.axes[0]
-
-    # Define patches limits
-    xmin = min([patch_list_slices[1].start for patch_list_slices in patches_list_slices])
-    xmax = max([patch_list_slices[1].stop for patch_list_slices in patches_list_slices])
-    ymin = min([patch_list_slices[0].start for patch_list_slices in patches_list_slices])
-    ymax = max([patch_list_slices[0].stop for patch_list_slices in patches_list_slices])
-
-    # Get current plot axis limits
-    plot_xmin, plot_xmax = ax.get_xlim()
-    plot_ymin, plot_ymax = ax.get_ylim()
-
-    # Define final plot axis limits
-    xmin = min(xmin, plot_xmin)
-    xmax = max(xmax, plot_xmax)
-    ymin = min(ymin, plot_ymin)
-    ymax = max(ymax, plot_ymax)
-
-    # Plot patch boundaries
-    for patch_list_slices in patches_list_slices:
-        _ = plot_rectangle_from_list_slices(
-            ax=ax, list_slices=patch_list_slices, edgecolor=edgecolor, facecolor=facecolor, **kwargs
-        )
-    # Set plot limits
-    ax.set_xlim(xmin - 5, xmax + 5)
-    ax.set_ylim(ymax + 5, ymin - 5)
-
-    return fig
-
-
-def plot_2d_label_patches_boundaries(patches_list_slices, label_arr):
-    """Plot patches from  from 2D list slices."""
-    # Define plot limits
-    xmin = min([patch_list_slices[1].start for patch_list_slices in patches_list_slices])
-    xmax = max([patch_list_slices[1].stop for patch_list_slices in patches_list_slices])
-    ymin = min([patch_list_slices[0].start for patch_list_slices in patches_list_slices])
-    ymax = max([patch_list_slices[0].stop for patch_list_slices in patches_list_slices])
-
-    # Plot patches boundaries
+    # Get isel dict covering all isel_dicts 
+    shape_dict = {dim: xr_obj[dim].shape[0] for dim in xr_obj[label_name].dims}
+    subset_isel_dicts = _get_nice_extent_isel_dict(patches_isel_dicts, 
+                                                   partitions_isel_dicts, 
+                                                   shape_dict=shape_dict)
+    # Subset the label array to plot      
+    label_subset = xr_obj[label_name].isel(subset_isel_dicts)
+    # Create figure 
     fig, ax = plt.subplots()
-    ax.imshow(label_arr, origin="upper")
-    for patch_list_slices in patches_list_slices:
-        plot_rectangle_from_list_slices(ax, patch_list_slices)
+    # Plot labels
+    p = plot_labels(label_subset, ax=ax)
+    p.axes.set_aspect('equal')
+    # Plot partitions rectangles 
+    _ = _plot_xr_isel_dict_rectangle(ax=ax, 
+                                     xr_obj=xr_obj,
+                                     label_name=label_name,
+                                     isel_dicts=partitions_isel_dicts, 
+                                     edgecolor="black", 
+                                     facecolor="None", 
+                                     **kwargs)
+    # Plot patches rectangles 
+    _ = _plot_xr_isel_dict_rectangle(ax=ax, 
+                                     xr_obj=xr_obj,
+                                     label_name=label_name,
+                                     isel_dicts=patches_isel_dicts, 
+                                     edgecolor="red", 
+                                     facecolor="None", 
+                                     **kwargs)
+    return fig 
 
-    # Set plot limits
-    ax.set_xlim(xmin - 5, xmax + 5)
-    ax.set_ylim(ymax + 5, ymin - 5)
-
-    # Show plot
-    plt.show()
-
-    # Return figure
-    return fig

@@ -5,49 +5,8 @@ Created on Mon Jul 10 14:07:16 2023
 @author: ghiggi
 """
 import numpy as np
-
-
-def are_all_integers(arr, negative_allowed=True):
-    """
-    Check if all values in the input numpy array are integers.
-
-    Parameters
-    ----------
-    arr : (list, tuple, np.ndarray)
-       List, tuple or array of values to be checked.
-    negative_allowed: bool, optional
-        If False, return True only for integers >=1 (natural numbers)
-
-    Returns
-    -------
-    bool
-        True if all values in the array are integers, False otherwise.
-
-    """
-    is_integer = np.isclose(arr, np.round(arr), atol=1e-12, rtol=1e-12)
-    if negative_allowed:
-        return bool(np.all(is_integer))
-    else:
-        return bool(np.all(np.logical_and(np.greater(arr, 0), is_integer)))
-
-
-def are_all_natural_numbers(arr):
-    """
-    Check if all values in the input numpy array are natural numbers (>1).
-
-    Parameters
-    ----------
-    arr : (list, tuple, np.ndarray)
-       List, tuple or array of values to be checked.
-
-    Returns
-    -------
-    bool
-        True if all values in the array are natural numbers. False otherwise.
-
-    """
-    return are_all_integers(arr, negative_allowed=False)
-
+from ximage.utils.checks import are_all_integers, are_all_natural_numbers
+ 
 
 def _ensure_is_dict_argument(arg, dims, arg_name):
     """Ensure argument is a dictionary with same order as dims."""
