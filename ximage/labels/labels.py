@@ -447,7 +447,8 @@ def _get_labels(
     )
     # ---------------------------------.
     # TODO: optionally here calculate a list of label_stats
-    # -> values would be a n_label_stats x n_labels array !
+    # --> values would be a n_label_stats x n_labels array !
+    # --> dask_image.ndmeasure.labeled_comprehension
 
     # ---------------------------------.
     # Relabel labels array (from 1 to n_labels)

@@ -33,6 +33,7 @@ class XImage_Base_Accessor:
         xr_obj = label(
             self._obj,
             variable=variable,
+            label_name=label_name,
             # Labels options
             min_value_threshold=min_value_threshold,
             max_value_threshold=max_value_threshold,
@@ -44,7 +45,6 @@ class XImage_Base_Accessor:
         )
         return xr_obj
 
-    # TODO: extract_label_patches
     def label_patches(
         self,
         patch_size,
@@ -102,7 +102,62 @@ class XImage_Base_Accessor:
         )
         return gen
 
-
+    def label_patches_isel_dicts(
+        self,
+        label_name,
+        patch_size,
+        variable=None,
+        # Output options
+        n_patches=np.Inf,
+        n_labels=None,
+        labels_id=None,
+        # Label Patch Extraction Settings
+        centered_on="max",
+        padding=0,
+        n_patches_per_label=np.Inf,
+        n_patches_per_partition=1,
+        # Label Tiling/Sliding Options
+        partitioning_method=None,
+        n_partitions_per_label=None,
+        kernel_size=None,
+        buffer=0,
+        stride=None,
+        include_last=True,
+        ensure_slice_size=True,
+        debug=False,
+        verbose=False,
+    ):
+        from ximage.patch.labels_patch import get_patches_isel_dict_from_labels
+    
+        isel_dicts = get_patches_isel_dict_from_labels(
+            self._obj,
+            label_name=label_name,
+            patch_size=patch_size,
+            variable=variable,
+            # Output options
+            n_patches=n_patches,
+            n_labels=n_labels,
+            labels_id=labels_id,
+            # Patch extraction Options
+            padding=padding,
+            centered_on=centered_on,
+            n_patches_per_label=n_patches_per_label,
+            n_patches_per_partition=n_patches_per_partition,
+            # Tiling/Sliding Options
+            partitioning_method=partitioning_method,
+            n_partitions_per_label=n_partitions_per_label,
+            kernel_size=kernel_size,
+            buffer=buffer,
+            stride=stride,
+            include_last=include_last,
+            ensure_slice_size=ensure_slice_size,
+            # Other Options
+            verbose=verbose,
+            debug=debug,
+        )
+        return isel_dicts
+        
+    
 @xr.register_dataset_accessor("ximage")
 class XImage_Dataset_Accessor(XImage_Base_Accessor):
     def __init__(self, xarray_obj):
