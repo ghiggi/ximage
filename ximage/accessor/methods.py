@@ -128,7 +128,7 @@ class XImage_Base_Accessor:
         verbose=False,
     ):
         from ximage.patch.labels_patch import get_patches_isel_dict_from_labels
-    
+
         isel_dicts = get_patches_isel_dict_from_labels(
             self._obj,
             label_name=label_name,
@@ -156,8 +156,8 @@ class XImage_Base_Accessor:
             debug=debug,
         )
         return isel_dicts
-        
-    
+
+
 @xr.register_dataset_accessor("ximage")
 class XImage_Dataset_Accessor(XImage_Base_Accessor):
     def __init__(self, xarray_obj):
