@@ -1,0 +1,13 @@
+name: ximage
+channels:
+  - conda-forge
+dependencies:
+  - dask
+  - dask-image
+  - scikit-image
+  - xarray
+  # testing
+  - pytest
+  - pytest-cov
+  - pytest-mock
+  - pydantic
