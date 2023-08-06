@@ -58,7 +58,11 @@ def _check_array(arr):
         raise ValueError("Expecting non-zero dimensions.")
 
     if not isinstance(arr, np.ndarray):
-        arr = arr.compute()
+        arr = arr.compute()  # For dask and xarray
+
+    if not isinstance(arr, np.ndarray):
+        arr = arr.data  # For xarray
+
     return arr
 
 
@@ -129,6 +133,7 @@ def _get_label_value_stats(arr, label_arr, label_indices=None, stats="area"):
             index=label_indices,
             func=stats,
             out_dtype=float,
+            default=None,
             pass_positions=False,
         )
     else:
@@ -142,6 +147,10 @@ def _get_label_value_stats(arr, label_arr, label_indices=None, stats="area"):
 
 def _get_labels_stats(arr, label_arr, label_indices=None, stats="area", sort_decreasing=True):
     """Return label and label statistics sorted by statistic value."""
+
+    if label_indices is None:
+        label_indices = np.unique(label_arr)
+
     # Get labels area values
     values = _get_label_value_stats(
         arr, label_arr=label_arr, label_indices=label_indices, stats=stats
@@ -311,7 +320,7 @@ def redefine_label_array(data, label_indices=None):
         raise TypeError(f"This method does not accept {type_data}")
 
 
-def _check_xr_obj(xr_obj, variable):
+def _check_xr_obj(xr_obj, variable=None):
     """Check xarray object and variable validity."""
     # Check inputs
     if not isinstance(xr_obj, (xr.Dataset, xr.DataArray)):
