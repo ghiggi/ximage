@@ -65,6 +65,9 @@ write_to = "ximage/_version.py"
 license-files = ["LICENSE"]
 packages = ["ximage"] # explicitly list the packages in modules
 
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report term-missing"
+
 [tool.black]
 line-length = 100
 # skip-string-normalization = true
