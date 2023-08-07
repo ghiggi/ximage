@@ -38,6 +38,7 @@ dependencies = [
     "xarray",
     "dask",
     "dask-image",
+	"matplotlib",
     "scikit-image",
 ]
 requires-python = ">=3.8"

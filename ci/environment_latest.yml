@@ -4,6 +4,7 @@ channels:
 dependencies:
   - dask
   - dask-image
+  - matplotlib
   - scikit-image
   - xarray
   # testing
