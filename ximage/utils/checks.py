@@ -27,6 +27,10 @@ def are_all_integers(arr, negative_allowed=True, zero_allowed=True):
         True if all values in the array are integers, False otherwise.
 
     """
+    # Convert to numpy array
+    if not isinstance(arr, np.ndarray):
+        arr = np.array(arr)
+
     is_integer = np.isclose(arr, np.round(arr), atol=1e-12, rtol=1e-12)
     if negative_allowed:
         return bool(np.all(is_integer))
