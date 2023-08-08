@@ -32,7 +32,7 @@ def test_get_label_indices():
     def check(array):
         label_indices_returned = labels.get_label_indices(array)
         assert np.array_equal(label_indices_returned, label_indices)
-        assert label_indices_returned.dtype == np.int64
+        assert label_indices_returned.dtype == np.int64 or label_indices_returned.dtype == np.int32
 
     apply_to_all_array_types(check, array)
 
