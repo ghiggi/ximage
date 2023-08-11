@@ -57,11 +57,8 @@ def _check_array(arr):
     if np.any(np.array(shape) == 0):
         raise ValueError("Expecting non-zero dimensions.")
 
-    if not isinstance(arr, np.ndarray):
-        arr = arr.compute()  # For dask and xarray
-
-    if not isinstance(arr, np.ndarray):
-        arr = arr.data  # For xarray
+    # Convert to numpy array
+    arr = np.asanyarray(arr)
 
     return arr
 

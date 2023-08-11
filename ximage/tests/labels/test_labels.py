@@ -166,7 +166,6 @@ def test_highlight_label():
             [0, 0, 0],
         ]
     )
-    print(dataset_returned)
     assert np.array_equal(dataset_returned[label_name], labels_array_expected)
 
 

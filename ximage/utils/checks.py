@@ -28,8 +28,7 @@ def are_all_integers(arr, negative_allowed=True, zero_allowed=True):
 
     """
     # Convert to numpy array
-    if not isinstance(arr, np.ndarray):
-        arr = np.array(arr)
+    arr = np.asanyarray(arr)
 
     is_integer = np.isclose(arr, np.round(arr), atol=1e-12, rtol=1e-12)
     if negative_allowed:
