@@ -43,7 +43,7 @@ def pad_slice(slc, padding, min_start=0, max_stop=np.inf):
         The list of slices after applying padding.
     """
 
-    new_slice = slice(max(slc.start - padding, 0), min(slc.stop + padding, max_stop))
+    new_slice = slice(max(slc.start - padding, min_start), min(slc.stop + padding, max_stop))
     return new_slice
 
 
@@ -57,7 +57,7 @@ def pad_slices(list_slices, padding, valid_shape):
         List of slice objects.
     padding : (int or tuple)
         Padding to be applied on each slice.
-    valid_shape : tuple
+    valid_shape : (int or tuple)
         The shape of the array which the slices should be valid on.
 
     Returns
@@ -70,9 +70,13 @@ def pad_slices(list_slices, padding, valid_shape):
         padding = [padding] * len(list_slices)
     if isinstance(valid_shape, int):
         valid_shape = [valid_shape] * len(list_slices)
-    if isinstance(padding, (list, tuple)) and len(padding) != len(valid_shape):
+    if isinstance(padding, (list, tuple)) and len(padding) != len(list_slices):
         raise ValueError(
-            "Invalid padding. The length of padding should be the same as the length of valid_shape."
+            "Invalid padding. The length of padding should be the same as the length of list_slices."
+        )
+    if isinstance(valid_shape, (list, tuple)) and len(valid_shape) != len(list_slices):
+        raise ValueError(
+            "Invalid valid_shape. The length of valid_shape should be the same as the length of list_slices."
         )
     # Apply padding
     list_slices = [
@@ -173,7 +177,7 @@ def enlarge_slices(list_slices, min_size, valid_shape):
         List of slice objects.
     min_size : (int or tuple)
         Minimum size of the output slice.
-    valid_shape : tuple
+    valid_shape : (int or tuple)
         The shape of the array which the slices should be valid on.
 
     Returns
@@ -186,9 +190,13 @@ def enlarge_slices(list_slices, min_size, valid_shape):
         min_size = [min_size] * len(list_slices)
     if isinstance(valid_shape, int):
         valid_shape = [valid_shape] * len(list_slices)
-    if isinstance(min_size, (list, tuple)) and len(min_size) != len(min_size):
+    if isinstance(min_size, (list, tuple)) and len(min_size) != len(list_slices):
         raise ValueError(
-            "Invalid min_size. The length of min_size should be the same as the length of valid_shape."
+            "Invalid min_size. The length of min_size should be the same as the length of list_slices."
+        )
+    if isinstance(valid_shape, (list, tuple)) and len(valid_shape) != len(list_slices):
+        raise ValueError(
+            "Invalid valid_shape. The length of valid_shape should be the same as the length of list_slices."
         )
     # Enlarge the slice
     list_slices = [
@@ -213,7 +221,7 @@ def get_slice_around_index(index, size, min_start=0, max_stop=np.inf):
     ----------
     index : int
         The index value around which to retrieve the slice.
-    min_size : min_size
+    size : int
         The desired size of the slice around the index.
     min_start : int, optional
        The default is np.inf.
@@ -225,13 +233,14 @@ def get_slice_around_index(index, size, min_start=0, max_stop=np.inf):
     Returns
     -------
     slice
-        The new slice object with a size of at least min_size and respecting the left and right bounds.
+        A slice object with the desired size and respecting the left and right bounds.
 
     """
 
     index_slc = slice(index, index + 1)
     slc = enlarge_slice(index_slc, min_size=size, min_start=min_start, max_stop=max_stop)
-    if slc == index_slc:
+    if slc == index_slc and size > 1:
+        print(index, size, min_start, max_stop, index_slc, slc)
         raise ValueError("'size' {size} is to large to be between {min_start} and {max_stop}.")
     return slc
 
@@ -375,7 +384,7 @@ def get_partitions_slices(
     idxs = _get_partitioning_idxs(
         start=start, stop=stop, stride=stride, slice_size=slice_size, method=method
     )
-    slices = [slice(idxs[i], idxs[i + 1], slice_step) for i in range(len(idxs) - 1)]
+    slices = [slice(idxs[i], idxs[i] + slice_size, slice_step) for i in range(len(idxs) - 1)]
 
     # Define last slice
     if include_last and idxs[-1] != stop:
