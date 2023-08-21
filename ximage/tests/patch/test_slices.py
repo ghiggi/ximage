@@ -297,6 +297,7 @@ def test_get_partitions_slices():
     # Sliding, with stride
     # 0 1 2 3 4 5 6 7 8 9 10
     # |-----| |-----| |---|
+    slice_size = 3
     method = "sliding"
     stride = 4
     expected_slices = [slice(0, 3), slice(4, 7), slice(8, 10)]
@@ -339,3 +340,156 @@ def test_get_nd_partitions_list_slices():
     )
 
     assert result == expected_slices
+
+
+# Tests for internal functions #################################################
+
+
+def test_check_buffer():
+    """Test _check_buffer"""
+
+    # For slice(start, end) to make sense, end must be at least (start + 1)
+
+    slice_size = 3
+
+    # Valid buffer
+    # 0 1 2 3
+    # |-----|
+    #   |-|
+    buffer = -1
+    assert slices._check_buffer(buffer, slice_size) == buffer
+
+    # Invalid buffer
+    # 0 1 2 3
+    # |-----|
+    #    .
+    buffer = -2
+    with pytest.raises(ValueError):
+        slices._check_buffer(buffer, slice_size)
+
+    slice_size = 4
+
+    # Valid buffer
+    # 0 1 2 3 4
+    # |-------|
+    #   |---|
+    buffer = -1
+    assert slices._check_buffer(buffer, slice_size) == buffer
+
+    # Invalid buffer
+    # 0 1 2 3 4
+    # |-------|
+    #     |
+    buffer = -2
+    with pytest.raises(ValueError):
+        slices._check_buffer(buffer, slice_size)
+
+
+def test_check_slice_size():
+    """Test _check_slice_size"""
+
+    # Valid slice_size
+    slice_size = 1
+    assert slices._check_slice_size(slice_size) == slice_size
+
+    # Invalid slice_size
+    for slice_size in [0, -1]:
+        with pytest.raises(ValueError):
+            slices._check_slice_size(slice_size)
+
+
+def test_check_method():
+    """Test _check_method"""
+
+    valid_methods = ["sliding", "tiling"]
+
+    for method in valid_methods:
+        assert slices._check_method(method) == method
+
+    # Invalid methods
+    with pytest.raises(ValueError):
+        slices._check_method("invalid")
+
+    with pytest.raises(TypeError):
+        slices._check_method(1)
+
+
+def test_check_min_start():
+    """Test _check_min_start"""
+
+    start = 10
+
+    # min_start not provided
+    assert slices._check_min_start(None, start) == start
+
+    # Valid min_start
+    valid_min_starts = [9, 10]
+    for min_start in valid_min_starts:
+        assert slices._check_min_start(min_start, start) == min_start
+
+    # Invalid min_start
+    invalid_min_start = 11
+    with pytest.raises(ValueError):
+        slices._check_min_start(invalid_min_start, start)
+
+
+def test_check_max_stop():
+    """Test _check_max_stop"""
+
+    stop = 10
+
+    # max_stop not provided
+    assert slices._check_max_stop(None, stop) == stop
+
+    # Valid max_stop
+    valid_max_stops = [10, 11]
+    for max_stop in valid_max_stops:
+        assert slices._check_max_stop(max_stop, stop) == max_stop
+
+    # Invalid max_stop
+    invalid_max_stop = 9
+    with pytest.raises(ValueError):
+        slices._check_max_stop(invalid_max_stop, stop)
+
+
+def test_check_stride():
+    """Test _check_stride"""
+
+    # Sliding method
+    method = "sliding"
+
+    # Default stride
+    assert slices._check_stride(None, method) == 1
+
+    # Valid strides
+    valid_strides = [1, 2]
+    for stride in valid_strides:
+        assert slices._check_stride(stride, method) == stride
+
+    # Invalid strides
+    invalid_strides = [0, -1]
+    for stride in invalid_strides:
+        with pytest.raises(ValueError):
+            slices._check_stride(stride, method)
+
+    invalid_strides = [1.0, 1.5, "1"]
+    for stride in invalid_strides:
+        with pytest.raises(TypeError):
+            slices._check_stride(stride, method)
+
+    # Tiling method
+    method = "tiling"
+
+    # Default stride
+    assert slices._check_stride(None, method) == 0
+
+    # Valid strides
+    valid_strides = [-1, 0, 1]
+    for stride in valid_strides:
+        assert slices._check_stride(stride, method) == stride
+
+    # Invalid stride
+    invalid_strides = [0.0, 1.5, "1"]
+    for stride in invalid_strides:
+        with pytest.raises(TypeError):
+            slices._check_stride(stride, method)

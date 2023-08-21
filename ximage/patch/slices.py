@@ -238,16 +238,17 @@ def get_slice_around_index(index, size, min_start=0, max_stop=np.inf):
     """
 
     index_slc = slice(index, index + 1)
-    slc = enlarge_slice(index_slc, min_size=size, min_start=min_start, max_stop=max_stop)
-    if slc == index_slc and size > 1:
-        print(index, size, min_start, max_stop, index_slc, slc)
+    try:
+        slc = enlarge_slice(index_slc, min_size=size, min_start=min_start, max_stop=max_stop)
+    except ValueError:
+        print(index, size, min_start, max_stop, index_slc)
         raise ValueError("'size' {size} is to large to be between {min_start} and {max_stop}.")
     return slc
 
 
 def _check_buffer(buffer, slice_size):
     if buffer < 0:
-        if abs(buffer) >= int(slice_size / 2):
+        if abs(buffer) * 2 >= slice_size:
             raise ValueError(
                 "The negative buffer absolute value is larger than half of the slice_size."
             )
@@ -286,7 +287,6 @@ def _check_max_stop(max_stop, stop):
 
 
 def _check_stride(stride, method):
-    # TODO: check is an integer !
     if method == "sliding":
         if stride is None:
             stride = 1
@@ -295,6 +295,8 @@ def _check_stride(stride, method):
     else:  # tiling
         if stride is None:
             stride = 0
+    if not isinstance(stride, int):
+        raise TypeError("'stride' must be an integer.")
     return stride
 
 
