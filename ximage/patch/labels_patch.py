@@ -452,7 +452,7 @@ def _get_patches_from_partitions_list_slices(
                 centered_on=centered_on,
                 padding=padding,
             )
-            if patch_list_slices is not None:
+            if patch_list_slices is not None and patch_list_slices not in patches_list_slices:
                 n += 1
                 patches_list_slices.append(patch_list_slices)
     return patches_list_slices
@@ -801,10 +801,13 @@ def get_patches_from_labels(
         The maximum number of patches to extract from each label partition.
         The default values is 1.
         This method can be specified only if centered_on='random' or a callable.
-    method : str
+    partitioning_method : str
         Whether to retrieve 'tiling' or 'sliding' slices.
         If 'tiling', partition start slices are separated by stride + kernel_size
         If 'sliding', partition start slices are separated by stride.
+    n_partitions_per_label : int, optional
+        The maximum number of partitions to extract for each label.
+        The default (None) enables to extract all the available partitions per label.
     stride : (int, tuple, dict), optional
         If partitioning_method is 'sliding'', default stride is set to 1.
         If partitioning_method is 'tiling', default stride is set to 0.
