@@ -117,6 +117,7 @@ def enlarge_slice(slc, min_size, min_start=0, max_stop=np.inf):
     -------
     slice
         The new slice object with a size of at least min_size and respecting the left and right bounds.
+        If the original slice object is already larger than min_size, the original slice is returned.
 
     """
     # Get slice size

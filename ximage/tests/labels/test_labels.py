@@ -295,7 +295,7 @@ def test_get_label_value_stats():
     values = labels._get_label_value_stats(array, label_array)
     assert np.array_equal(values, values_area)
 
-    # custob stats function
+    # Custom stats function
     def stats(*args, **kwargs):
         return 42
 
@@ -360,6 +360,12 @@ def test_vec_translate():
 
     array_returned = labels._vec_translate(array, remap)
     assert np.array_equal(array_returned, array_remapped)
+
+    # Check keys that are not in the array or wrong key types
+    for key in [4, None, "1", np.nan]:
+        remap = {key: 11}
+        with pytest.raises(KeyError):
+            labels._vec_translate(array, remap)
 
 
 def test_get_labels_with_requested_occurrence():

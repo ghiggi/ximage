@@ -3,7 +3,7 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   tests:
-    name: ${{ matrix.os }}, Python ${{ matrix.python-version }}${{ matrix.experimental && ', latest deps' || '' }}
+    name: ${{ matrix.os }}, Python ${{ matrix.python-version }}${{ matrix.experimental && ', latest dependencies' || '' }}
     runs-on: ${{ matrix.os }}
     defaults:
       run:
