@@ -301,7 +301,8 @@ def find_point(arr, centered_on: Union[str, Callable] = "max"):
         point = _get_point_random(arr)
     else:  # callable centered_on
         point = centered_on(arr)
-    point = tuple(int(p) for p in point)
+    if point is not None:
+        point = tuple(int(p) for p in point)
     return point
 
 
