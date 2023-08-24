@@ -712,8 +712,11 @@ def test_xr_get_labels():
             [1, 1],
         ]
     )
-    sort_by = "mean"
+    sort_by = lambda array: np.mean(array)
     sort_decreasing = False
+    labeled_comprehension_kwargs = {
+        "out_dtype": np.float16,
+    }
     labels_array_returned, n_labels_returned, values_returned = labels._xr_get_labels(
         array,
         min_value_threshold=min_value,
@@ -723,6 +726,7 @@ def test_xr_get_labels():
         footprint=footprint,
         sort_by=sort_by,
         sort_decreasing=sort_decreasing,
+        labeled_comprehension_kwargs=labeled_comprehension_kwargs,
     )
     labels_array_expected = np.array(
         [
@@ -739,3 +743,4 @@ def test_xr_get_labels():
     assert np.array_equal(labels_array_returned, labels_array_expected)
     assert n_labels_returned == n_labels_expected
     assert np.array_equal(values_returned, values_expected)
+    assert values_returned.dtype == np.float16

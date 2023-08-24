@@ -111,7 +111,9 @@ def _check_stats(stats):
     return stats
 
 
-def _get_label_value_stats(arr, label_arr, label_indices=None, stats="area"):
+def _get_label_value_stats(
+    arr, label_arr, label_indices=None, stats="area", labeled_comprehension_kwargs={}
+):
     """Compute label value statistics over which to later sort on.
 
     If label_indices is None, by default would return the stats of the entire array
@@ -124,14 +126,15 @@ def _get_label_value_stats(arr, label_arr, label_indices=None, stats="area"):
         label_indices = np.unique(label_arr)
     # Compute labels stats values
     if callable(stats):
+        labeled_comprehension_kwargs.setdefault("out_dtype", float)
+        labeled_comprehension_kwargs.setdefault("default", None)
+        labeled_comprehension_kwargs.setdefault("pass_positions", False)
         values = dask_image.ndmeasure.labeled_comprehension(
             image=arr,
             label_image=label_arr,
             index=label_indices,
             func=stats,
-            out_dtype=float,
-            default=None,
-            pass_positions=False,
+            **labeled_comprehension_kwargs,
         )
     else:
         func = getattr(dask_image.ndmeasure, stats)
@@ -142,7 +145,14 @@ def _get_label_value_stats(arr, label_arr, label_indices=None, stats="area"):
     return values
 
 
-def _get_labels_stats(arr, label_arr, label_indices=None, stats="area", sort_decreasing=True):
+def _get_labels_stats(
+    arr,
+    label_arr,
+    label_indices=None,
+    stats="area",
+    sort_decreasing=True,
+    labeled_comprehension_kwargs={},
+):
     """Return label and label statistics sorted by statistic value."""
 
     if label_indices is None:
@@ -150,7 +160,11 @@ def _get_labels_stats(arr, label_arr, label_indices=None, stats="area", sort_dec
 
     # Get labels area values
     values = _get_label_value_stats(
-        arr, label_arr=label_arr, label_indices=label_indices, stats=stats
+        arr,
+        label_arr=label_arr,
+        label_indices=label_indices,
+        stats=stats,
+        labeled_comprehension_kwargs=labeled_comprehension_kwargs,
     )
     # Get sorting index based on values
     sort_index = np.argsort(values)[::-1] if sort_decreasing else np.argsort(values)
@@ -342,6 +356,7 @@ def _get_labels(
     footprint=None,
     sort_by="area",
     sort_decreasing=True,
+    labeled_comprehension_kwargs={},
 ):
     """
     Function deriving the labels array and associated labels info.
@@ -378,6 +393,19 @@ def _get_labels(
     sort_decreasing : bool, optional
         If True, sort labels by decreasing 'sort_by' value.
         The default is True.
+    labeled_comprehension_kwargs : dict, optional
+        Additional arguments to be passed to dask_image.ndmeasure.labeled_comprehension
+        if sort_by is a callable. May contain
+            out_dtype : dtype, optional
+                Dtype to use for result.
+                The default is float.
+            default : (int, float or None), optional
+                Default return value when a element of index does not exist in the label array.
+                The default is None.
+            pass_positions : bool, optional
+                If True, pass linear indices to 'sort_by' as a second argument.
+                The default is False.
+        The default is {}.
 
     Returns
     -------
@@ -450,6 +478,7 @@ def _get_labels(
         label_indices=label_indices,
         stats=sort_by,
         sort_decreasing=sort_decreasing,
+        labeled_comprehension_kwargs=labeled_comprehension_kwargs,
     )
     # ---------------------------------.
     # TODO: optionally here calculate a list of label_stats
@@ -474,6 +503,7 @@ def _xr_get_labels(
     footprint=None,
     sort_by="area",
     sort_decreasing=True,
+    labeled_comprehension_kwargs={},
 ):
     """
     Function deriving the labels array and associated labels info.
@@ -510,6 +540,19 @@ def _xr_get_labels(
     sort_decreasing : bool, optional
         If True, sort labels by decreasing 'sort_by' value.
         The default is True.
+    labeled_comprehension_kwargs : dict, optional
+        Additional arguments to be passed to dask_image.ndmeasure.labeled_comprehension
+        if sort_by is a callable. May contain
+            out_dtype : dtype, optional
+                Dtype to use for result.
+                The default is float.
+            default : (int, float or None), optional
+                Default return value when a element of index does not exist in the label array.
+                The default is None.
+            pass_positions : bool, optional
+                If True, pass linear indices to 'sort_by' as a second argument.
+                The default is False.
+        The default is {}.
 
     Returns
     -------
@@ -535,6 +578,7 @@ def _xr_get_labels(
         footprint=footprint,
         sort_by=sort_by,
         sort_decreasing=sort_decreasing,
+        labeled_comprehension_kwargs=labeled_comprehension_kwargs,
     )
 
     # Conversion to DataArray if needed
@@ -555,6 +599,7 @@ def label(
     footprint=None,
     sort_by="area",
     sort_decreasing=True,
+    labeled_comprehension_kwargs={},
     label_name="label",
 ):
     """
@@ -595,6 +640,19 @@ def label(
     sort_decreasing : bool, optional
         If True, sort labels by decreasing 'sort_by' value.
         The default is True.
+    labeled_comprehension_kwargs : dict, optional
+        Additional arguments to be passed to dask_image.ndmeasure.labeled_comprehension
+        if sort_by is a callable. May contain
+            out_dtype : dtype, optional
+                Dtype to use for result.
+                The default is float.
+            default : (int, float or None), optional
+                Default return value when a element of index does not exist in the label array.
+                The default is None.
+            pass_positions : bool, optional
+                If True, pass linear indices to 'sort_by' as a second argument.
+                The default is False.
+        The default is {}.
 
     Returns
     -------
@@ -617,6 +675,7 @@ def label(
         footprint=footprint,
         sort_by=sort_by,
         sort_decreasing=sort_decreasing,
+        labeled_comprehension_kwargs=labeled_comprehension_kwargs,
     )
     if n_labels == 0:
         raise ValueError(
