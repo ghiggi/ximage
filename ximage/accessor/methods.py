@@ -177,7 +177,7 @@ class XImage_DataArray_Accessor(XImage_Base_Accessor):
         y=None,
         ax=None,
         max_n_labels=50,
-        add_colorbar="True",
+        add_colorbar=True,
         cmap="Paired",
         **plot_kwargs,
     ):
