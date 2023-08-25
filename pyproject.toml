@@ -124,21 +124,3 @@ exclude = [
 
 [tool.codespell]
     ignore-words-list = 'nD'
-
-[tool.coverage]
-    [tool.coverage.run]
-    source = ["ximage"]
-    omit = [
-        "*dev*",
-        "*docs*",
-        "*tutorials*",
-        "*/ximage/tests*",
-        "*/ximage/cli*",
-    ]
-
-    [tool.coverage.report]
-    exclude_lines = [
-        "pragma: no cover",
-        "def __repr__",
-        "def __str__",
-    ]
