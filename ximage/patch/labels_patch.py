@@ -5,6 +5,7 @@ Created on Wed Oct 19 19:40:12 2022
 @author: ghiggi
 """
 import random
+import warnings
 from typing import Callable, Union
 
 import matplotlib.pyplot as plt
@@ -247,7 +248,9 @@ def _get_point_random(arr):
 
 def _get_point_with_max_value(arr):
     """Get point with maximum value."""
-    point = np.argwhere(arr == np.nanmax(arr))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=RuntimeWarning)
+        point = np.argwhere(arr == np.nanmax(arr))
     if len(point) == 0:
         point = None
     else:
@@ -257,7 +260,9 @@ def _get_point_with_max_value(arr):
 
 def _get_point_with_min_value(arr):
     """Get point with minimum value."""
-    point = np.argwhere(arr == np.nanmin(arr))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=RuntimeWarning)
+        point = np.argwhere(arr == np.nanmin(arr))
     if len(point) == 0:
         point = None
     else:

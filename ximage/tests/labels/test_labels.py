@@ -224,7 +224,7 @@ def test_check_array():
     def check(array):
         checked_array = labels._check_array(array)
         assert isinstance(checked_array, np.ndarray)
-        assert np.array_equal(checked_array, array)
+        assert np.array_equal(checked_array, np.asanyarray(array))
 
     apply_to_all_array_types(check, array)
 
