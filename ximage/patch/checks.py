@@ -49,9 +49,9 @@ def check_patch_size(patch_size, dims, shape):
     ----------
     patch_size : (int, list, tuple, dict)
         The size of the patch to extract from the array.
-        If int or float, the patch is a hypercube of size patch_size across all dimensions.
+        If int, the patch is a hypercube of size patch_size across all dimensions.
         If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, it must have has keys all array dimensions.
+        If a dict, it must have as keys all array dimensions.
         The value -1 can be used to specify the full array dimension shape.
         Otherwise, only positive integers values (>1) are accepted.
     dims : tuple

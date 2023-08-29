@@ -38,6 +38,7 @@ dependencies = [
     "xarray",
     "dask",
     "dask-image",
+	"matplotlib",
     "scikit-image",
 ]
 requires-python = ">=3.8"
@@ -64,6 +65,9 @@ write_to = "ximage/_version.py"
 [tool.setuptools]
 license-files = ["LICENSE"]
 packages = ["ximage"] # explicitly list the packages in modules
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report term-missing"
 
 [tool.black]
 line-length = 100
@@ -120,21 +124,3 @@ exclude = [
 
 [tool.codespell]
     ignore-words-list = 'nD'
-
-[tool.coverage]
-    [tool.coverage.run]
-    source = ["ximage"]
-    omit = [
-        "*dev*",
-        "*docs*",
-        "*tutorials*",
-        "*/ximage/tests*",
-        "*/ximage/cli*",
-    ]
-
-    [tool.coverage.report]
-    exclude_lines = [
-        "pragma: no cover",
-        "def __repr__",
-        "def __str__",
-    ]

@@ -5,6 +5,8 @@ Created on Wed Oct 19 19:40:12 2022
 @author: ghiggi
 """
 import random
+import warnings
+from typing import Callable, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -246,7 +248,9 @@ def _get_point_random(arr):
 
 def _get_point_with_max_value(arr):
     """Get point with maximum value."""
-    point = np.argwhere(arr == np.nanmax(arr))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=RuntimeWarning)
+        point = np.argwhere(arr == np.nanmax(arr))
     if len(point) == 0:
         point = None
     else:
@@ -256,7 +260,9 @@ def _get_point_with_max_value(arr):
 
 def _get_point_with_min_value(arr):
     """Get point with minimum value."""
-    point = np.argwhere(arr == np.nanmin(arr))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=RuntimeWarning)
+        point = np.argwhere(arr == np.nanmin(arr))
     if len(point) == 0:
         point = None
     else:
@@ -276,16 +282,18 @@ def _get_point_center_of_mass(arr, integer_index=True):
         return None
     center_of_mass = np.nanmean(indices, axis=0)
     if integer_index:
-        center_of_mass = center_of_mass.astype(int)
+        center_of_mass = center_of_mass.round().astype(int)
     center_of_mass = tuple(center_of_mass.tolist())
     return center_of_mass
 
 
-def find_point(arr, centered_on="max"):
+def find_point(arr, centered_on: Union[str, Callable] = "max"):
     """Find a specific point coordinate of the array.
 
     If the coordinate can't be find, return None.
     """
+    centered_on = _check_centered_on(centered_on)
+
     if centered_on == "max":
         point = _get_point_with_max_value(arr)
     elif centered_on == "min":
@@ -298,7 +306,8 @@ def find_point(arr, centered_on="max"):
         point = _get_point_random(arr)
     else:  # callable centered_on
         point = centered_on(arr)
-    point = tuple(int(p) for p in point)
+    if point is not None:
+        point = tuple(int(p) for p in point)
     return point
 
 
@@ -449,7 +458,7 @@ def _get_patches_from_partitions_list_slices(
                 centered_on=centered_on,
                 padding=padding,
             )
-            if patch_list_slices is not None:
+            if patch_list_slices is not None and patch_list_slices not in patches_list_slices:
                 n += 1
                 patches_list_slices.append(patch_list_slices)
     return patches_list_slices
@@ -716,7 +725,7 @@ def get_patches_from_labels(
     must not be specified.
 
     If you want to extract the patch around a label point, the 'centered_on'
-    method must be specified. If the identified point is close to an array boundariy,
+    method must be specified. If the identified point is close to an array boundary,
     the patch is expanded toward the valid directions.
 
     Tiling or sliding enables to split/slide over each label and extract multiple patch
@@ -734,7 +743,7 @@ def get_patches_from_labels(
     Parameters
     ----------
     xr_obj : xr.Dataset
-        xr.Dataset with a label array named label_bame.
+        xr.Dataset with a label array named label_name.
     label_name : str
         Name of the variable/coordinate representing the label array.
     patch_size : (int, tuple)
@@ -742,7 +751,7 @@ def get_patches_from_labels(
         Only positive values (>1) are allowed.
         The value -1 can be used to specify the full array dimension shape.
         If the centered_on method is not 'label_bbox', all output patches
-        are ensured to have the ame shape.
+        are ensured to have the same shape.
         Otherwise, if 'centered_on'='label_bbox', the patch_size argument defines
         defined the minimum n-dimensional shape of the output patches.
         If int, the value is applied to all label array dimensions.
@@ -761,7 +770,7 @@ def get_patches_from_labels(
         If None (the default), it extract patches for all labels.
         This argument can be specified only if labels_id is unspecified !
     highlight_label_id : (bool), optional
-        If True, the laben_name array of each patch is modified to contain only
+        If True, the label_name array of each patch is modified to contain only
         the label_id used to select the patch.
     variable : str, optional
         Dataset variable to use to identify the patch center when centered_on is defined.
@@ -798,10 +807,13 @@ def get_patches_from_labels(
         The maximum number of patches to extract from each label partition.
         The default values is 1.
         This method can be specified only if centered_on='random' or a callable.
-    method : str
+    partitioning_method : str
         Whether to retrieve 'tiling' or 'sliding' slices.
         If 'tiling', partition start slices are separated by stride + kernel_size
         If 'sliding', partition start slices are separated by stride.
+    n_partitions_per_label : int, optional
+        The maximum number of partitions to extract for each label.
+        The default (None) enables to extract all the available partitions per label.
     stride : (int, tuple, dict), optional
         If partitioning_method is 'sliding'', default stride is set to 1.
         If partitioning_method is 'tiling', default stride is set to 0.

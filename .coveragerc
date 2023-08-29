@@ -1,0 +1,15 @@
+[run]
+source =
+	ximage
+omit =
+	*dev*
+	*docs*
+	*tutorials*
+	ximage/tests/*
+	ximage/cli/*
+
+[report]
+exclude_lines =
+	pragma: no cover
+	def __repr__
+	def __str__

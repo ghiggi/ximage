@@ -26,6 +26,7 @@ class XImage_Base_Accessor:
         footprint=None,
         sort_by="area",
         sort_decreasing=True,
+        labeled_comprehension_kwargs={},
         label_name="label",
     ):
         from ximage.labels.labels import label
@@ -42,6 +43,7 @@ class XImage_Base_Accessor:
             footprint=footprint,
             sort_by=sort_by,
             sort_decreasing=sort_decreasing,
+            labeled_comprehension_kwargs=labeled_comprehension_kwargs,
         )
         return xr_obj
 
@@ -175,7 +177,7 @@ class XImage_DataArray_Accessor(XImage_Base_Accessor):
         y=None,
         ax=None,
         max_n_labels=50,
-        add_colorbar="True",
+        add_colorbar=True,
         cmap="Paired",
         **plot_kwargs,
     ):
