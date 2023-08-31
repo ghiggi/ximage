@@ -421,6 +421,8 @@ def _get_masked_arrays(label_arr, variable_arr, partition_list_slices):
         masked_partition_variable_arr[tuple(partition_list_slices)] = variable_arr[
             tuple(partition_list_slices)
         ]
+    else:
+        masked_partition_variable_arr = None
     return masked_partition_label_arr, masked_partition_variable_arr
 
 
