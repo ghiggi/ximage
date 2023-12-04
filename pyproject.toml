@@ -53,10 +53,11 @@ dev = ["pre-commit",
        "sphinx", "sphinx-gallery", "sphinx_rtd_theme", "nbsphinx"]
 
 [project.urls]
-Homepage = "https://github.com/ghiggi/ximage"
-Source = "https://github.com/ghiggi/ximage"
-Tracker = "https://github.com/ghiggi/ximage/issues"
-Documentation = "https://ximage.readthedocs.io"
+homepage = "https://github.com/ghiggi/ximage"
+repository = "https://github.com/ghiggi/ximage"
+source = "https://github.com/ghiggi/ximage"
+tracker = "https://github.com/ghiggi/ximage/issues"
+documentation = "https://ximage.readthedocs.io"
 changelog = "https://github.com/ghiggi/ximage/CHANGELOG.md"
 
 [tool.setuptools_scm]
