@@ -7,6 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup Python
       - uses: actions/setup-python@v4
         with:
           python-version: "3.8"
@@ -21,7 +22,7 @@ jobs:
         if: success() || failure()
         uses: pre-commit/action@v3.0.0
         with:
-          extra_args: black --all-files
+          extra_args: black --all-files --verbose
 
       - name: blackdoc
         if: success() || failure()
