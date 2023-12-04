@@ -1,4 +1,4 @@
-# Welcome to ximage
+# 📦 Welcome to ximage
 
 |                      |                                                |
 | -------------------- | ---------------------------------------------- |
@@ -11,97 +11,179 @@
 | Linting              | [![Black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat)](https://github.com/psf/black) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&style=flat)](https://github.com/astral-sh/ruff) [![Codespell](https://img.shields.io/badge/Codespell-enabled-brightgreen?style=flat)](https://github.com/codespell-project/codespell) |
 | Code Coverage        | [![Coveralls](https://coveralls.io/repos/github/ghiggi/ximage/badge.svg?branch=main&style=flat)](https://coveralls.io/github/ghiggi/ximage?branch=main) [![Codecov](https://codecov.io/gh/ghiggi/ximage/branch/main/graph/badge.svg?style=flat)](https://codecov.io/gh/ghiggi/ximage) |
 | Code Quality         | [![Codefactor](https://www.codefactor.io/repository/github/ghiggi/ximage/badge?style=flat)](https://www.codefactor.io/repository/github/ghiggi/ximage) [![Codebeat](https://codebeat.co/badges/14ff831b-f064-4bdd-a2e2-72ffdf28a35a?style=flat)](https://codebeat.co/projects/github-com-ltelab-ximage-main) [![Codacy](https://app.codacy.com/project/badge/Grade/d823c50a7ad14268bd347b5aba384623?style=flat)](https://app.codacy.com/gh/ghiggi/ximage/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) [![Codescene](https://codescene.io/projects/36773/status-badges/code-health?style=flat)](https://codescene.io/projects/36773) |
-| Code Review          | [![pyOpenSci](https://tinyurl.com/XXXX)](#) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/XXXX/badge?style=flat)](#) |
+| Code Review          | [![pyOpenSci](https://tinyurl.com/XXXX)](#) |
 | License              | [![License](https://img.shields.io/github/license/ghiggi/ximage?style=flat)](https://github.com/ghiggi/ximage/blob/main/LICENSE) |
-| Community            | [![Slack](https://img.shields.io/badge/Slack-ximage-green.svg?logo=slack&style=flat)]([https://join.slack.com/t/ximageworkspace/shared_invite/zt-25l4mvgo7-cfBdXalzlWGd4Pt7H~FqoA](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA)) [![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-green?logo=github&style=flat)](https://github.com/ghiggi/ximage/discussions) |
-| Citation             | [![JOSS](http://joss.theoj.org/papers/<DOI>/joss.<DOI>/status.svg?style=flat)](#) [![DOI](https://zenodo.org/badge/664629093.svg?style=flat)](https://zenodo.org/records/8131553) |
+| Community            | [![Slack](https://img.shields.io/badge/Slack-ximage-green.svg?logo=slack&style=flat)](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA) [![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-green?logo=github&style=flat)](https://github.com/ghiggi/ximage/discussions) |
+| Citation             | [![DOI](https://zenodo.org/badge/664629093.svg?style=flat)](https://zenodo.org/records/8131553) |
 
- [**Slack**](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA) | [**Docs**](https://ximage.readthedocs.io/en/latest/)
+ [**Slack**](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA) | [**Docs**](https://x-image.readthedocs.io/en/latest/)
 
-The ximage is still in development. Feel free to try it out and to report issues or to suggest changes.
+The `ximage` package is in active development. Feel free to try it out, to report issues or to suggest changes.
 
-## Quick start
+## ℹ️ Software Overview
 
-ximage provides an easy-to-use interface to manipulate image, videos and n-dimensional arrays
-with classical image processing techniques.
+The software currently enables to:
+
+- label n-dimensional xarray objects
+- extract patches around n-dimensional labels
+- extract patches from n-dimensional xarray objects
+
+Join the [**DISDRODB Slack Workspace**](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA) to meet the community !
+
+## 🚀 Quick Start
+
+`ximage` provides an easy-to-use interface to manipulate image, videos and n-dimensional arrays with classical image processing techniques.
+
+The `ximage` xarray accessor provides a convenient way to labelling and extract patches in n-dimensional arrays ! 
+
+##### Image labelling 
+
+```python
+min_value_threshold = 1
+max_value_threshold = np.inf
+min_area_threshold = 5
+max_area_threshold = np.inf
+footprint = None
+sort_by = "area"
+sort_decreasing = True
+label_name = "label"
+
+### Label xarray object
+xr_obj = da.ximage.label(
+    min_value_threshold=min_value_threshold,
+    max_value_threshold=max_value_threshold,
+    min_area_threshold=min_area_threshold,
+    max_area_threshold=max_area_threshold,
+    footprint=footprint,
+    sort_by=sort_by,
+    sort_decreasing=sort_decreasing,
+    label_name=label_name,
+)
+```
+
+##### Extract patches around labels
+
+```python
+# Output Options
+n_patches = 10
+n_labels = None
+labels_id = None
+highlight_label_id = False
+# Patch Extraction Options
+patch_size = (100, 100)
+centered_on = "label_bbox"
+padding = 0
+n_patches_per_label = np.Inf
+n_patches_per_partition = 1
+# Tiling/Sliding Options
+partitioning_method = None # "tiling" / "sliding"
+n_partitions_per_label = None
+kernel_size = None
+buffer = 0
+stride = None
+include_last = True
+ensure_slice_size = True
+debug = True
+verbose = True
+
+da_patch_gen = xr_obj.ximage.label_patches(
+    label_name=label_name,
+    patch_size=patch_size,
+    variable=variable,
+    # Output Options
+    n_patches=n_patches,
+    n_labels=n_labels,
+    labels_id=labels_id,
+    highlight_label_id=highlight_label_id,
+    # Patch Extraction Options
+    centered_on=centered_on,
+    padding=padding,
+    n_patches_per_label=n_patches_per_label,
+    n_patches_per_partition=n_patches_per_partition,
+    # Tiling/Sliding Options
+    partitioning_method=partitioning_method,
+    n_partitions_per_label=n_partitions_per_label,
+    kernel_size=kernel_size,
+    buffer=buffer,
+    stride=stride,
+    include_last=include_last,
+    ensure_slice_size=ensure_slice_size,
+    debug=debug,
+    verbose=verbose,
+)
+
+```
 
 Look at the [Tutorials][tutorial_link] to have an overview of the software !
-
-## Installation
+ 
+## 🛠️ Installation
 
 ### pip
 
-ximage can be installed via [pip][pip_link] on Linux, Mac, and Windows.
+`ximage` can be installed via [pip][pip_link] on Linux, Mac, and Windows.
 On Windows you can install [WinPython][winpy_link] to get Python and pip
 running.
-Then, install the ximage package by typing the following command in the command terminal:
+Then, install the `ximage` package by typing the following command in the command terminal:
 
+```bash
     pip install ximage
+```
 
 To install the latest development version via pip, see the
 [documentation][doc_install_link].
 
 ### conda [NOT YET AVAILABLE]
 
-ximage can be installed via [conda][conda_link] on Linux, Mac, and Windows.
+`ximage` can be installed via [conda][conda_link] on Linux, Mac, and Windows.
 Install the package by typing the following command in a command terminal:
 
+```bash
     conda install ximage
+```
 
-In case conda forge is not set up for your system yet, see the easy to follow
-instructions on [conda forge][conda_forge_link].
+In case conda-forge is not set up for your system yet, see the easy to follow
+instructions on [conda-forge][conda_forge_link].
 
+## 💭 Feedback and Contributing Guidelines
 
-## Documentation for ximage
+If you aim to contribute or discuss the future development of ximage,
+we highly suggest to join the [**DISDRODB Slack Workspace**](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA)
 
-You can find the documentation under [ximage.readthedocs.io][doc_link]
+Feel free to also open a [GitHub Issue](https://github.com/ghiggi/ximage/issues) or a
+[GitHub Discussion](https://github.com/ghiggi/ximage/discussions) specific to your questions or ideas.
 
-### Tutorials and Examples
+## ✍️  Contributors
 
-The documentation also includes some [tutorials][tutorial_link], showing the most important use cases of ximage.
-These tutorial are also available as Jupyter Notebooks and in Google Colab:
-
-- 1. Introduction to image labeling [[Notebook][tut3_label_link]][[Colab][colab3_label_link]]
-- 2. Introduction to label patch extraction [[Notebook][tut3_label_link]][[Colab][colab3_label_link]]
-- 3. Introduction to image patch extraction [[Notebook][tut3_patch_link]][[Colab][colab3_patch_link]]
-
+* [Gionata Ghiggi](https://people.epfl.ch/gionata.ghiggi)
+* [Son Pham-Ba](https://people.epfl.ch/son.phamba?lang=en)
 
 ## Citation
 
-If you are using ximage in your publication please cite our paper:
+You can cite the `ximage` software by:
 
-TODO: GMD
-
-You can cite the Zenodo code publication of ximage by:
-
-> Ghiggi Gionata & XXXX . ghiggi/ximage. Zenodo. https://doi.org/10.5281/zenodo.8131552
+> Ghiggi Gionata & Son Pham-Ba . ghiggi/ximage. Zenodo. https://doi.org/10.5281/zenodo.8131552
 
 If you want to cite a specific version, have a look at the [Zenodo site](https://doi.org/10.5281/zenodo.7753488).
 
-## Requirements:
+## 📚 Requirements:
 
 - [xarray](https://docs.xarray.dev/en/stable/)
 - [dask](https://www.dask.org/)
 - [dask_image](https://image.dask.org/en/latest/)
 - [skimage](https://scikit-image.org/)
 
-
 ## License
 
 The content of this repository is released under the terms of the [MIT](LICENSE) license.
 
 
-[pip_link]: https://pypi.org/project/gstools
+
+[pip_link]: https://pypi.org/project/ximage
 [conda_link]: https://docs.conda.io/en/latest/miniconda.html
 [conda_forge_link]: https://github.com/conda-forge/ximage-feedstock#installing-ximage
 [conda_pip]: https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages
 [pipiflag]: https://pip-python3.readthedocs.io/en/latest/reference/pip_install.html?highlight=i#cmdoption-i
 [winpy_link]: https://winpython.github.io/
 
-[tutorial_link]: https://github.com/ghiggi/ximage/tree/master#tutorials-and-examples
-
-[tut3_label_link]: https://github.com/ghiggi/ximage/tree/master/tutorials
-[colab3_label_link]: https://github.com/ghiggi/ximage/tree/master/tutorials
-
-[tut3_patch_link]: https://github.com/ghiggi/ximage/tree/master/tutorials
-[colab3_patch_link]: https://github.com/ghiggi/ximage/tree/master/tutorials
+[doc_link]: https://x-image.readthedocs.io
+[tutorial_link]: https://github.com/ghiggi/ximage/tree/main#tutorials-and-examples
