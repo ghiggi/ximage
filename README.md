@@ -36,9 +36,9 @@ Join the [**DISDRODB Slack Workspace**](https://join.slack.com/t/xarray-tools/sh
 
 `ximage` provides an easy-to-use interface to manipulate image, videos and n-dimensional arrays with classical image processing techniques.
 
-The `ximage` xarray accessor provides a convenient way to labelling and extract patches in n-dimensional arrays ! 
+The `ximage` xarray accessor provides a convenient way to labelling and extract patches in n-dimensional arrays !
 
-##### Image labelling 
+##### Image labelling
 
 ```python
 min_value_threshold = 1
@@ -117,7 +117,7 @@ da_patch_gen = xr_obj.ximage.label_patches(
 ```
 
 Look at the [Tutorials][tutorial_link] to have an overview of the software !
- 
+
 ## 🛠️ Installation
 
 ### pip
