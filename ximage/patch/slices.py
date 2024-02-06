@@ -214,8 +214,8 @@ def get_idx_bounds_from_slice(slc):
     """
     if not isinstance(slc, slice):
         raise TypeError("Expecting slice object")
-    idx_start = slice.start
-    idx_end = slice.stop - 1
+    idx_start = slc.start
+    idx_end = slc.stop - 1
     return idx_start, idx_end
 
 
