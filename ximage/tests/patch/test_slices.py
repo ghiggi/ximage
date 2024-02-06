@@ -174,6 +174,16 @@ def test_get_slice_from_idx_bounds():
     assert slices.get_slice_from_idx_bounds(idx_start, idx_stop) == expected_slice
 
 
+def test_get_idx_bounds_from_slice():
+    """Test get_idx_bounds_from_slice"""
+    idx_start = 1
+    idx_stop = 4
+    assert slices.get_idx_bounds_from_slice(slice(1, 5)) == (idx_start, idx_stop)
+    
+    with pytest.raises(TypeError):
+         slices.get_idx_bounds_from_slice("whatever_other_type")
+ 
+
 def test_get_slice_around_index():
     """Test get_slice_around_index"""
 

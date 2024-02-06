@@ -207,6 +207,18 @@ def enlarge_slices(list_slices, min_size, valid_shape):
     return list_slices
 
 
+def get_idx_bounds_from_slice(slc):
+    """Get start and end indices of the slice.
+
+    Note: For index based selection, use idx_start:idx_end+1 !
+    """
+    if not isinstance(slc, slice):
+        raise TypeError("Expecting slice object")
+    idx_start = slice.start
+    idx_end = slice.stop - 1
+    return idx_start, idx_end
+
+
 def get_slice_from_idx_bounds(idx_start, idx_end):
     """Return the slice required to include the idx bounds."""
     return slice(idx_start, idx_end + 1)
