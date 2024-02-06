@@ -3,5 +3,3 @@ Image labelling
 ======================
 
 TODO
-
- 
