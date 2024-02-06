@@ -791,8 +791,8 @@ def get_patches_from_labels(
 
         If centered_on is 'max', 'min' or a custom function, the 'variable' must be specified.
         If centered_on is a custom function, it must:
-            - return None if all array values are non-finite (i.e np.nan)
-            - return a tuple with same length as the array shape.
+        - return None if all array values are non-finite (i.e np.nan)
+        - return a tuple with same length as the array shape.
     padding : (int, tuple, dict), optional
         The padding to apply in each direction around a label prior to
         partitioning (tiling/sliding) or direct patch extraction.

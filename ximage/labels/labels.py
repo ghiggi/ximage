@@ -642,17 +642,7 @@ def label(
         The default is True.
     labeled_comprehension_kwargs : dict, optional
         Additional arguments to be passed to dask_image.ndmeasure.labeled_comprehension
-        if sort_by is a callable. May contain
-            out_dtype : dtype, optional
-                Dtype to use for result.
-                The default is float.
-            default : (int, float or None), optional
-                Default return value when a element of index does not exist in the label array.
-                The default is None.
-            pass_positions : bool, optional
-                If True, pass linear indices to 'sort_by' as a second argument.
-                The default is False.
-        The default is {}.
+        if `sort_by` is a callable.
 
     Returns
     -------

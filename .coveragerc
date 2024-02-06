@@ -2,11 +2,8 @@
 source =
 	ximage
 omit =
-	*dev*
-	*docs*
-	*tutorials*
+	*ci*
 	ximage/tests/*
-	ximage/cli/*
 
 [report]
 exclude_lines =
