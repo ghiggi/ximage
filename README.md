@@ -114,7 +114,7 @@ da_patch_gen = xr_obj.ximage.label_patches(
 
 #### 📖 Explore the ximage documentation
 
-To discover all `ximage` utilities, please read the software documentation available at [https://x-image.readthedocs.io/en/latest/](https://x-image.readthedocs.io/en/latest/).
+To discover all `ximage` utilities, please read the [software documentation](https://x-image.readthedocs.io/en/latest/).
 
 ## 🛠️ Installation
 
