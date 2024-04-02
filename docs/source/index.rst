@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to ximage documentation !
-==================================
+Welcome to the ximage documentation !
+======================================
 
 
 In data analysis and working with image, video or climate simulations, handling large, complex
