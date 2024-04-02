@@ -18,9 +18,6 @@
  [**Slack**](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA) | [**Docs**](https://x-image.readthedocs.io/en/latest/)
 
 
-
-The `ximage` package is in active development. Feel free to try it out, to report issues or to suggest changes.
-
 ## ℹ️ Software Overview
 
 The software currently enables to:
@@ -115,40 +112,47 @@ da_patch_gen = xr_obj.ximage.label_patches(
 
 ```
 
-Look at the [Tutorials][tutorial_link] to have an overview of the software !
+#### 📖 Explore the ximage documentation
+
+To discover all `ximage` utilities, please read the software documentation available at [https://x-image.readthedocs.io/en/latest/](https://x-image.readthedocs.io/en/latest/).
 
 ## 🛠️ Installation
 
+### conda
+
+ximage can be installed via [conda][conda_link] on Linux, Mac, and Windows.
+Install the package by typing the following command in the terminal:
+
+```bash
+conda install ximage
+```
+
+In case conda-forge is not set up for your system yet, see the easy to follow instructions on [conda-forge][conda_forge_link].
+
+[conda_link]: https://docs.conda.io/en/latest/miniconda.html
+[conda_forge_link]: https://github.com/conda-forge/ximage-feedstock#installing-ximage
+
 ### pip
 
-`ximage` can be installed via [pip][pip_link] on Linux, Mac, and Windows.
-On Windows you can install [WinPython][winpy_link] to get Python and pip
-running.
-Then, install the `ximage` package by typing the following command in the command terminal:
+`ximage` can be installed also via [pip][pip_link] on Linux, Mac, and Windows.
+On Windows you can install [WinPython][winpy_link] to get Python and pip running.
+
+Install the `ximage` package by typing the following command in the terminal:
 
 ```bash
-    pip install ximage
+pip install ximage
 ```
 
-To install the latest development version via pip, see the
-[documentation][doc_install_link].
+To install the latest development version via pip, see the [documentation][dev_install_link].
 
-### conda [NOT YET AVAILABLE]
-
-`ximage` can be installed via [conda][conda_link] on Linux, Mac, and Windows.
-Install the package by typing the following command in a command terminal:
-
-```bash
-    conda install ximage
-```
-
-In case conda-forge is not set up for your system yet, see the easy to follow
-instructions on [conda-forge][conda_forge_link].
+[pip_link]: https://pypi.org/project/gpm-api
+[winpy_link]: https://winpython.github.io/
+[dev_install_link]: https://gpm-api.readthedocs.io/en/latest/02_installation.html#installation-for-contributors
 
 ## 💭 Feedback and Contributing Guidelines
 
 If you aim to contribute or discuss the future development of ximage,
-we highly suggest to join the [**DISDRODB Slack Workspace**](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA)
+we highly suggest to join the [**Slack Workspace**](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA)
 
 Feel free to also open a [GitHub Issue](https://github.com/ghiggi/ximage/issues) or a
 [GitHub Discussion](https://github.com/ghiggi/ximage/discussions) specific to your questions or ideas.
@@ -164,7 +168,11 @@ You can cite the `ximage` software by:
 
 > Ghiggi Gionata & Son Pham-Ba . ghiggi/ximage. Zenodo. https://doi.org/10.5281/zenodo.8131552
 
-If you want to cite a specific version, have a look at the [Zenodo site](https://doi.org/10.5281/zenodo.7753488).
+If you want to cite a specific version, have a look at the [Zenodo site](https://doi.org/10.5281/zenodo.8131552).
+
+## License
+
+The content of this repository is released under the terms of the [MIT](LICENSE) license.
 
 ## 📚 Requirements:
 
@@ -172,19 +180,3 @@ If you want to cite a specific version, have a look at the [Zenodo site](https:/
 - [dask](https://www.dask.org/)
 - [dask_image](https://image.dask.org/en/latest/)
 - [skimage](https://scikit-image.org/)
-
-## License
-
-The content of this repository is released under the terms of the [MIT](LICENSE) license.
-
-
-
-[pip_link]: https://pypi.org/project/ximage
-[conda_link]: https://docs.conda.io/en/latest/miniconda.html
-[conda_forge_link]: https://github.com/conda-forge/ximage-feedstock#installing-ximage
-[conda_pip]: https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages
-[pipiflag]: https://pip-python3.readthedocs.io/en/latest/reference/pip_install.html?highlight=i#cmdoption-i
-[winpy_link]: https://winpython.github.io/
-
-[doc_link]: https://x-image.readthedocs.io
-[tutorial_link]: https://github.com/ghiggi/ximage/tree/main#tutorials-and-examples
