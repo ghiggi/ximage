@@ -397,7 +397,6 @@ def get_partitions_slices(
     return [pad_slice(slc, padding=buffer, min_start=min_start, max_stop=max_stop) for slc in slices]
 
 
-
 def get_nd_partitions_list_slices(
     list_slices, arr_shape, method, kernel_size, stride, buffer, include_last, ensure_slice_size
 ):
