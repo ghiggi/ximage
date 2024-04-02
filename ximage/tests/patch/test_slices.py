@@ -283,7 +283,13 @@ def test_get_partitions_slices():
     expected_slices = [slice(-1, 4), slice(2, 7), slice(5, 10), slice(8, 11)]
     assert (
         slices.get_partitions_slices(
-            start, stop, slice_size, method, buffer=buffer, min_start=min_start, max_stop=max_stop
+            start,
+            stop,
+            slice_size,
+            method,
+            buffer=buffer,
+            min_start=min_start,
+            max_stop=max_stop,
         )
         == expected_slices
     )
@@ -327,7 +333,14 @@ def test_get_nd_partitions_list_slices():
             expected_slices.append((base_slice1, base_slice2))
 
     result = slices.get_nd_partitions_list_slices(
-        intervals, shape, "tiling", slice_sizes, strides, buffers, True, False
+        intervals,
+        shape,
+        "tiling",
+        slice_sizes,
+        strides,
+        buffers,
+        True,
+        False,
     )
 
     assert result == expected_slices
