@@ -146,7 +146,7 @@ select = [
     # flake8-simplify
     "SIM",
     # Perflint
-    #"PERF",
+    "PERF",
     # pandas-vet
     "PD",
     # pylint

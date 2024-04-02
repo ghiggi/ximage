@@ -434,11 +434,7 @@ def _get_patches_from_partitions_list_slices(
 
 def _get_list_isel_dicts(patches_list_slices, dims):
     """Return a list with isel dictionaries."""
-    list_isel_dicts = []
-    for patch_list_slices in patches_list_slices:
-        # list_isel_dicts.append(dict(zip(dims, patch_list_slices)))
-        list_isel_dicts.append(dict(zip(dims, patch_list_slices)))
-    return list_isel_dicts
+    return [dict(zip(dims, patch_list_slices)) for patch_list_slices in patches_list_slices]
 
 
 def _extract_xr_patch(xr_obj, isel_dict, label_name, label_id, highlight_label_id):
