@@ -71,6 +71,7 @@ addopts = "--cov --cov-report term-missing --cov-report xml --cov-report lcov:lc
 
 [tool.black]
 line-length = 120
+
 # skip-string-normalization = true
 target-version = [
     "py38",
