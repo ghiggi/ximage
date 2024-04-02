@@ -21,9 +21,10 @@ def check_slices_and_patches(
     returned_slices_dict = labels_patch.get_patches_isel_dict_from_labels(*args, **kwargs)
 
     # Compare slices
-    assert (
-        returned_slices_dict == expected_slices_dict
-    ), f"Returned slices are not the same as the expected ones. Returned: {returned_slices_dict}, expected: {expected_slices_dict}"
+    assert returned_slices_dict == expected_slices_dict, (
+        "Returned slices are not the same as the expected ones. "
+        + f"Returned: {returned_slices_dict}, expected: {expected_slices_dict}"
+    )
 
     # Get patches (variable + labels)
     returned_variable_dict = {}
@@ -53,12 +54,14 @@ def check_slices_and_patches(
             expected_labels_dict[label].append(SaneEqualityArray(sliced_labels_array))
 
     # Compare patches (deep equality possible thanks to SaneEqualityArray)
-    assert (
-        returned_variable_dict == expected_variables_dict
-    ), f"Returned variable patches are not the same as the expected ones. Returned: {returned_variable_dict}, expected: {expected_variables_dict}"
-    assert (
-        returned_labels_dict == expected_labels_dict
-    ), f"Returned labels patches are not the same as the expected ones. Returned: {returned_labels_dict}, expected: {expected_labels_dict}"
+    assert returned_variable_dict == expected_variables_dict, (
+        "Returned variable patches are not the same as the expected ones. "
+        + f"Returned: {returned_variable_dict}, expected: {expected_variables_dict}"
+    )
+    assert returned_labels_dict == expected_labels_dict, (
+        "Returned labels patches are not the same as the expected ones. "
+        + f"Returned: {returned_labels_dict}, expected: {expected_labels_dict}"
+    )
 
 
 # Tests for public functions ###################################################
@@ -198,7 +201,8 @@ def test_get_patches_and_isel_dict_from_labels(monkeypatch):
     #     1: expected_slices[1][:2],
     #     2: expected_slices[2][:2],
     #         }
-    # check_slices_and_patches(args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices_cut)
+    # check_slices_and_patches(
+    #   args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices_cut)
     # del kwargs["n_patches"]
 
     # Test n_partitions_per_label (total number of partitions before filtering those that do not contain labels)
