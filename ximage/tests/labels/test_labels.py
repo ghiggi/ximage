@@ -1,11 +1,9 @@
 import numpy as np
 import pytest
 import xarray as xr
-
 from pytest import apply_to_all_array_types
 
 from ximage.labels import labels
-
 
 # Tests for public functions ###################################################
 
@@ -304,8 +302,6 @@ def test_get_labels_stats():
             [2, 2, 0],
         ]
     )
-
-    values_area = [5, 1, 3]
 
     # Test result returned in decreasing order
     label_indices, values_returned = labels._get_labels_stats(array, label_array)
@@ -699,7 +695,11 @@ def test_xr_get_labels():
             [1, 1],
         ]
     )
-    sort_by = lambda array: np.mean(array)
+
+    def my_sort_function(array):
+        return np.mean(array)
+
+    sort_by = my_sort_function
     sort_decreasing = False
     labeled_comprehension_kwargs = {
         "out_dtype": np.float16,

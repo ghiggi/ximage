@@ -2,10 +2,8 @@ import inspect
 
 from ximage.accessor.methods import XImage_Base_Accessor, XImage_DataArray_Accessor
 from ximage.labels.labels import label
-from ximage.patch.labels_patch import get_patches_from_labels
-from ximage.patch.labels_patch import get_patches_isel_dict_from_labels
 from ximage.labels.plot_labels import plot_labels
-
+from ximage.patch.labels_patch import get_patches_from_labels, get_patches_isel_dict_from_labels
 
 # Utils functions ##############################################################
 

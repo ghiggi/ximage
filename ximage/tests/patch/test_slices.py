@@ -2,7 +2,6 @@ import pytest
 
 from ximage.patch import slices
 
-
 # Tests for public functions ###################################################
 
 

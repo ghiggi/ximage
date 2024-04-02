@@ -2,7 +2,6 @@ import pytest
 
 from ximage.patch import checks
 
-
 # Utils functions ##############################################################
 
 
@@ -105,7 +104,7 @@ def test_check_stride():
 
     # Check no partitioning method
     partitioning_method = None
-    assert checks.check_stride(None, dimension_names, shape, partitioning_method) == None
+    assert checks.check_stride(None, dimension_names, shape, partitioning_method) is None
 
     # Check default stride
     partitioning_method = "tiling"

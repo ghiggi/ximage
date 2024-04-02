@@ -1,7 +1,7 @@
-from matplotlib.image import AxesImage
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
+from matplotlib.image import AxesImage
 
 from ximage.labels.plot_labels import plot_labels
 
