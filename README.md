@@ -155,7 +155,7 @@ If you aim to contribute or discuss the future development of ximage,
 we highly suggest to join the [**Slack Workspace**](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA)
 
 Feel free to also open a [GitHub Issue](https://github.com/ghiggi/ximage/issues) or a
-[GitHub Discussions](https://github.com/ghiggi/ximage/discussions) specific to your questions or ideas.
+[GitHub Discussion](https://github.com/ghiggi/ximage/discussions) specific to your questions or ideas.
 
 ## ✍️  Contributors
 
