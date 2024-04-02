@@ -327,10 +327,8 @@ def test_get_nd_partitions_list_slices():
     base_slices1 = [slice(0, 3), slice(4, 7), slice(8, 10)]
     base_slices2 = [slice(9, 14), slice(12, 17), slice(15, 20), slice(18, 20)]
 
-    expected_slices = []  # list of each pair
-    for base_slice1 in base_slices1:
-        for base_slice2 in base_slices2:
-            expected_slices.append((base_slice1, base_slice2))
+    # Create list of each pair
+    expected_slices = [(base_slice1, base_slice2) for base_slice1 in base_slices1 for base_slice2 in base_slices2]
 
     result = slices.get_nd_partitions_list_slices(
         intervals,
