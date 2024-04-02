@@ -16,9 +16,7 @@ class SaneEqualityArray(np.ndarray):
 
     def __eq__(self, other):
         return (
-            isinstance(other, np.ndarray)
-            and self.shape == other.shape
-            and np.array_equal(self, other, equal_nan=True)
+            isinstance(other, np.ndarray) and self.shape == other.shape and np.array_equal(self, other, equal_nan=True)
         )
 
 

@@ -11,9 +11,7 @@ import xarray as xr
 class XImage_Base_Accessor:
     def __init__(self, xarray_obj):
         if not isinstance(xarray_obj, (xr.DataArray, xr.Dataset)):
-            raise TypeError(
-                "The 'ximage' accessor is available only for xr.Dataset and xr.DataArray."
-            )
+            raise TypeError("The 'ximage' accessor is available only for xr.Dataset and xr.DataArray.")
         self._obj = xarray_obj
 
     def label(

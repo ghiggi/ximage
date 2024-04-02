@@ -50,17 +50,13 @@ def test_base_accessor_label_patches():
     changed_default_arguments = {
         "label_name": "label",
     }
-    compare_default_arguments(
-        get_patches_from_labels, XImage_Base_Accessor.label_patches, changed_default_arguments
-    )
+    compare_default_arguments(get_patches_from_labels, XImage_Base_Accessor.label_patches, changed_default_arguments)
 
 
 def test_base_accessor_label_patches_isel_dict():
     """Check default arguments of XImage_Base_Accessor.label_patches_isel_dict"""
 
-    compare_default_arguments(
-        get_patches_isel_dict_from_labels, XImage_Base_Accessor.label_patches_isel_dicts
-    )
+    compare_default_arguments(get_patches_isel_dict_from_labels, XImage_Base_Accessor.label_patches_isel_dicts)
 
 
 def test_dataarray_accessor_plot_labels():

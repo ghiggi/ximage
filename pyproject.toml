@@ -70,7 +70,7 @@ packages = ["ximage"] # explicitly list the packages in modules
 addopts = "--cov --cov-report term-missing --cov-report xml --cov-report lcov:lcov.info"
 
 [tool.black]
-line-length = 100
+line-length = 120
 # skip-string-normalization = true
 target-version = [
     "py38",

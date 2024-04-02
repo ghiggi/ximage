@@ -16,16 +16,12 @@ def _plot_rectangle(ax, xlim, ylim, edgecolor="red", facecolor="None", **kwargs)
     width = x_stop - x_start
     height = y_stop - y_start
     # Plot rectangle
-    rectangle = plt.Rectangle(
-        (x_start, y_start), width, height, edgecolor=edgecolor, facecolor=facecolor, **kwargs
-    )
+    rectangle = plt.Rectangle((x_start, y_start), width, height, edgecolor=edgecolor, facecolor=facecolor, **kwargs)
     ax.add_patch(rectangle)
     return ax
 
 
-def _plot_xr_isel_dict_rectangle(
-    ax, xr_obj, label_name, isel_dicts, edgecolor="red", facecolor="None", **kwargs
-):
+def _plot_xr_isel_dict_rectangle(ax, xr_obj, label_name, isel_dicts, edgecolor="red", facecolor="None", **kwargs):
     """Plot xarray 2D isel_dicts rectangles."""
     y, x = list(xr_obj[label_name].dims)
     for isel_dict in isel_dicts:
@@ -58,17 +54,13 @@ def _get_nice_extent_isel_dict(patches_isel_dicts, partitions_isel_dicts, shape_
     return subset_isel_dicts
 
 
-def plot_label_patch_extraction_areas(
-    xr_obj, label_name, patches_isel_dicts, partitions_isel_dicts, **kwargs
-):
+def plot_label_patch_extraction_areas(xr_obj, label_name, patches_isel_dicts, partitions_isel_dicts, **kwargs):
     """Plot for debugging label patch extraction."""
     from ximage.labels.plot_labels import plot_labels
 
     # Get isel dict covering all isel_dicts
     shape_dict = {dim: xr_obj[dim].shape[0] for dim in xr_obj[label_name].dims}
-    subset_isel_dicts = _get_nice_extent_isel_dict(
-        patches_isel_dicts, partitions_isel_dicts, shape_dict=shape_dict
-    )
+    subset_isel_dicts = _get_nice_extent_isel_dict(patches_isel_dicts, partitions_isel_dicts, shape_dict=shape_dict)
     # Subset the label array to plot
     label_subset = xr_obj[label_name].isel(subset_isel_dicts)
     # Create figure
