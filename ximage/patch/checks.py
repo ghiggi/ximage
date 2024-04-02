@@ -21,9 +21,7 @@ def _ensure_is_dict_argument(arg, dims, arg_name):
         dict_dims = np.array(list(arg))
         invalid_dims = dict_dims[np.isin(dict_dims, dims, invert=True)].tolist()
         if len(invalid_dims) > 0:
-            raise ValueError(
-                f"{arg_name} must not contain dimensions {invalid_dims}. It expects only {dims}."
-            )
+            raise ValueError(f"{arg_name} must not contain dimensions {invalid_dims}. It expects only {dims}.")
         missing_dims = np.array(dims)[np.isin(dims, dict_dims, invert=True)].tolist()
         if len(missing_dims) > 0:
             raise ValueError(f"{arg_name} must contain also dimensions {missing_dims}")
@@ -69,9 +67,7 @@ def check_patch_size(patch_size, dims, shape):
     # Check natural number
     for dim, value in patch_size.items():
         if not are_all_natural_numbers(value):
-            raise ValueError(
-                "Invalid 'patch_size' values. They must be only positive integer values."
-            )
+            raise ValueError("Invalid 'patch_size' values. They must be only positive integer values.")
     # Check patch size is smaller than array shape
     idx_valid = [value <= max_value for value, max_value in zip(patch_size.values(), shape)]
     max_allowed_patch_size = {dim: value for dim, value in zip(dims, shape)}
@@ -108,9 +104,7 @@ def check_kernel_size(kernel_size, dims, shape):
     # Check natural number
     for dim, value in kernel_size.items():
         if not are_all_natural_numbers(value):
-            raise ValueError(
-                "Invalid 'kernel_size' values. They must be only positive integer values."
-            )
+            raise ValueError("Invalid 'kernel_size' values. They must be only positive integer values.")
     # Check patch size is smaller than array shape
     idx_valid = [value <= max_value for value, max_value in zip(kernel_size.values(), shape)]
     max_allowed_kernel_size = {dim: value for dim, value in zip(dims, shape)}
@@ -227,7 +221,5 @@ def check_stride(stride, dims, shape, partitioning_method):
     else:  # sliding
         for dim, value in stride.items():
             if not are_all_natural_numbers(value):
-                raise ValueError(
-                    "Invalid 'stride' values. They must be only positive integer (>=1) values."
-                )
+                raise ValueError("Invalid 'stride' values. They must be only positive integer (>=1) values.")
     return stride

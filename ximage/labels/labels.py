@@ -111,9 +111,7 @@ def _check_stats(stats):
     return stats
 
 
-def _get_label_value_stats(
-    arr, label_arr, label_indices=None, stats="area", labeled_comprehension_kwargs={}
-):
+def _get_label_value_stats(arr, label_arr, label_indices=None, stats="area", labeled_comprehension_kwargs={}):
     """Compute label value statistics over which to later sort on.
 
     If label_indices is None, by default would return the stats of the entire array
@@ -197,9 +195,7 @@ def _get_labels_with_requested_occurrence(label_arr, vmin, vmax):
         label_indices = label_indices[1:]
         label_occurrence = label_occurrence[1:]
     # Get index with required occurrence
-    valid_area_indices = np.where(
-        np.logical_and(label_occurrence >= vmin, label_occurrence <= vmax)
-    )[0]
+    valid_area_indices = np.where(np.logical_and(label_occurrence >= vmin, label_occurrence <= vmax))[0]
     # Return list of valid label indices
     label_indices = label_indices[valid_area_indices] if len(valid_area_indices) > 0 else []
     return label_indices
@@ -668,9 +664,7 @@ def label(
         labeled_comprehension_kwargs=labeled_comprehension_kwargs,
     )
     if n_labels == 0:
-        raise ValueError(
-            "No patch available. You might want to change the patch generator parameters."
-        )
+        raise ValueError("No patch available. You might want to change the patch generator parameters.")
 
     # Set labels values == 0 to np.nan (useful for plotting)
     da_labels = da_labels.where(da_labels > 0)

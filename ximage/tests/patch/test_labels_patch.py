@@ -143,9 +143,7 @@ def test_get_patches_and_isel_dict_from_labels(monkeypatch):
             {"x": slice(7, 10), "y": slice(7, 10)},  # Bottom right corner, centered on max
         ],
     }
-    check_slices_and_patches(
-        args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices
-    )
+    check_slices_and_patches(args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices)
 
     # Test verbose and debug arguments
     kwargs = {
@@ -154,9 +152,7 @@ def test_get_patches_and_isel_dict_from_labels(monkeypatch):
         "debug": True,
     }
     monkeypatch.setattr("matplotlib.pyplot.show", lambda: None)  # Prevent showing plots
-    check_slices_and_patches(
-        args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices
-    )
+    check_slices_and_patches(args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices)
 
     # Test with tiling parameters
     kwargs = {
@@ -173,9 +169,7 @@ def test_get_patches_and_isel_dict_from_labels(monkeypatch):
             {"x": slice(6, 9), "y": slice(6, 9)},
         ],
     }
-    check_slices_and_patches(
-        args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices
-    )
+    check_slices_and_patches(args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices)
 
     # Test with two labels
     # [[0, 2, 0, ..., 0, 0]
@@ -191,9 +185,7 @@ def test_get_patches_and_isel_dict_from_labels(monkeypatch):
         {"x": slice(3, 6), "y": slice(4, 7)},
         {"x": slice(6, 9), "y": slice(7, 10)},
     ]
-    check_slices_and_patches(
-        args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices
-    )
+    check_slices_and_patches(args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices)
 
     # Test n_patches
     # kwargs["n_patches"] = 2
@@ -211,9 +203,7 @@ def test_get_patches_and_isel_dict_from_labels(monkeypatch):
         2: expected_slices[2][:2],
     }
     kwargs["n_partitions_per_label"] = 5  # over 9 possible partitions in this case
-    check_slices_and_patches(
-        args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices_cut
-    )
+    check_slices_and_patches(args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices_cut)
 
     # Invalid label request
     kwargs = {
@@ -222,9 +212,7 @@ def test_get_patches_and_isel_dict_from_labels(monkeypatch):
         "labels_id": 1,
     }
     with pytest.raises(ValueError):
-        check_slices_and_patches(
-            args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices
-        )
+        check_slices_and_patches(args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices)
 
     # Test with nan regions
     nan_region = [slice(5, 10), slice(5, 10)]
@@ -238,9 +226,7 @@ def test_get_patches_and_isel_dict_from_labels(monkeypatch):
         "centered_on": "centroid",
         "partitioning_method": "tiling",
     }
-    check_slices_and_patches(
-        args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices_cut
-    )
+    check_slices_and_patches(args, kwargs, variable_array, variable_name, label_array, label_name, expected_slices_cut)
 
 
 # Tests for internal functions #################################################
@@ -375,8 +361,7 @@ def test_check_n_patches_per_label():
     n_patches_per_partition = 10
     for n_patches_per_label in [10, 11]:
         assert (
-            labels_patch._check_n_patches_per_label(n_patches_per_label, n_patches_per_partition)
-            == n_patches_per_label
+            labels_patch._check_n_patches_per_label(n_patches_per_label, n_patches_per_partition) == n_patches_per_label
         )
 
     # Invalid n_patches_per_label

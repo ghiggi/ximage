@@ -243,10 +243,7 @@ def test_get_partitions_slices():
     # |-----| |-----| |---|
     stride = 1
     expected_slices = [slice(0, 3), slice(4, 7), slice(8, 10)]
-    assert (
-        slices.get_partitions_slices(start, stop, slice_size, method, stride=stride)
-        == expected_slices
-    )
+    assert slices.get_partitions_slices(start, stop, slice_size, method, stride=stride) == expected_slices
 
     # Stride, negative
     # 0 1 2 3 4 5 6 7 8 9 10
@@ -254,10 +251,7 @@ def test_get_partitions_slices():
     #     |-----| |-----|
     stride = -1
     expected_slices = [slice(0, 3), slice(2, 5), slice(4, 7), slice(6, 9), slice(8, 10)]
-    assert (
-        slices.get_partitions_slices(start, stop, slice_size, method, stride=stride)
-        == expected_slices
-    )
+    assert slices.get_partitions_slices(start, stop, slice_size, method, stride=stride) == expected_slices
 
     # Buffer (extending)
     # 0 1 2 3 4 5 6 7 8 9 10
@@ -265,28 +259,19 @@ def test_get_partitions_slices():
     #     |-<----->-| |-<-|
     buffer = 1
     expected_slices = [slice(0, 4), slice(2, 7), slice(5, 10), slice(8, 10)]
-    assert (
-        slices.get_partitions_slices(start, stop, slice_size, method, buffer=buffer)
-        == expected_slices
-    )
+    assert slices.get_partitions_slices(start, stop, slice_size, method, buffer=buffer) == expected_slices
 
     # Remove last
     # 0 1 2 3 4 5 6 7 8 9 10
     # |-----|-----|-----|
     expected_slices = [slice(0, 3), slice(3, 6), slice(6, 9)]
-    assert (
-        slices.get_partitions_slices(start, stop, slice_size, method, include_last=False)
-        == expected_slices
-    )
+    assert slices.get_partitions_slices(start, stop, slice_size, method, include_last=False) == expected_slices
 
     # Resize last
     # 0 1 2 3 4 5 6 7 8 9 10
     # |-----|-----|-¦===|-|
     expected_slices = [slice(0, 3), slice(3, 6), slice(6, 9), slice(7, 10)]
-    assert (
-        slices.get_partitions_slices(start, stop, slice_size, method, ensure_slice_size=True)
-        == expected_slices
-    )
+    assert slices.get_partitions_slices(start, stop, slice_size, method, ensure_slice_size=True) == expected_slices
 
     # min_start and max_stop different from start and stop with buffering
     #  0 1 2 3 4 5 6 7 8 9 1011
@@ -310,10 +295,7 @@ def test_get_partitions_slices():
     method = "sliding"
     stride = 4
     expected_slices = [slice(0, 3), slice(4, 7), slice(8, 10)]
-    assert (
-        slices.get_partitions_slices(start, stop, slice_size, method, stride=stride)
-        == expected_slices
-    )
+    assert slices.get_partitions_slices(start, stop, slice_size, method, stride=stride) == expected_slices
 
     # Sliding, invalid stride
     stride = 0

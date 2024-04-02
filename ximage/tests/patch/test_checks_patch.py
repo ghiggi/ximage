@@ -119,9 +119,7 @@ def test_check_stride():
     stride_expected = {"x": 2, "y": 2}
     for stride in [2, [2, 2], (2, 2), {"x": 2, "y": 2}]:
         for partitioning_method in ["sliding", "tiling"]:
-            stride_returned = checks.check_stride(
-                stride, dimension_names, shape, partitioning_method
-            )
+            stride_returned = checks.check_stride(stride, dimension_names, shape, partitioning_method)
             assert stride_returned == stride_expected
 
     # Check invalid values

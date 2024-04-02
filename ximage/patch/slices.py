@@ -71,9 +71,7 @@ def pad_slices(list_slices, padding, valid_shape):
     if isinstance(valid_shape, int):
         valid_shape = [valid_shape] * len(list_slices)
     if isinstance(padding, (list, tuple)) and len(padding) != len(list_slices):
-        raise ValueError(
-            "Invalid padding. The length of padding should be the same as the length of list_slices."
-        )
+        raise ValueError("Invalid padding. The length of padding should be the same as the length of list_slices.")
     if isinstance(valid_shape, (list, tuple)) and len(valid_shape) != len(list_slices):
         raise ValueError(
             "Invalid valid_shape. The length of valid_shape should be the same as the length of list_slices."
@@ -125,9 +123,7 @@ def enlarge_slice(slc, min_size, min_start=0, max_stop=np.inf):
 
     # If min_size is larger than allowable size, raise error
     if min_size > (max_stop - min_start):
-        raise ValueError(
-            f"'min_size' {min_size} is too large to generate a slice between {min_start} and {max_stop}."
-        )
+        raise ValueError(f"'min_size' {min_size} is too large to generate a slice between {min_start} and {max_stop}.")
 
     # If slice size larger than min_size, return the slice
     if slice_size >= min_size:
@@ -192,9 +188,7 @@ def enlarge_slices(list_slices, min_size, valid_shape):
     if isinstance(valid_shape, int):
         valid_shape = [valid_shape] * len(list_slices)
     if isinstance(min_size, (list, tuple)) and len(min_size) != len(list_slices):
-        raise ValueError(
-            "Invalid min_size. The length of min_size should be the same as the length of list_slices."
-        )
+        raise ValueError("Invalid min_size. The length of min_size should be the same as the length of list_slices.")
     if isinstance(valid_shape, (list, tuple)) and len(valid_shape) != len(list_slices):
         raise ValueError(
             "Invalid valid_shape. The length of valid_shape should be the same as the length of list_slices."
@@ -262,9 +256,7 @@ def get_slice_around_index(index, size, min_start=0, max_stop=np.inf):
 def _check_buffer(buffer, slice_size):
     if buffer < 0:
         if abs(buffer) * 2 >= slice_size:
-            raise ValueError(
-                "The negative buffer absolute value is larger than half of the slice_size."
-            )
+            raise ValueError("The negative buffer absolute value is larger than half of the slice_size.")
     return buffer
 
 
@@ -396,24 +388,18 @@ def get_partitions_slices(
 
     # Define slices
     slice_step = 1  # TODO: modify for dilation together with slice_size
-    idxs = _get_partitioning_idxs(
-        start=start, stop=stop, stride=stride, slice_size=slice_size, method=method
-    )
+    idxs = _get_partitioning_idxs(start=start, stop=stop, stride=stride, slice_size=slice_size, method=method)
     slices = [slice(idxs[i], idxs[i] + slice_size, slice_step) for i in range(len(idxs) - 1)]
 
     # Define last slice
     if include_last and idxs[-1] != stop:
         last_slice = slice(idxs[-1], stop)
         if ensure_slice_size:
-            last_slice = enlarge_slice(
-                last_slice, min_size=slice_size, min_start=min_start, max_stop=max_stop
-            )
+            last_slice = enlarge_slice(last_slice, min_size=slice_size, min_start=min_start, max_stop=max_stop)
         slices.append(last_slice)
 
     # Buffer the slices
-    slices = [
-        pad_slice(slc, padding=buffer, min_start=min_start, max_stop=max_stop) for slc in slices
-    ]
+    slices = [pad_slice(slc, padding=buffer, min_start=min_start, max_stop=max_stop) for slc in slices]
 
     return slices
 

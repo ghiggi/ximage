@@ -39,9 +39,7 @@ def test_redefine_label_array():
         assert np.array_equal(labels.redefine_label_array(array), redefined_array_default)
 
         # Test invalid labels
-        assert np.array_equal(
-            labels.redefine_label_array(array, label_indices_with_0), redefined_array
-        )
+        assert np.array_equal(labels.redefine_label_array(array, label_indices_with_0), redefined_array)
 
         with pytest.raises(ValueError):
             labels.redefine_label_array(array, label_indices_with_duplicate)
@@ -104,9 +102,7 @@ def test_labels():
             [2, 2, _, 2, _],
         ]
     )
-    assert np.array_equal(
-        data_array_returned.coords["label"], labels_array_expected, equal_nan=True
-    )
+    assert np.array_equal(data_array_returned.coords["label"], labels_array_expected, equal_nan=True)
 
     # Test with no label returned
     max_value = 0
@@ -309,9 +305,7 @@ def test_get_labels_stats():
     assert np.array_equal(values_returned, [5, 3, 1])
 
     # Test result returned in increasing order
-    label_indices, values_returned = labels._get_labels_stats(
-        array, label_array, sort_decreasing=False
-    )
+    label_indices, values_returned = labels._get_labels_stats(array, label_array, sort_decreasing=False)
     assert np.array_equal(label_indices, np.array([1, 2, 0]))
     assert np.array_equal(values_returned, [1, 3, 5])
 
@@ -559,9 +553,7 @@ def test_get_labels():
 
     # Test with no label returned (due to value filtering)
     max_value = 0
-    labels_array_returned, n_labels_returned, values_returned = labels._get_labels(
-        array, max_value_threshold=max_value
-    )
+    labels_array_returned, n_labels_returned, values_returned = labels._get_labels(array, max_value_threshold=max_value)
     labels_array_expected = np.array(
         [
             [0, 0, 0, 0, 0],
@@ -600,9 +592,7 @@ def test_get_labels():
 
     # Test with no label returned (due to area filtering)
     min_area = 4
-    labels_array_returned, n_labels_returned, values_returned = labels._get_labels(
-        array, min_area_threshold=min_area
-    )
+    labels_array_returned, n_labels_returned, values_returned = labels._get_labels(array, min_area_threshold=min_area)
     labels_array_expected = np.array(
         [
             [0, 0, 0, 0, 0],
@@ -625,9 +615,7 @@ def test_get_labels():
             [1, 1],
         ]
     )
-    labels_array_returned, n_labels_returned, values_returned = labels._get_labels(
-        array, footprint=footprint
-    )
+    labels_array_returned, n_labels_returned, values_returned = labels._get_labels(array, footprint=footprint)
     labels_array_expected = np.array(
         [
             [3, 3, 0, 0, 2],

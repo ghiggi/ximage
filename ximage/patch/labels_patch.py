@@ -151,9 +151,7 @@ def _check_callable_centered_on(centered_on):
     arr = np.zeros(input_shape)
     point = centered_on(arr)
     if not isinstance(point, (tuple, type(None))):
-        raise ValueError(
-            "The 'centered_on' function should return a point coordinates tuple or None."
-        )
+        raise ValueError("The 'centered_on' function should return a point coordinates tuple or None.")
     if len(point) != len(input_shape):
         raise ValueError(
             "The 'centered_on' function should return point coordinates having same dimensions has input array."
@@ -168,9 +166,7 @@ def _check_callable_centered_on(centered_on):
     try:
         point = centered_on(arr * np.nan)
         if point is not None:
-            raise ValueError(
-                "The 'centered_on' function should return None if the input array is a np.nan ndarray."
-            )
+            raise ValueError("The 'centered_on' function should return None if the input array is a np.nan ndarray.")
     except:
         raise ValueError("The 'centered_on' function should be able to deal with a np.nan ndarray.")
 
@@ -217,9 +213,7 @@ def _check_variable_arr(variable_arr, label_arr):
     """Check variable array validity."""
     if variable_arr is not None:
         if variable_arr.shape != label_arr.shape:
-            raise ValueError(
-                "Arrays corresponding to 'variable' and 'label_name' must have same shape."
-            )
+            raise ValueError("Arrays corresponding to 'variable' and 'label_name' must have same shape.")
     return variable_arr
 
 
@@ -336,9 +330,7 @@ def _get_labels_bbox_slices(arr):
 
     ndims = arr.ndim
     coords = np.nonzero(arr)
-    list_slices = [
-        get_slice_from_idx_bounds(np.min(coords[i]), np.max(coords[i])) for i in range(ndims)
-    ]
+    list_slices = [get_slice_from_idx_bounds(np.min(coords[i]), np.max(coords[i])) for i in range(ndims)]
     return list_slices
 
 
@@ -413,14 +405,10 @@ def _get_patch_list_slices(label_arr, label_id, variable_arr, patch_size, center
 def _get_masked_arrays(label_arr, variable_arr, partition_list_slices):
     """Mask labels and variable arrays outside the partitions area."""
     masked_partition_label_arr = np.zeros(label_arr.shape) * np.nan
-    masked_partition_label_arr[tuple(partition_list_slices)] = label_arr[
-        tuple(partition_list_slices)
-    ]
+    masked_partition_label_arr[tuple(partition_list_slices)] = label_arr[tuple(partition_list_slices)]
     if variable_arr is not None:
         masked_partition_variable_arr = np.zeros(variable_arr.shape) * np.nan
-        masked_partition_variable_arr[tuple(partition_list_slices)] = variable_arr[
-            tuple(partition_list_slices)
-        ]
+        masked_partition_variable_arr[tuple(partition_list_slices)] = variable_arr[tuple(partition_list_slices)]
     else:
         masked_partition_variable_arr = None
     return masked_partition_label_arr, masked_partition_variable_arr
@@ -556,9 +544,7 @@ def _get_patches_isel_dict_generator(
         label_bbox_slices = _get_labels_bbox_slices(label_arr == label_id)
 
         # Apply padding to the label bounding box
-        label_bbox_slices = pad_slices(
-            label_bbox_slices, padding=padding.values(), valid_shape=label_arr.shape
-        )
+        label_bbox_slices = pad_slices(label_bbox_slices, padding=padding.values(), valid_shape=label_arr.shape)
 
         # --------------------------------------------------------------------.
         # Retrieve partitions list_slices
