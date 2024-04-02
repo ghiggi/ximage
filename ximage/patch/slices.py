@@ -72,7 +72,7 @@ def pad_slices(list_slices, padding, valid_shape):
         raise ValueError("Invalid padding. The length of padding should be the same as the length of list_slices.")
     if isinstance(valid_shape, (list, tuple)) and len(valid_shape) != len(list_slices):
         raise ValueError(
-            "Invalid valid_shape. The length of valid_shape should be the same as the length of list_slices."
+            "Invalid valid_shape. The length of valid_shape should be the same as the length of list_slices.",
         )
     # Apply padding
     return [
@@ -188,7 +188,7 @@ def enlarge_slices(list_slices, min_size, valid_shape):
         raise ValueError("Invalid min_size. The length of min_size should be the same as the length of list_slices.")
     if isinstance(valid_shape, (list, tuple)) and len(valid_shape) != len(list_slices):
         raise ValueError(
-            "Invalid valid_shape. The length of valid_shape should be the same as the length of list_slices."
+            "Invalid valid_shape. The length of valid_shape should be the same as the length of list_slices.",
         )
     # Enlarge the slice
     return [
@@ -394,7 +394,14 @@ def get_partitions_slices(
 
 
 def get_nd_partitions_list_slices(
-    list_slices, arr_shape, method, kernel_size, stride, buffer, include_last, ensure_slice_size
+    list_slices,
+    arr_shape,
+    method,
+    kernel_size,
+    stride,
+    buffer,
+    include_last,
+    ensure_slice_size,
 ):
     """Return the n-dimensional partitions list of slices of a initial list of slices."""
     import itertools

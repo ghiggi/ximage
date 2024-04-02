@@ -62,7 +62,7 @@ def test_labels():
             [_, _, _, _, _],
             [5, _, _, _, _],
             [6, 7, _, 8, _],
-        ]
+        ],
     )
 
     # Try wrong array type
@@ -79,7 +79,7 @@ def test_labels():
         [
             [1, 1],
             [1, 1],
-        ]
+        ],
     )
     sort_by = "mean"
     sort_decreasing = False
@@ -100,7 +100,7 @@ def test_labels():
             [_, _, _, _, _],
             [2, _, _, _, _],
             [2, 2, _, 2, _],
-        ]
+        ],
     )
     assert np.array_equal(data_array_returned.coords["label"], labels_array_expected, equal_nan=True)
 
@@ -120,7 +120,7 @@ def test_labels():
             [_, _, _, _, _],
             [1, _, _, _, _],
             [1, 1, _, 4, _],
-        ]
+        ],
     )
     assert np.array_equal(dataset_returned.coords["label"], labels_array_expected, equal_nan=True)
 
@@ -134,7 +134,7 @@ def test_highlight_label():
             [_, 1, 2],
             [3, _, 2],
             [3, 3, _],
-        ]
+        ],
     )
     label_name = "test_label"
     label_id = 2
@@ -145,7 +145,7 @@ def test_highlight_label():
             [0, 0, 2],
             [0, 0, 2],
             [0, 0, 0],
-        ]
+        ],
     )
     assert np.array_equal(dataset_returned[label_name], labels_array_expected)
 
@@ -267,7 +267,7 @@ def test_get_label_value_stats():
             [1, 0, 0],
             [2, 0, 0],
             [2, 2, 0],
-        ]
+        ],
     )
 
     values_area = [5, 1, 3]
@@ -296,7 +296,7 @@ def test_get_labels_stats():
             [1, 0, 0],
             [2, 0, 0],
             [2, 2, 0],
-        ]
+        ],
     )
 
     # Test result returned in decreasing order
@@ -318,7 +318,7 @@ def test_vec_translate():
             [1, 1, 1],
             [2, 2, 2],
             [3, 3, 3],
-        ]
+        ],
     )
 
     remap = {
@@ -332,7 +332,7 @@ def test_vec_translate():
             [11, 11, 11],
             [12, 12, 12],
             [13, 13, 13],
-        ]
+        ],
     )
 
     array_returned = labels._vec_translate(array, remap)
@@ -353,7 +353,7 @@ def test_get_labels_with_requested_occurrence():
             [0, 1, 2],
             [2, 3, 3],
             [3, 0, 0],
-        ]
+        ],
     )
 
     label_indices = labels._get_labels_with_requested_occurrence(array, 1, 3)
@@ -421,7 +421,7 @@ def test_np_redefine_label_array():
             [0, 1, 2],
             [2, 3, 3],
             [3, 0, 0],
-        ]
+        ],
     )
 
     # Call without providing label_indices
@@ -435,7 +435,7 @@ def test_np_redefine_label_array():
             [0, 0, 1],
             [1, 2, 2],
             [2, 0, 0],
-        ]
+        ],
     )
     array_returned = labels._np_redefine_label_array(array, label_indices)
     assert np.array_equal(array_returned, array_expected)
@@ -453,7 +453,7 @@ def test_xr_redefine_label_array():
             [0, 1, 2],
             [2, 3, 3],
             [3, 0, 0],
-        ]
+        ],
     )
     label_indices = np.array([2, 3])
     array_expected = xr.DataArray(
@@ -461,7 +461,7 @@ def test_xr_redefine_label_array():
             [0, 0, 1],
             [1, 2, 2],
             [2, 0, 0],
-        ]
+        ],
     )
 
     array_returned = labels._xr_redefine_label_array(array, label_indices)
@@ -510,7 +510,7 @@ def test_get_labels():
             [_, _, _, _, _],
             [5, _, _, _, _],
             [6, 7, _, 8, _],
-        ]
+        ],
     )
 
     # Test with all default arguments (labels ordered by decreasing area)
@@ -522,7 +522,7 @@ def test_get_labels():
             [0, 0, 0, 0, 0],
             [1, 0, 0, 0, 0],
             [1, 1, 0, 4, 0],
-        ]
+        ],
     )
     n_labels_expected = 4
     values_expected = np.array([3, 2, 2, 1])
@@ -534,7 +534,9 @@ def test_get_labels():
     min_value = 3
     max_value = 6
     labels_array_returned, n_labels_returned, values_returned = labels._get_labels(
-        array, min_value_threshold=min_value, max_value_threshold=max_value
+        array,
+        min_value_threshold=min_value,
+        max_value_threshold=max_value,
     )
     labels_array_expected = np.array(
         [
@@ -543,7 +545,7 @@ def test_get_labels():
             [0, 0, 0, 0, 0],
             [1, 0, 0, 0, 0],
             [1, 0, 0, 0, 0],
-        ]
+        ],
     )
     n_labels_expected = 2
     values_expected = np.array([2, 2])
@@ -561,7 +563,7 @@ def test_get_labels():
             [0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0],
-        ]
+        ],
     )
     n_labels_expected = 0
     values_expected = np.array([])
@@ -573,7 +575,9 @@ def test_get_labels():
     min_area = 2
     max_area = 2
     labels_array_returned, n_labels_returned, values_returned = labels._get_labels(
-        array, min_area_threshold=min_area, max_area_threshold=max_area
+        array,
+        min_area_threshold=min_area,
+        max_area_threshold=max_area,
     )
     labels_array_expected = np.array(
         [
@@ -582,7 +586,7 @@ def test_get_labels():
             [0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0],
-        ]
+        ],
     )
     n_labels_expected = 2
     values_expected = np.array([2, 2])
@@ -600,7 +604,7 @@ def test_get_labels():
             [0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0],
-        ]
+        ],
     )
     n_labels_expected = 0
     values_expected = np.array([])
@@ -613,7 +617,7 @@ def test_get_labels():
         [
             [1, 1],
             [1, 1],
-        ]
+        ],
     )
     labels_array_returned, n_labels_returned, values_returned = labels._get_labels(array, footprint=footprint)
     labels_array_expected = np.array(
@@ -623,7 +627,7 @@ def test_get_labels():
             [0, 0, 0, 0, 0],
             [1, 0, 0, 0, 0],
             [1, 1, 0, 1, 0],
-        ]
+        ],
     )
     n_labels_expected = 3
     values_expected = np.array([4, 2, 2])
@@ -635,7 +639,9 @@ def test_get_labels():
     sort_by = "mean"
     sort_decreasing = False
     labels_array_returned, n_labels_returned, values_returned = labels._get_labels(
-        array, sort_by=sort_by, sort_decreasing=sort_decreasing
+        array,
+        sort_by=sort_by,
+        sort_decreasing=sort_decreasing,
     )
     labels_array_expected = np.array(
         [
@@ -644,7 +650,7 @@ def test_get_labels():
             [0, 0, 0, 0, 0],
             [3, 0, 0, 0, 0],
             [3, 3, 0, 4, 0],
-        ]
+        ],
     )
     n_labels_expected = 4
     values_expected = np.array([1.5, 3.5, 6, 8])
@@ -664,7 +670,7 @@ def test_xr_get_labels():
             [_, _, _, _, _],
             [5, _, _, _, _],
             [6, 7, _, 8, _],
-        ]
+        ],
     )
 
     # Try wrong array type
@@ -681,7 +687,7 @@ def test_xr_get_labels():
         [
             [1, 1],
             [1, 1],
-        ]
+        ],
     )
 
     def my_sort_function(array):
@@ -710,7 +716,7 @@ def test_xr_get_labels():
             [0, 0, 0, 0, 0],
             [2, 0, 0, 0, 0],
             [2, 2, 0, 2, 0],
-        ]
+        ],
     )
     n_labels_expected = 2
     values_expected = np.array([3.5, 6.5])

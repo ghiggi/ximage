@@ -9,7 +9,13 @@ from ximage.patch import labels_patch
 
 
 def check_slices_and_patches(
-    args, kwargs, variable_array, variable_name, labels_array, label_name, expected_slices_dict
+    args,
+    kwargs,
+    variable_array,
+    variable_name,
+    labels_array,
+    label_name,
+    expected_slices_dict,
 ):
     """Function for testing get_patches_from_labels and get_patches_isel_dict_from_labels.
 
@@ -77,7 +83,7 @@ def test_find_point():
             [_, _, _],
             [0, 1, _],
             [4, 2, 5],
-        ]
+        ],
     )
 
     assert labels_patch.find_point(array, "min") == (1, 0)
@@ -242,14 +248,14 @@ def test_check_label_arr():
         [
             [_, 0, 1],
             [2, 3, 4],
-        ]
+        ],
     )
 
     expected_array = np.array(
         [
             [_, _, 1],
             [2, 3, 4],
-        ]
+        ],
     )
 
     def check(array):
@@ -263,7 +269,7 @@ def test_check_label_arr():
     array = np.array(
         [
             [_, 0, 0.1],
-        ]
+        ],
     )
     with pytest.raises(ValueError):
         labels_patch._check_label_arr(array)
@@ -272,7 +278,7 @@ def test_check_label_arr():
     array = np.array(
         [
             [_, 0, -1],
-        ]
+        ],
     )
     with pytest.raises(ValueError):
         labels_patch._check_label_arr(array)
@@ -287,7 +293,7 @@ def test_check_labels_id():
         [
             [_, _, 1],
             [2, 3, 5],
-        ]
+        ],
     )
 
     # Check without input labels_id
@@ -607,7 +613,7 @@ def test_get_point_center_of_mass():
             [1, 0, 0, 0],
             [0, 0, 2, 0],
             [0, 0, 0, _],
-        ]
+        ],
     )
     # Only location of non-nan values matter
 

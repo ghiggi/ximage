@@ -455,7 +455,9 @@ def _get_labels(
     # ---------------------------------.
     # Filter label by area
     label_indices = _get_labels_with_requested_occurrence(
-        label_arr=label_arr, vmin=min_area_threshold, vmax=max_area_threshold
+        label_arr=label_arr,
+        vmin=min_area_threshold,
+        vmax=max_area_threshold,
     )
     if len(label_indices) == 0:
         return _no_labels_result(arr)

@@ -80,6 +80,13 @@ target-version = [
 ]
 
 [tool.ruff]
+
+line-length = 120
+indent-width = 4
+
+# Addional file to be formatted by ruff (in addition to *py)
+extend-include = ["*.ipynb"]
+
 # Exclude a variety of commonly ignored directories.
 exclude = [
     ".bzr",
@@ -104,9 +111,6 @@ exclude = [
     "node_modules",
     "venv",
 ]
-
-line-length = 120
-indent-width = 4
 
 [tool.ruff.format]
 
@@ -148,7 +152,7 @@ select = [
     # pylint
     #"PL",
     # flake8-commas
-    #"COM",
+    "COM",
     # flake8-slots
     #"SLOT",
     # flake8-comprehensions

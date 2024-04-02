@@ -131,7 +131,7 @@ def _check_n_patches_per_partition(n_patches_per_partition, centered_on):
         raise ValueError("n_patches_per_partitions must be a positive integer.")
     if isinstance(centered_on, str) and centered_on not in ["random"] and n_patches_per_partition > 1:
         raise ValueError(
-            "Only the pre-implemented centered_on='random' method allow n_patches_per_partition values > 1."
+            "Only the pre-implemented centered_on='random' method allow n_patches_per_partition values > 1.",
         )
     return n_patches_per_partition
 
@@ -151,7 +151,7 @@ def _check_callable_centered_on(centered_on):
         raise ValueError("The 'centered_on' function should return a point coordinates tuple or None.")
     if len(point) != len(input_shape):
         raise ValueError(
-            "The 'centered_on' function should return point coordinates having same dimensions has input array."
+            "The 'centered_on' function should return point coordinates having same dimensions has input array.",
         )
     for c, max_value in zip(point, input_shape):
         if c < 0:
@@ -364,7 +364,10 @@ def _get_patch_list_slices(label_arr, label_id, variable_arr, patch_size, center
     """Get patch n-dimensional list slices."""
     if not callable(centered_on) and centered_on == "label_bbox":
         list_slices = _get_patch_list_slices_around_label(
-            label_arr=label_arr, label_id=label_id, padding=padding, min_patch_size=patch_size
+            label_arr=label_arr,
+            label_id=label_id,
+            padding=padding,
+            min_patch_size=patch_size,
         )
     else:
         list_slices = _get_patch_list_slices_around_label_point(
