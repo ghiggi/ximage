@@ -21,9 +21,11 @@ def get_default_arguments_dict(function):
     return default_arguments
 
 
-def compare_default_arguments(base_function, reference_function, changed_default_arguments={}):
+def compare_default_arguments(base_function, reference_function, changed_default_arguments=None):
     """Check that default arguments of base_function and reference_function are the same"""
 
+    if changed_default_arguments is None:
+        changed_default_arguments = {}
     base_default_arguments = get_default_arguments_dict(base_function)
     reference_default_arguments = get_default_arguments_dict(reference_function)
 

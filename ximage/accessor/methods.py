@@ -24,11 +24,13 @@ class XImage_Base_Accessor:
         footprint=None,
         sort_by="area",
         sort_decreasing=True,
-        labeled_comprehension_kwargs={},
+        labeled_comprehension_kwargs=None,
         label_name="label",
     ):
         from ximage.labels.labels import label
 
+        if labeled_comprehension_kwargs is None:
+            labeled_comprehension_kwargs = {}
         xr_obj = label(
             self._obj,
             variable=variable,

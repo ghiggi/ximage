@@ -111,7 +111,7 @@ def _check_stats(stats):
     return stats
 
 
-def _get_label_value_stats(arr, label_arr, label_indices=None, stats="area", labeled_comprehension_kwargs={}):
+def _get_label_value_stats(arr, label_arr, label_indices=None, stats="area", labeled_comprehension_kwargs=None):
     """Compute label value statistics over which to later sort on.
 
     If label_indices is None, by default would return the stats of the entire array
@@ -119,6 +119,8 @@ def _get_label_value_stats(arr, label_arr, label_indices=None, stats="area", lab
     If label_indices is not inside label_arr, return 0
     """
     # Check stats argument and label indices
+    if labeled_comprehension_kwargs is None:
+        labeled_comprehension_kwargs = {}
     stats = _check_stats(stats)
     if label_indices is None:
         label_indices = np.unique(label_arr)
@@ -149,10 +151,12 @@ def _get_labels_stats(
     label_indices=None,
     stats="area",
     sort_decreasing=True,
-    labeled_comprehension_kwargs={},
+    labeled_comprehension_kwargs=None,
 ):
     """Return label and label statistics sorted by statistic value."""
 
+    if labeled_comprehension_kwargs is None:
+        labeled_comprehension_kwargs = {}
     if label_indices is None:
         label_indices = np.unique(label_arr)
 
@@ -352,7 +356,7 @@ def _get_labels(
     footprint=None,
     sort_by="area",
     sort_decreasing=True,
-    labeled_comprehension_kwargs={},
+    labeled_comprehension_kwargs=None,
 ):
     """
     Function deriving the labels array and associated labels info.
@@ -419,6 +423,8 @@ def _get_labels(
 
     # ---------------------------------.
     # Check array validity
+    if labeled_comprehension_kwargs is None:
+        labeled_comprehension_kwargs = {}
     arr = _check_array(arr)
 
     # Check input arguments
@@ -499,7 +505,7 @@ def _xr_get_labels(
     footprint=None,
     sort_by="area",
     sort_decreasing=True,
-    labeled_comprehension_kwargs={},
+    labeled_comprehension_kwargs=None,
 ):
     """
     Function deriving the labels array and associated labels info.
@@ -561,6 +567,8 @@ def _xr_get_labels(
         Array of length n_labels with the stats values associated to each label.
     """
     # Extract data from DataArray
+    if labeled_comprehension_kwargs is None:
+        labeled_comprehension_kwargs = {}
     if not isinstance(data_array, xr.DataArray):
         raise TypeError("Expecting xr.DataArray.")
 
@@ -595,7 +603,7 @@ def label(
     footprint=None,
     sort_by="area",
     sort_decreasing=True,
-    labeled_comprehension_kwargs={},
+    labeled_comprehension_kwargs=None,
     label_name="label",
 ):
     """
@@ -647,6 +655,8 @@ def label(
         In the label coordinate, non-labels values are set to np.nan.
     """
     # Check xarray input
+    if labeled_comprehension_kwargs is None:
+        labeled_comprehension_kwargs = {}
     _check_xr_obj(xr_obj=xr_obj, variable=variable)
 
     # Retrieve labels (if available)
