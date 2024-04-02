@@ -26,7 +26,7 @@ The software currently enables to:
 - extract patches around n-dimensional labels
 - extract patches from n-dimensional xarray objects
 
-Join the [**DISDRODB Slack Workspace**](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA) to meet the community !
+Join the [**Slack Workspace**](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA) to meet the community !
 
 ## 🚀 Quick Start
 
