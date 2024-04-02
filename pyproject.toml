@@ -132,7 +132,7 @@ select = [
     # flake8-bugbear
     "B",
     # flake8-return
-    #"RET",
+    "RET",
     # flake8-unused-arguments
     "ARG",
     # flake8-raise

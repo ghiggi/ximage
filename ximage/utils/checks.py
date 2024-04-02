@@ -33,11 +33,9 @@ def are_all_integers(arr, negative_allowed=True, zero_allowed=True):
     is_integer = np.isclose(arr, np.round(arr), atol=1e-12, rtol=1e-12)
     if negative_allowed:
         return bool(np.all(is_integer))
-    else:
-        if zero_allowed:
-            return bool(np.all(np.logical_and(arr >= 0, is_integer)))
-        else:
-            return bool(np.all(np.logical_and(arr > 0, is_integer)))
+    if zero_allowed:
+        return bool(np.all(np.logical_and(arr >= 0, is_integer)))
+    return bool(np.all(np.logical_and(arr > 0, is_integer)))
 
 
 def are_all_natural_numbers(arr, zero_allowed=False):

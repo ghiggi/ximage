@@ -31,7 +31,7 @@ class XImage_Base_Accessor:
 
         if labeled_comprehension_kwargs is None:
             labeled_comprehension_kwargs = {}
-        xr_obj = label(
+        return label(
             self._obj,
             variable=variable,
             label_name=label_name,
@@ -45,7 +45,6 @@ class XImage_Base_Accessor:
             sort_decreasing=sort_decreasing,
             labeled_comprehension_kwargs=labeled_comprehension_kwargs,
         )
-        return xr_obj
 
     def label_patches(
         self,
@@ -75,7 +74,7 @@ class XImage_Base_Accessor:
     ):
         from ximage.patch.labels_patch import get_patches_from_labels
 
-        gen = get_patches_from_labels(
+        return get_patches_from_labels(
             self._obj,
             label_name=label_name,
             patch_size=patch_size,
@@ -102,7 +101,6 @@ class XImage_Base_Accessor:
             verbose=verbose,
             debug=debug,
         )
-        return gen
 
     def label_patches_isel_dicts(
         self,
@@ -131,7 +129,7 @@ class XImage_Base_Accessor:
     ):
         from ximage.patch.labels_patch import get_patches_isel_dict_from_labels
 
-        isel_dicts = get_patches_isel_dict_from_labels(
+        return get_patches_isel_dict_from_labels(
             self._obj,
             label_name=label_name,
             patch_size=patch_size,
@@ -157,7 +155,6 @@ class XImage_Base_Accessor:
             verbose=verbose,
             debug=debug,
         )
-        return isel_dicts
 
 
 @xr.register_dataset_accessor("ximage")

@@ -28,15 +28,14 @@ def _ensure_is_dict_argument(arg, dims, arg_name):
     else:
         type_str = type(arg)
         raise TypeError(f"Unrecognized type {type_str} for argument {arg_name}.")
-    # Reorder as function of dims
-    arg = {dim: arg[dim] for dim in dims}
-    return arg
+    # Reorder arguments as function of dims
+    return {dim: arg[dim] for dim in dims}
 
 
 def _replace_full_dimension_flag_value(arg, shape):
     """Replace -1 values with the corresponding dimension shape."""
-    arg = {dim: shape[i] if value == -1 else value for i, (dim, value) in enumerate(arg.items())}
-    return arg
+    # Return argument with positive integer values
+    return {dim: shape[i] if value == -1 else value for i, (dim, value) in enumerate(arg.items())}
 
 
 def check_patch_size(patch_size, dims, shape):

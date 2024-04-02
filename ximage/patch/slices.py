@@ -15,8 +15,7 @@ def get_slice_size(slc):
     """
     if not isinstance(slc, slice):
         raise TypeError("Expecting slice object")
-    size = slc.stop - slc.start
-    return size
+    return slc.stop - slc.start
 
 
 def pad_slice(slc, padding, min_start=0, max_stop=np.inf):
@@ -43,8 +42,7 @@ def pad_slice(slc, padding, min_start=0, max_stop=np.inf):
         The list of slices after applying padding.
     """
 
-    new_slice = slice(max(slc.start - padding, min_start), min(slc.stop + padding, max_stop))
-    return new_slice
+    return slice(max(slc.start - padding, min_start), min(slc.stop + padding, max_stop))
 
 
 def pad_slices(list_slices, padding, valid_shape):
@@ -77,11 +75,10 @@ def pad_slices(list_slices, padding, valid_shape):
             "Invalid valid_shape. The length of valid_shape should be the same as the length of list_slices."
         )
     # Apply padding
-    list_slices = [
+    return [
         pad_slice(s, padding=p, min_start=0, max_stop=valid_shape[i])
         for i, (s, p) in enumerate(zip(list_slices, padding))
     ]
-    return list_slices
 
 
 # min_size = 10
@@ -194,11 +191,10 @@ def enlarge_slices(list_slices, min_size, valid_shape):
             "Invalid valid_shape. The length of valid_shape should be the same as the length of list_slices."
         )
     # Enlarge the slice
-    list_slices = [
+    return [
         enlarge_slice(slc, min_size=s, min_start=0, max_stop=valid_shape[i])
         for i, (slc, s) in enumerate(zip(list_slices, min_size))
     ]
-    return list_slices
 
 
 def get_idx_bounds_from_slice(slc):
@@ -310,8 +306,7 @@ def _get_partitioning_idxs(start, stop, stride, slice_size, method):
         steps = slice_size + stride
     else:  # sliding
         steps = stride
-    idxs = np.arange(start, stop + 1, steps)
-    return idxs
+    return np.arange(start, stop + 1, steps)
 
 
 def get_partitions_slices(
@@ -399,9 +394,8 @@ def get_partitions_slices(
         slices.append(last_slice)
 
     # Buffer the slices
-    slices = [pad_slice(slc, padding=buffer, min_start=min_start, max_stop=max_stop) for slc in slices]
+    return [pad_slice(slc, padding=buffer, min_start=min_start, max_stop=max_stop) for slc in slices]
 
-    return slices
 
 
 def get_nd_partitions_list_slices(
@@ -431,5 +425,4 @@ def get_nd_partitions_list_slices(
         )
         l_iterables.append(slices)
 
-    tiles_list_slices = list(itertools.product(*l_iterables))
-    return tiles_list_slices
+    return list(itertools.product(*l_iterables))
