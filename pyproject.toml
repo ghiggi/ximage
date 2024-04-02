@@ -148,7 +148,7 @@ select = [
     # Perflint
     #"PERF",
     # pandas-vet
-    #"PD",
+    "PD",
     # pylint
     #"PL",
     # flake8-commas
