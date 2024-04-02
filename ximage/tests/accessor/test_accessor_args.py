@@ -10,7 +10,6 @@ from ximage.patch.labels_patch import get_patches_from_labels, get_patches_isel_
 
 def get_default_arguments_dict(function):
     """Get default arguments of a function as a dictionary"""
-
     signature = inspect.signature(function)
     default_arguments = {}
 
@@ -23,7 +22,6 @@ def get_default_arguments_dict(function):
 
 def compare_default_arguments(base_function, reference_function, changed_default_arguments=None):
     """Check that default arguments of base_function and reference_function are the same"""
-
     if changed_default_arguments is None:
         changed_default_arguments = {}
     base_default_arguments = get_default_arguments_dict(base_function)
@@ -39,7 +37,6 @@ def compare_default_arguments(base_function, reference_function, changed_default
 
 def test_base_accessor_label():
     """Check default arguments of XImage_Base_Accessor.label"""
-
     changed_default_arguments = {
         "min_value_threshold": 0.1,
     }
@@ -48,7 +45,6 @@ def test_base_accessor_label():
 
 def test_base_accessor_label_patches():
     """Check default arguments of XImage_Base_Accessor.label_patches"""
-
     changed_default_arguments = {
         "label_name": "label",
     }
@@ -57,11 +53,9 @@ def test_base_accessor_label_patches():
 
 def test_base_accessor_label_patches_isel_dict():
     """Check default arguments of XImage_Base_Accessor.label_patches_isel_dict"""
-
     compare_default_arguments(get_patches_isel_dict_from_labels, XImage_Base_Accessor.label_patches_isel_dicts)
 
 
 def test_dataarray_accessor_plot_labels():
     """Check default arguments of XImage_DataArray_Accessor.plot_labels"""
-
     compare_default_arguments(plot_labels, XImage_DataArray_Accessor.plot_labels)

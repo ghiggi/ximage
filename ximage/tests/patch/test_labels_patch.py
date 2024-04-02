@@ -22,7 +22,6 @@ def check_slices_and_patches(
     Calls the two methods with "args" and "kwargs", checks that the returned slices are the same as the expected ones,
     and checks that the patches have the expected sliced variable and labels arrays.
     """
-
     # Get slices
     returned_slices_dict = labels_patch.get_patches_isel_dict_from_labels(*args, **kwargs)
 
@@ -75,7 +74,6 @@ def check_slices_and_patches(
 
 def test_find_point():
     """Test find_point"""
-
     _ = float("nan")
 
     array = np.array(
@@ -105,7 +103,6 @@ def test_find_point():
 
 def test_get_patches_and_isel_dict_from_labels(monkeypatch):
     """Test get_patches_from_labels and get_patches_isel_dict_from_labels"""
-
     # Create variable array
     # [[ 0,  1...,  9]
     #  [10, 11..., 19]
@@ -240,7 +237,6 @@ def test_get_patches_and_isel_dict_from_labels(monkeypatch):
 
 def test_check_label_arr():
     """Test _check_label_arr"""
-
     _ = np.nan
 
     # Check conversion of 0 to nan
@@ -286,7 +282,6 @@ def test_check_label_arr():
 
 def test_check_labels_id():
     """Test _check_labels_id"""
-
     _ = np.nan
 
     label_array = np.array(
@@ -345,7 +340,6 @@ def test_check_labels_id():
 
 def test_check_n_patches_per_partition():
     """Test _check_n_patches_per_partition"""
-
     # Check valid n_patches_per_partition
     centered_on = "max"
     assert labels_patch._check_n_patches_per_partition(1, centered_on) == 1
@@ -362,7 +356,6 @@ def test_check_n_patches_per_partition():
 
 def test_check_n_patches_per_label():
     """Test _check_n_patches_per_label"""
-
     # Valid n_patches_per_label
     n_patches_per_partition = 10
     for n_patches_per_label in [10, 11]:
@@ -502,7 +495,6 @@ def test_check_centered_on():
 
 def test_get_variable_arr():
     """Test _get_variable_arr"""
-
     array = np.random.rand(2, 3)
     variable_name = None
     centered_on = None
@@ -529,7 +521,6 @@ def test_get_variable_arr():
 
 def test_check_variable_arr():
     """Test _check_variable_arr"""
-
     shape = (2, 3)
 
     # Check valid variable array (same shape as label arary)
@@ -545,7 +536,6 @@ def test_check_variable_arr():
 
 def test_get_point_centroid():
     """Test _get_point_centroid"""
-
     shape = (4, 5)
     array = np.random.rand(*shape)
     expected_centroid = tuple(np.array(shape) / 2)
@@ -558,7 +548,6 @@ def test_get_point_centroid():
 
 def test_get_point_random():
     """Test _get_point_random"""
-
     shape = (4, 5)
     array = np.random.rand(*shape)
     returned_point = labels_patch._get_point_random(array)
@@ -574,7 +563,6 @@ def test_get_point_random():
 
 def test_get_point_with_max_value():
     """Test _get_point_with_max_value"""
-
     shape = (4, 5)
     array = np.random.rand(*shape)
     max_value = np.max(array)
@@ -589,7 +577,6 @@ def test_get_point_with_max_value():
 
 def test_get_point_with_min_value():
     """Test _get_point_with_min_value"""
-
     shape = (4, 5)
     array = np.random.rand(*shape)
     min_value = np.min(array)
@@ -604,7 +591,6 @@ def test_get_point_with_min_value():
 
 def test_get_point_center_of_mass():
     """Test _get_point_center_of_mass"""
-
     _ = np.nan
 
     array = np.array(

@@ -5,7 +5,6 @@ from ximage.utils import checks
 
 def test_are_all_integers():
     """Test are_all_integers"""
-
     # Test cases with negative_allowed=True and zero_allowed=True
     assert checks.are_all_integers([1, 2, 3])
     assert checks.are_all_integers([0, -1, -2, -3])
@@ -39,7 +38,6 @@ def test_are_all_integers():
 
 def test_are_all_natural_numbers():
     """Test are_all_natural_numbers"""
-
     # Test cases with zero_allowed=False
     assert checks.are_all_natural_numbers([1, 2, 3])
     assert not checks.are_all_natural_numbers([0, 2, 3])
