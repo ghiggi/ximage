@@ -129,12 +129,10 @@ def _check_n_patches_per_partition(n_patches_per_partition, centered_on):
     """
     if n_patches_per_partition < 1:
         raise ValueError("n_patches_per_partitions must be a positive integer.")
-    if isinstance(centered_on, str):
-        if centered_on not in ["random"]:
-            if n_patches_per_partition > 1:
-                raise ValueError(
-                    "Only the pre-implemented centered_on='random' method allow n_patches_per_partition values > 1."
-                )
+    if isinstance(centered_on, str) and centered_on not in ["random"] and n_patches_per_partition > 1:
+        raise ValueError(
+            "Only the pre-implemented centered_on='random' method allow n_patches_per_partition values > 1."
+        )
     return n_patches_per_partition
 
 
@@ -196,21 +194,15 @@ def _get_variable_arr(xr_obj, variable, centered_on):
     """Get variable array (in memory)."""
     if isinstance(xr_obj, xr.DataArray):
         return np.asanyarray(xr_obj.data)
-    if centered_on is not None:
-        if variable is None and (centered_on in ["max", "min"] or callable(centered_on)):
-            raise ValueError("'variable' must be specified if 'centered_on' is specified.")
-    if variable is not None:
-        variable_arr = np.asanyarray(xr_obj[variable].data)  # in memory
-    else:
-        variable_arr = None
-    return variable_arr
+    if centered_on is not None and variable is None and (centered_on in ["max", "min"] or callable(centered_on)):
+        raise ValueError("'variable' must be specified if 'centered_on' is specified.")
+    return np.asanyarray(xr_obj[variable].data) if variable is not None else None
 
 
 def _check_variable_arr(variable_arr, label_arr):
     """Check variable array validity."""
-    if variable_arr is not None:
-        if variable_arr.shape != label_arr.shape:
-            raise ValueError("Arrays corresponding to 'variable' and 'label_name' must have same shape.")
+    if variable_arr is not None and variable_arr.shape != label_arr.shape:
+        raise ValueError("Arrays corresponding to 'variable' and 'label_name' must have same shape.")
     return variable_arr
 
 
@@ -240,11 +232,7 @@ def _get_point_with_max_value(arr):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=RuntimeWarning)
         point = np.argwhere(arr == np.nanmax(arr))
-    if len(point) == 0:
-        point = None
-    else:
-        point = tuple(point[0].tolist())
-    return point
+    return None if len(point) == 0 else tuple(point[0].tolist())
 
 
 def _get_point_with_min_value(arr):
@@ -252,11 +240,7 @@ def _get_point_with_min_value(arr):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=RuntimeWarning)
         point = np.argwhere(arr == np.nanmin(arr))
-    if len(point) == 0:
-        point = None
-    else:
-        point = tuple(point[0].tolist())
-    return point
+    return None if len(point) == 0 else tuple(point[0].tolist())
 
 
 def _get_point_center_of_mass(arr, integer_index=True):

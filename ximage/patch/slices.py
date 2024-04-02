@@ -250,9 +250,8 @@ def get_slice_around_index(index, size, min_start=0, max_stop=np.inf):
 
 
 def _check_buffer(buffer, slice_size):
-    if buffer < 0:
-        if abs(buffer) * 2 >= slice_size:
-            raise ValueError("The negative buffer absolute value is larger than half of the slice_size.")
+    if buffer < 0 and abs(buffer) * 2 >= slice_size:
+        raise ValueError("The negative buffer absolute value is larger than half of the slice_size.")
     return buffer
 
 
@@ -302,10 +301,7 @@ def _check_stride(stride, method):
 
 
 def _get_partitioning_idxs(start, stop, stride, slice_size, method):
-    if method == "tiling":
-        steps = slice_size + stride
-    else:  # sliding
-        steps = stride
+    steps = slice_size + stride if method == "tiling" else stride  # when sliding
     return np.arange(start, stop + 1, steps)
 
 
@@ -395,7 +391,6 @@ def get_partitions_slices(
 
     # Buffer the slices
     return [pad_slice(slc, padding=buffer, min_start=min_start, max_stop=max_stop) for slc in slices]
-
 
 
 def get_nd_partitions_list_slices(

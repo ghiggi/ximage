@@ -208,10 +208,7 @@ def check_stride(stride, dims, shape, partitioning_method):
         return None
     # Set default arguments
     if stride is None:
-        if partitioning_method == "tiling":
-            stride = 0
-        else:  # sliding
-            stride = 1
+        stride = 0 if partitioning_method == "tiling" else 1
     stride = _ensure_is_dict_argument(stride, dims=dims, arg_name="stride")
     if partitioning_method == "tiling":
         for value in stride.values():
