@@ -65,7 +65,7 @@ def check_patch_size(patch_size, dims, shape):
     patch_size = _ensure_is_dict_argument(patch_size, dims=dims, arg_name="patch_size")
     patch_size = _replace_full_dimension_flag_value(patch_size, shape)
     # Check natural number
-    for dim, value in patch_size.items():
+    for value in patch_size.values():
         if not are_all_natural_numbers(value):
             raise ValueError("Invalid 'patch_size' values. They must be only positive integer values.")
     # Check patch size is smaller than array shape
@@ -102,7 +102,7 @@ def check_kernel_size(kernel_size, dims, shape):
     kernel_size = _ensure_is_dict_argument(kernel_size, dims=dims, arg_name="kernel_size")
     kernel_size = _replace_full_dimension_flag_value(kernel_size, shape)
     # Check natural number
-    for dim, value in kernel_size.items():
+    for value in kernel_size.values():
         if not are_all_natural_numbers(value):
             raise ValueError("Invalid 'kernel_size' values. They must be only positive integer values.")
     # Check patch size is smaller than array shape
@@ -135,7 +135,7 @@ def check_buffer(buffer, dims, shape):
         The buffer to apply on each dimension.
     """
     buffer = _ensure_is_dict_argument(buffer, dims=dims, arg_name="buffer")
-    for dim, value in buffer.items():
+    for value in buffer.values():
         if not are_all_integers(value):
             raise ValueError("Invalid 'buffer' values. They must be only integer values.")
     return buffer
@@ -164,7 +164,7 @@ def check_padding(padding, dims, shape):
         The padding to apply on each dimension.
     """
     padding = _ensure_is_dict_argument(padding, dims=dims, arg_name="padding")
-    for dim, value in padding.items():
+    for value in padding.values():
         if not are_all_integers(value):
             raise ValueError("Invalid 'padding' values. They must be only integer values.")
     return padding
@@ -215,11 +215,11 @@ def check_stride(stride, dims, shape, partitioning_method):
             stride = 1
     stride = _ensure_is_dict_argument(stride, dims=dims, arg_name="stride")
     if partitioning_method == "tiling":
-        for dim, value in stride.items():
+        for value in stride.values():
             if not are_all_integers(value):
                 raise ValueError("Invalid 'stride' values. They must be only integer values.")
     else:  # sliding
-        for dim, value in stride.items():
+        for value in stride.values():
             if not are_all_natural_numbers(value):
                 raise ValueError("Invalid 'stride' values. They must be only positive integer (>=1) values.")
     return stride
