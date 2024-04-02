@@ -7,7 +7,6 @@ from ximage.patch import checks
 
 def patch_and_kernel_size_routine(tested_function):
     """Routine used by test_check_patch_size and test_check_kernel_size."""
-
     dimension_names = ["x", "y"]
     shape = (10, 10)
     patch_size_expected = {"x": 2, "y": 2}
@@ -37,7 +36,6 @@ def patch_and_kernel_size_routine(tested_function):
 
 def buffer_and_padding_routine(tested_function):
     """Routine used by test_check_buffer and test_check_padding."""
-
     dimension_names = ["x", "y"]
     shape = (10, 10)
     buffer_expected = {"x": 2, "y": 2}
@@ -58,31 +56,26 @@ def buffer_and_padding_routine(tested_function):
 
 def test_check_patch_size():
     """Test check_patch_size."""
-
     patch_and_kernel_size_routine(checks.check_patch_size)
 
 
 def test_check_kernel_size():
     """Test check_kernel_size."""
-
     patch_and_kernel_size_routine(checks.check_kernel_size)
 
 
 def test_check_buffer():
     """Test check_buffer."""
-
     buffer_and_padding_routine(checks.check_buffer)
 
 
 def test_check_padding():
     """Test check_padding."""
-
     buffer_and_padding_routine(checks.check_padding)
 
 
 def test_check_partitioning_method():
     """Test check_partitioning_method"""
-
     # Check valid values
     for method in [None, "sliding", "tiling"]:
         assert checks.check_partitioning_method(method) == method
@@ -98,7 +91,6 @@ def test_check_partitioning_method():
 
 def test_check_stride():
     """Test check_stride."""
-
     dimension_names = ["x", "y"]
     shape = (10, 10)
 

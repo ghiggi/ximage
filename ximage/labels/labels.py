@@ -150,7 +150,6 @@ def _get_labels_stats(
     labeled_comprehension_kwargs=None,
 ):
     """Return label and label statistics sorted by statistic value."""
-
     if labeled_comprehension_kwargs is None:
         labeled_comprehension_kwargs = {}
     if label_indices is None:

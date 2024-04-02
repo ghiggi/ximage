@@ -13,7 +13,6 @@ from ximage.labels import labels
 
 def test_get_label_indices():
     """Test label indices retrieval"""
-
     array = [float("nan"), 0, 1, 1, 2.001, 4, 1]
     label_indices = np.array([1, 2, 4])
 
@@ -27,7 +26,6 @@ def test_get_label_indices():
 
 def test_redefine_label_array():
     """Test label redefinition"""
-
     array = [3, 3, 4, 6]
     label_indices = np.array([3, 4])
     label_indices_with_0 = np.array([0, 3, 4])
@@ -56,7 +54,6 @@ def test_redefine_label_array():
 
 def test_labels():
     """Test labels. See test_get_labels for extensive tests of all arguments."""
-
     _ = float("nan")
     array = np.array(
         [
@@ -130,7 +127,6 @@ def test_labels():
 
 def test_highlight_label():
     """Test highlight_label"""
-
     _ = float("nan")
     labels_array = xr.DataArray(
         [
@@ -158,7 +154,6 @@ def test_highlight_label():
 
 def test_mask_buffer():
     """Test mask dilation"""
-
     mask_ini = np.array(
         [
             [0, 0, 0],
@@ -203,7 +198,6 @@ def test_mask_buffer():
 
 def test_check_array():
     """Test array dimensions checks and conversion to np.ndarray"""
-
     # Check error if non-2D
     with pytest.raises(ValueError):
         labels._check_array(np.array([1, 2, 3]))
@@ -228,7 +222,6 @@ def test_check_array():
 
 def test_no_labels_result():
     """Test default labels for array without labels"""
-
     array = np.ones((2, 3))
     labels_target = np.zeros(array.shape)
 
@@ -240,7 +233,6 @@ def test_no_labels_result():
 
 def test_check_sort_by_and_stats():
     """Tests for sort_by argument"""
-
     # Check if arg is a string or function
     with pytest.raises(TypeError):
         labels._check_sort_by(None)
@@ -262,7 +254,6 @@ def test_check_sort_by_and_stats():
 
 def test_get_label_value_stats():
     """Test _get_label_value_stats"""
-
     array = np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
 
     label_array = np.array(
@@ -291,7 +282,6 @@ def test_get_label_value_stats():
 
 def test_get_labels_stats():
     """Test _get_labels_stats"""
-
     array = np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
 
     label_array = np.array(
@@ -315,7 +305,6 @@ def test_get_labels_stats():
 
 def test_vec_translate():
     """Test _vec_translate"""
-
     array = np.array(
         [
             [1, 1, 1],
@@ -350,7 +339,6 @@ def test_vec_translate():
 
 def test_get_labels_with_requested_occurrence():
     """Test _get_labels_with_requested_occurrence"""
-
     array = np.array(
         [
             [0, 1, 2],
@@ -369,7 +357,6 @@ def test_get_labels_with_requested_occurrence():
 
 def test_ensure_valid_label_arr():
     """Test _ensure_valid_label_arr"""
-
     array = np.array([[float("nan"), 0, 1]])
     validated_array = labels._ensure_valid_label_arr(array)
     assert np.array_equal(validated_array, np.array([[0, 0, 1]]))
@@ -384,7 +371,6 @@ def test_ensure_valid_label_arr():
 
 def test_ensure_valid_label_indices():
     """Test _ensure_valid_label_indices"""
-
     label_indices = np.array([float("nan"), 0, 1, 2, 3])
     label_indices_valid = labels._ensure_valid_label_indices(label_indices)
     assert np.array_equal(label_indices_valid, np.array([1, 2, 3]))
@@ -392,7 +378,6 @@ def test_ensure_valid_label_indices():
 
 def test_check_unique_label_indices():
     """Test _check_unique_label_indices"""
-
     labels._check_unique_label_indices(np.array([1, 2, 3]))
 
     with pytest.raises(ValueError):
@@ -401,7 +386,6 @@ def test_check_unique_label_indices():
 
 def test_get_new_label_value_dict():
     """Test _get_new_label_value_dict"""
-
     label_indices = np.array([1, 2, 3])
     max_label = 4
     expected_value_dict = {
@@ -418,7 +402,6 @@ def test_get_new_label_value_dict():
 
 def test_np_redefine_label_array():
     """Test _np_redefine_label_array"""
-
     array = np.array(
         [
             [0, 1, 2],
@@ -450,7 +433,6 @@ def test_np_redefine_label_array():
 
 def test_xr_redefine_label_array():
     """Test _xr_redefine_label_array"""
-
     array = xr.DataArray(
         [
             [0, 1, 2],
@@ -473,7 +455,6 @@ def test_xr_redefine_label_array():
 
 def test_check_xr_obj():
     """Test _check_xr_obj"""
-
     data = [[1, 2, 3]]
 
     # Check invalid type
@@ -504,7 +485,6 @@ def test_check_xr_obj():
 
 def test_get_labels():
     """Test _get_labels"""
-
     _ = float("nan")
     array = np.array(
         [
@@ -664,7 +644,6 @@ def test_get_labels():
 
 def test_xr_get_labels():
     """Test _xr_get_labels. See test_get_labels for extensive tests of all arguments."""
-
     _ = float("nan")
     array = np.array(
         [

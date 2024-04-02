@@ -36,12 +36,12 @@ def pad_slice(slc, padding, min_start=0, max_stop=np.inf):
     max_stop : int
         The maximum value for the stop of the new slice.
         The default is np.inf.
+
     Returns
     -------
     list_slices : TYPE
         The list of slices after applying padding.
     """
-
     return slice(max(slc.start - padding, min_start), min(slc.stop + padding, max_stop))
 
 
@@ -108,6 +108,7 @@ def enlarge_slice(slc, min_size, min_start=0, max_stop=np.inf):
     max_stop : int
         The maximum value for the stop of the new slice.
         The default is np.inf.
+
     Returns
     -------
     slice
@@ -239,7 +240,6 @@ def get_slice_around_index(index, size, min_start=0, max_stop=np.inf):
         A slice object with the desired size and respecting the left and right bounds.
 
     """
-
     index_slc = slice(index, index + 1)
     try:
         slc = enlarge_slice(index_slc, min_size=size, min_start=min_start, max_stop=max_stop)

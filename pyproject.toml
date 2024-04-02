@@ -121,7 +121,7 @@ docstring-code-format = true
 
 select = [
     # pydocstyle
-    # "D",
+    "D",
     # Pyflakes
     "F",
     # pycodestyle

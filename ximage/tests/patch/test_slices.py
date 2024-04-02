@@ -7,7 +7,6 @@ from ximage.patch import slices
 
 def test_get_slice_size():
     """Test get_slice_size"""
-
     with pytest.raises(TypeError):
         slices.get_slice_size("invalid")
 
@@ -17,7 +16,6 @@ def test_get_slice_size():
 
 def test_pad_slice():
     """Test pad_slice"""
-
     # Always step = 1
 
     test_slice = slice(2, 8)
@@ -34,7 +32,6 @@ def test_pad_slice():
 
 def test_pad_slices():
     """Test pad_slices"""
-
     test_slices = [slice(2, 8), slice(1, 9)]
 
     # Integer padding and shape
@@ -74,7 +71,6 @@ def test_pad_slices():
 
 def test_enlarge_slice():
     """Test enlarge_slice"""
-
     test_slice = slice(3, 5)
     min_start = 1
     max_stop = 10
@@ -126,7 +122,6 @@ def test_enlarge_slice():
 
 def test_enlarge_slices():
     """Test enlarge_slices"""
-
     test_slices = [slice(3, 5), slice(6, 8)]
 
     # Integer min_size and shape
@@ -166,7 +161,6 @@ def test_enlarge_slices():
 
 def test_get_slice_from_idx_bounds():
     """Test get_slice_from_idx_bounds"""
-
     idx_start = 2
     idx_stop = 8
     expected_slice = slice(2, 9)
@@ -185,7 +179,6 @@ def test_get_idx_bounds_from_slice():
 
 def test_get_slice_around_index():
     """Test get_slice_around_index"""
-
     index = 3
     min_start = 1
     max_stop = 10
@@ -226,7 +219,6 @@ def test_get_slice_around_index():
 
 def test_get_partitions_slices():
     """Test get_partitions_slices"""
-
     start = 0
     stop = 10
     slice_size = 3
@@ -311,7 +303,6 @@ def test_get_partitions_slices():
 
 def test_get_nd_partitions_list_slices():
     """Test get_nd_partitions_list_slices"""
-
     starts = [0, 10]
     stops = [10, 20]
     intervals = [slice(starts[i], stops[i]) for i in range(len(starts))]
@@ -349,7 +340,6 @@ def test_get_nd_partitions_list_slices():
 
 def test_check_buffer():
     """Test _check_buffer"""
-
     # For slice(start, end) to make sense, end must be at least (start + 1)
 
     slice_size = 3
@@ -389,7 +379,6 @@ def test_check_buffer():
 
 def test_check_slice_size():
     """Test _check_slice_size"""
-
     # Valid slice_size
     slice_size = 1
     assert slices._check_slice_size(slice_size) == slice_size
@@ -402,7 +391,6 @@ def test_check_slice_size():
 
 def test_check_method():
     """Test _check_method"""
-
     valid_methods = ["sliding", "tiling"]
 
     for method in valid_methods:
@@ -418,7 +406,6 @@ def test_check_method():
 
 def test_check_min_start():
     """Test _check_min_start"""
-
     start = 10
 
     # min_start not provided
@@ -437,7 +424,6 @@ def test_check_min_start():
 
 def test_check_max_stop():
     """Test _check_max_stop"""
-
     stop = 10
 
     # max_stop not provided
@@ -456,7 +442,6 @@ def test_check_max_stop():
 
 def test_check_stride():
     """Test _check_stride"""
-
     # Sliding method
     method = "sliding"
 
