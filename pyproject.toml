@@ -150,7 +150,7 @@ select = [
     # pandas-vet
     "PD",
     # pylint
-    #"PL",
+    "PL",
     # flake8-commas
     "COM",
     # flake8-slots

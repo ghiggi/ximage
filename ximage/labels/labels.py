@@ -330,9 +330,8 @@ def _check_xr_obj(xr_obj, variable=None):
             raise ValueError("An xr.Dataset 'variable' must be specified.")
         if variable not in xr_obj.data_vars:
             raise ValueError(f"'{variable}' is not a variable of the xr.Dataset.")
-    else:
-        if variable is not None:
-            raise ValueError("'variable' must not be specified when providing a xr.DataArray.")
+    elif variable is not None:
+        raise ValueError("'variable' must not be specified when providing a xr.DataArray.")
 
 
 def _get_labels(

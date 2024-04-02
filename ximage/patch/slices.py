@@ -292,9 +292,8 @@ def _check_stride(stride, method):
             stride = 1
         if stride < 1:
             raise ValueError("When sliding, 'stride' must be equal or larger than 1.")
-    else:  # tiling
-        if stride is None:
-            stride = 0
+    elif stride is None: # tiling
+        stride = 0
     if not isinstance(stride, int):
         raise TypeError("'stride' must be an integer.")
     return stride

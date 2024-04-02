@@ -324,7 +324,7 @@ def test_check_labels_id():
     # Check conversion in int dtype
     labels_id = np.array([3, 5], dtype=np.float32)
     returned_labels_id = labels_patch._check_labels_id(labels_id, label_array)
-    assert returned_labels_id.dtype == np.int64 or returned_labels_id.dtype == np.int32
+    assert returned_labels_id.dtype in (np.int64, np.int32)
 
     # Check invalid labels_id: 0, non-positive, non-integer, not in label_array
     for label in [0, -1, 0.1, 4]:
