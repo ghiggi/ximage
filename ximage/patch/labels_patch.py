@@ -163,12 +163,13 @@ def _check_callable_centered_on(centered_on):
             raise ValueError("The point coordinate must be inside the array shape.")
         if np.isnan(c):
             raise ValueError("The point coordinate must not be np.nan.")
+    # Check case with nan array
     try:
         point = centered_on(arr * np.nan)
-        if point is not None:
-            raise ValueError("The 'centered_on' function should return None if the input array is a np.nan ndarray.")
-    except:
-        raise ValueError("The 'centered_on' function should be able to deal with a np.nan ndarray.")
+    except Exception as err:
+        raise ValueError(f"The 'centered_on' function should be able to deal with a np.nan ndarray. Error is {err}.")
+    if point is not None:
+        raise ValueError("The 'centered_on' function should return None if the input array is a np.nan ndarray.")
 
 
 def _check_centered_on(centered_on):

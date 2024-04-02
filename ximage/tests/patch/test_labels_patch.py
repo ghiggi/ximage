@@ -381,16 +381,23 @@ def test_check_callable_centered_on():
 
     labels_patch._check_callable_centered_on(centered_on_1)
 
-    # Check invalid return type
-    for returned_point in [1, [1, 2]]:
+    # Check invalid return type (int/float)
+    def centered_on_output_scalar(array):
+        if np.all(np.isnan(array)):
+            return None
+        return 1  # bad return type
 
-        def centered_on_2(array):
-            if np.all(np.isnan(array)):
-                return None
-            return returned_point
+    with pytest.raises(ValueError):
+        labels_patch._check_callable_centered_on(centered_on_output_scalar)
 
-        with pytest.raises(ValueError):
-            labels_patch._check_callable_centered_on(centered_on_2)
+    # Check invalid return type (int/float)
+    def centered_on_output_list(array):
+        if np.all(np.isnan(array)):
+            return None
+        return [1, 2]  # bad return type
+
+    with pytest.raises(ValueError):
+        labels_patch._check_callable_centered_on(centered_on_output_list)
 
     # Check invalid dimension
     def centered_on_3(array):

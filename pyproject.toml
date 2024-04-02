@@ -169,6 +169,7 @@ ignore = [
     "E722",
     "PT011", # pytest raised error must be checked if match the expected error msg
     "PERF203",
+    "B904",
 
     # Docstyle Rules
     "D404", # Docstring can't start with "This"
