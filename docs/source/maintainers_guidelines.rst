@@ -135,7 +135,7 @@ One  `GitHub Action <https://github.com/ghiggi/ximage/actions>`_ is defined to t
 
 
 Upon the release of the package on PyPI, a conda-forge bot attempts to automatically update the
- `conda-forge recipe <https://github.com/conda-forge/ximage-feedstock/>`__.
+`conda-forge recipe <https://github.com/conda-forge/ximage-feedstock/>`__.
 Once the conda-forge recipe is updated, a new conda-forge package is released.
 
 The PyPI project and the conda-forge recipes are collaboratively maintained by core contributors of the project.

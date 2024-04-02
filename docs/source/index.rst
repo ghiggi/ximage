@@ -6,9 +6,8 @@
 Welcome to the ximage documentation !
 ======================================
 
-
-In data analysis and working with image, video or climate simulations, handling large, complex
-datasets can be challenging.
+In data analysis and when working with image, video or climate simulations,
+handling large, complex datasets can be challenging.
 Moreover, when dealing with multidimensional data, using index-based dimensions can lead to mistakes.
 
 Xarray provides a handy way to manipulate multidimensional arrays with labeled dimensions,
