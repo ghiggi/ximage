@@ -64,7 +64,9 @@ write_to = "ximage/_version.py"
 
 [tool.setuptools]
 license-files = ["LICENSE"]
-packages = ["ximage"] # explicitly list the packages in modules
+
+[tool.setuptools.packages.find]
+include = ["ximage*"]
 
 [tool.pytest.ini_options]
 addopts = "--cov --cov-report term-missing --cov-report xml --cov-report lcov:lcov.info"
