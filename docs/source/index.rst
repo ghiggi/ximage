@@ -10,7 +10,7 @@ Welcome to ximage documentation !
 In data analysis and working with image, video or climate simulations, handling large, complex
 datasets can be challenging.
 Moreover, when dealing with multidimensional data, using index-based dimensions can lead to mistakes.
- 
+
 Xarray provides a handy way to manipulate multidimensional arrays with labeled dimensions,
 but lack of tools to perform classical image/video processing manipulations.
 
@@ -20,7 +20,7 @@ Ximage fill these gaps by providing utilities to:
 
 **Ready to start?**
 
-Consider joining our `Slack Workspace <https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA>`__ to say hi or ask questions. 
+Consider joining our `Slack Workspace <https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA>`__ to say hi or ask questions.
 It's a great place to connect with others and get support.
 
 Now let's get started to analyze your images/videos or multidimensional data with ximage !
