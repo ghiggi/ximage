@@ -74,7 +74,7 @@ def plot_labels(
     # Replace 0 with nan
     dataarray = dataarray.where(dataarray > 0)
     # Define appropriate colormap
-    plot_kwargs, cbar_kwargs = get_label_colorbar_settings(label_indices, cmap="Paired")
+    plot_kwargs, cbar_kwargs = get_label_colorbar_settings(label_indices, cmap=cmap)
     # Plot image
     ticklabels = cbar_kwargs.pop("ticklabels", None)
     if not add_colorbar:
