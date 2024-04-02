@@ -427,7 +427,7 @@ def _get_patches_from_partitions_list_slices(
                 padding=padding,
             )
             if patch_list_slices is not None and patch_list_slices not in patches_list_slices:
-                n += 1 # noqa PLW2901
+                n += 1  # noqa PLW2901
                 patches_list_slices.append(patch_list_slices)
     return patches_list_slices
 
