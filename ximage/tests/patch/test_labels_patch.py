@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 import xarray as xr
-from pytest import SaneEqualityArray, apply_to_all_array_types
+from pytest import SaneEqualityArray, apply_to_all_array_types  # noqa PT013
 
 from ximage.patch import labels_patch
 
