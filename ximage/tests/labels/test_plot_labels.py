@@ -7,7 +7,7 @@ from ximage.labels.plot_labels import plot_labels
 
 
 def test_plot_labels():
-    """Test plot_labels"""
+    """Test plot_labels."""
     n_labels = 10
     shape = (10, 10)
     array = np.random.randint(0, n_labels, size=shape)

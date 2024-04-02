@@ -1,15 +1,39 @@
-#!/usr/bin/env python3
-"""
-Created on Mon Jul 10 13:36:29 2023
+# -----------------------------------------------------------------------------.
+# MIT License
 
-@author: ghiggi
-"""
+# Copyright (c) 2024 ximage developers
+#
+# This file is part of ximage.
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# -----------------------------------------------------------------------------.
+"""ximage xarray-accessor methods."""
 import numpy as np
 import xarray as xr
 
 
 class XImage_Base_Accessor:
+    """XImage Base Accessor for xarray objects."""
+
     def __init__(self, xarray_obj):
+        """Create a new XImage_Base_Accessor object."""
         if not isinstance(xarray_obj, (xr.DataArray, xr.Dataset)):
             raise TypeError("The 'ximage' accessor is available only for xr.Dataset and xr.DataArray.")
         self._obj = xarray_obj
@@ -27,6 +51,7 @@ class XImage_Base_Accessor:
         labeled_comprehension_kwargs=None,
         label_name="label",
     ):
+        """Label the xarray object."""
         from ximage.labels.labels import label
 
         if labeled_comprehension_kwargs is None:
@@ -72,6 +97,7 @@ class XImage_Base_Accessor:
         debug=False,
         verbose=False,
     ):
+        """Extract patches around labels of the xarray DataArray ``label_name``."""
         from ximage.patch.labels_patch import get_patches_from_labels
 
         return get_patches_from_labels(
@@ -127,6 +153,7 @@ class XImage_Base_Accessor:
         debug=False,
         verbose=False,
     ):
+        """Return isel-dictionaries to extract patches around labels."""
         from ximage.patch.labels_patch import get_patches_isel_dict_from_labels
 
         return get_patches_isel_dict_from_labels(
@@ -159,13 +186,19 @@ class XImage_Base_Accessor:
 
 @xr.register_dataset_accessor("ximage")
 class XImage_Dataset_Accessor(XImage_Base_Accessor):
+    """XImage Dataset Accessor for xarray objects."""
+
     def __init__(self, xarray_obj):
+        """Initialize a XImage_Dataset_Accessor object."""
         super().__init__(xarray_obj)
 
 
 @xr.register_dataarray_accessor("ximage")
 class XImage_DataArray_Accessor(XImage_Base_Accessor):
+    """XImage DataArray Accessor for xarray objects."""
+
     def __init__(self, xarray_obj):
+        """Initialize a XImage_DataArray_Accessor object."""
         super().__init__(xarray_obj)
 
     def plot_labels(
@@ -178,6 +211,7 @@ class XImage_DataArray_Accessor(XImage_Base_Accessor):
         cmap="Paired",
         **plot_kwargs,
     ):
+        """Plot the labels on the xarray object."""
         from ximage.labels.plot_labels import plot_labels
 
         return plot_labels(
