@@ -1,9 +1,12 @@
 import numpy as np
 import pytest
 import xarray as xr
-from pytest import apply_to_all_array_types
+from pytest import apply_to_all_array_types  # noqa PT013
 
 from ximage.labels import labels
+
+# Fixtures used
+# - apply_to_all_array_types
 
 # Tests for public functions ###################################################
 
@@ -193,8 +196,8 @@ def test_mask_buffer():
     with pytest.raises(ValueError):
         labels._mask_buffer(mask_ini, -1)
 
+    non_2D_footprint = np.array([1, 1, 1])
     with pytest.raises(ValueError):
-        non_2D_footprint = np.array([1, 1, 1])
         labels._mask_buffer(mask_ini, non_2D_footprint)
 
 
