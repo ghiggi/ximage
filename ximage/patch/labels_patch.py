@@ -1,9 +1,30 @@
-#!/usr/bin/env python3
-"""
-Created on Wed Oct 19 19:40:12 2022
+# -----------------------------------------------------------------------------.
+# MIT License
 
-@author: ghiggi
-"""
+# Copyright (c) 2024 ximage developers
+#
+# This file is part of ximage.
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# -----------------------------------------------------------------------------.
+"""Functions to extract patch around labels."""
 import random
 import warnings
 from typing import Callable, Union
@@ -617,6 +638,21 @@ def get_patches_isel_dict_from_labels(
     debug=False,
     verbose=False,
 ):
+    """
+    Returnisel-dictionaries to extract patches around labels.
+
+    The isel-dictionaries are grouped by label_id and returned in a
+    dictionary.
+
+    Please refer to ``get_patches_from_labels`` for a detailed description of
+    the function arguments.
+
+    Return
+    ------
+    dict
+        A dictionary of the form: ``{label_id: list_isel_dicts}``.
+
+    """
     gen = _get_patches_isel_dict_generator(
         xr_obj=xr_obj,
         label_name=label_name,

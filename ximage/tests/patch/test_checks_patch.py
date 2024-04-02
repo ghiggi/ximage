@@ -75,7 +75,7 @@ def test_check_padding():
 
 
 def test_check_partitioning_method():
-    """Test check_partitioning_method"""
+    """Test check_partitioning_method."""
     # Check valid values
     for method in [None, "sliding", "tiling"]:
         assert checks.check_partitioning_method(method) == method

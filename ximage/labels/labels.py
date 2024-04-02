@@ -1,9 +1,31 @@
-#!/usr/bin/env python3
-"""
-Created on Wed Oct 19 19:34:53 2022
+# -----------------------------------------------------------------------------.
+# MIT License
 
-@author: ghiggi
-"""
+# Copyright (c) 2024 ximage developers
+#
+# This file is part of ximage.
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# -----------------------------------------------------------------------------.
+"""Labels identification."""
+
 # import dask_image.ndmeasure
 # from dask_image.ndmeasure import as dask_label_image
 import dask.array
@@ -185,7 +207,7 @@ def _vec_translate(arr, my_dict):
 
 
 def _get_labels_with_requested_occurrence(label_arr, vmin, vmax):
-    "Get label indices with requested occurrence."
+    """Get label indices with requested occurrence."""
     # Compute label occurrence
     label_indices, label_occurrence = np.unique(label_arr, return_counts=True)
 
