@@ -61,7 +61,6 @@ def _check_array(arr):
     return np.asanyarray(arr)
 
 
-
 def _no_labels_result(arr):
     """Define results for array without labels."""
     labels = np.zeros(arr.shape)
@@ -140,7 +139,6 @@ def _get_label_value_stats(arr, label_arr, label_indices=None, stats="area", lab
         values = func(image=arr, label_image=label_arr, index=label_indices)
     # Compute values
     return values.compute()
-
 
 
 def _get_labels_stats(
@@ -294,7 +292,6 @@ def _np_redefine_label_array(label_arr, label_indices=None):
 
     # Redefine the id of the labels
     return _vec_translate(label_arr, val_dict)
-
 
 
 def _xr_redefine_label_array(dataarray, label_indices=None):
@@ -672,7 +669,6 @@ def label(
 
     # Assign label to xr.DataArray  coordinate
     return xr_obj.assign_coords({label_name: da_labels})
-
 
 
 def highlight_label(xr_obj, label_name, label_id):
