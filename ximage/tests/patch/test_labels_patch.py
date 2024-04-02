@@ -558,7 +558,7 @@ def test_get_point_random():
     returned_point = labels_patch._get_point_random(array)
     assert len(returned_point) == len(shape)
     for max_value, coordinate in zip(shape, returned_point):
-        assert 0 <= coordinate
+        assert coordinate >= 0
         assert coordinate < max_value
 
     # Check None return if only nan in array
