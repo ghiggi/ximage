@@ -34,7 +34,7 @@ def _plot_xr_isel_dict_rectangle(ax, xr_obj, label_name, isel_dicts, edgecolor="
             facecolor=facecolor,
             **kwargs,
         )
-    return None
+    return
 
 
 def _get_nice_extent_isel_dict(patches_isel_dicts, partitions_isel_dicts, shape_dict):

@@ -58,9 +58,8 @@ def _check_array(arr):
         raise ValueError("Expecting non-zero dimensions.")
 
     # Convert to numpy array
-    arr = np.asanyarray(arr)
+    return np.asanyarray(arr)
 
-    return arr
 
 
 def _no_labels_result(arr):
@@ -140,9 +139,8 @@ def _get_label_value_stats(arr, label_arr, label_indices=None, stats="area", lab
         func = getattr(dask_image.ndmeasure, stats)
         values = func(image=arr, label_image=label_arr, index=label_indices)
     # Compute values
-    values = values.compute()
-    # Return values
-    return values
+    return values.compute()
+
 
 
 def _get_labels_stats(
@@ -201,8 +199,7 @@ def _get_labels_with_requested_occurrence(label_arr, vmin, vmax):
     # Get index with required occurrence
     valid_area_indices = np.where(np.logical_and(label_occurrence >= vmin, label_occurrence <= vmax))[0]
     # Return list of valid label indices
-    label_indices = label_indices[valid_area_indices] if len(valid_area_indices) > 0 else []
-    return label_indices
+    return label_indices[valid_area_indices] if len(valid_area_indices) > 0 else []
 
 
 def _ensure_valid_label_arr(label_arr):
@@ -222,16 +219,14 @@ def _ensure_valid_label_arr(label_arr):
         raise ValueError("The label array must contain only positive integers.")
 
     # Ensure label array is integer dtype
-    label_arr = label_arr.astype(int)
-    return label_arr
+    return label_arr.astype(int)
 
 
 def _ensure_valid_label_indices(label_indices):
     """Ensure valid label indices are integers and does not contains 0 and NaN."""
     label_indices = np.delete(label_indices, np.where(label_indices == 0)[0].flatten())
     label_indices = np.delete(label_indices, np.where(np.isnan(label_indices))[0].flatten())
-    label_indices = label_indices.astype(int)
-    return label_indices
+    return label_indices.astype(int)
 
 
 def get_label_indices(arr):
@@ -243,8 +238,7 @@ def get_label_indices(arr):
     arr = arr[~np.isnan(arr)]
     arr = arr.astype(int)  # otherwise precision error in unique
     label_indices = np.unique(arr)
-    label_indices = _ensure_valid_label_indices(label_indices)
-    return label_indices
+    return _ensure_valid_label_indices(label_indices)
 
 
 def _check_unique_label_indices(label_indices):
@@ -299,9 +293,8 @@ def _np_redefine_label_array(label_arr, label_indices=None):
     val_dict = _get_new_label_value_dict(label_indices, max_label)
 
     # Redefine the id of the labels
-    labels_arr = _vec_translate(label_arr, val_dict)
+    return _vec_translate(label_arr, val_dict)
 
-    return labels_arr
 
 
 def _xr_redefine_label_array(dataarray, label_indices=None):
@@ -324,11 +317,9 @@ def redefine_label_array(data, label_indices=None):
     """
     if isinstance(data, xr.DataArray):
         return _xr_redefine_label_array(data, label_indices=label_indices)
-    elif isinstance(data, (np.ndarray, dask.array.Array)):
+    if isinstance(data, (np.ndarray, dask.array.Array)):
         return _np_redefine_label_array(data, label_indices=label_indices)
-    else:
-        type_data = type(data)
-        raise TypeError(f"This method does not accept {type_data}")
+    raise TypeError(f"This method does not accept {type(data)}")
 
 
 def _check_xr_obj(xr_obj, variable=None):
@@ -680,9 +671,8 @@ def label(
     da_labels = da_labels.where(da_labels > 0)
 
     # Assign label to xr.DataArray  coordinate
-    xr_obj = xr_obj.assign_coords({label_name: da_labels})
+    return xr_obj.assign_coords({label_name: da_labels})
 
-    return xr_obj
 
 
 def highlight_label(xr_obj, label_name, label_id):

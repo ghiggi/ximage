@@ -89,8 +89,7 @@ def _check_labels_id(labels_id, label_arr):
     valid_labels = np.unique(label_arr[~np.isnan(label_arr)]).astype(int)
     # If labels_id is None, assign the valid_labels
     if isinstance(labels_id, type(None)):
-        labels_id = valid_labels
-        return labels_id
+        return valid_labels
     # If input labels_id is a list, make it a np.array
     labels_id = np.array(labels_id).astype(int)
     # Check labels_id are natural number >= 1
@@ -196,17 +195,14 @@ def _check_centered_on(centered_on):
 def _get_variable_arr(xr_obj, variable, centered_on):
     """Get variable array (in memory)."""
     if isinstance(xr_obj, xr.DataArray):
-        variable_arr = np.asanyarray(xr_obj.data)
-        return variable_arr
+        return np.asanyarray(xr_obj.data)
+    if centered_on is not None:
+        if variable is None and (centered_on in ["max", "min"] or callable(centered_on)):
+            raise ValueError("'variable' must be specified if 'centered_on' is specified.")
+    if variable is not None:
+        variable_arr = np.asanyarray(xr_obj[variable].data)  # in memory
     else:
-        if centered_on is not None:
-            if variable is None and (centered_on in ["max", "min"] or callable(centered_on)):
-                raise ValueError("'variable' must be specified if 'centered_on' is specified.")
-        if variable is not None:
-            variable_arr = np.asanyarray(xr_obj[variable].data)  # in memory
-
-        else:
-            variable_arr = None
+        variable_arr = None
     return variable_arr
 
 
@@ -227,8 +223,7 @@ def _get_point_centroid(arr):
     if np.all(~np.isfinite(arr)):
         return None
     centroid = np.array(arr.shape) / 2.0
-    centroid = tuple(centroid.tolist())
-    return centroid
+    return tuple(centroid.tolist())
 
 
 def _get_point_random(arr):
@@ -237,8 +232,7 @@ def _get_point_random(arr):
     if np.all(~is_finite):
         return None
     points = np.argwhere(is_finite)
-    random_point = random.choice(points)
-    return random_point
+    return random.choice(points)
 
 
 def _get_point_with_max_value(arr):
@@ -278,8 +272,7 @@ def _get_point_center_of_mass(arr, integer_index=True):
     center_of_mass = np.nanmean(indices, axis=0)
     if integer_index:
         center_of_mass = center_of_mass.round().astype(int)
-    center_of_mass = tuple(center_of_mass.tolist())
-    return center_of_mass
+    return tuple(center_of_mass.tolist())
 
 
 def find_point(arr, centered_on: Union[str, Callable] = "max"):
@@ -328,11 +321,9 @@ def _get_labels_bbox_slices(arr):
     # Return None if all values are zeros
     if not np.any(arr):
         return None
-
     ndims = arr.ndim
     coords = np.nonzero(arr)
-    list_slices = [get_slice_from_idx_bounds(np.min(coords[i]), np.max(coords[i])) for i in range(ndims)]
-    return list_slices
+    return [get_slice_from_idx_bounds(np.min(coords[i]), np.max(coords[i])) for i in range(ndims)]
 
 
 def _get_patch_list_slices_around_label_point(
@@ -382,8 +373,7 @@ def _get_patch_list_slices_around_label(label_arr, label_id, padding, min_patch_
     # Apply padding to the slices
     list_slices = pad_slices(list_slices, padding=padding, valid_shape=label_arr.shape)
     # Increase slices to match min_patch_size
-    list_slices = enlarge_slices(list_slices, min_size=min_patch_size, valid_shape=label_arr.shape)
-    return list_slices
+    return enlarge_slices(list_slices, min_size=min_patch_size, valid_shape=label_arr.shape)
 
 
 def _get_patch_list_slices(label_arr, label_id, variable_arr, patch_size, centered_on, padding):
@@ -669,8 +659,7 @@ def get_patches_isel_dict_from_labels(
         debug=debug,
         verbose=verbose,
     )
-    dict_isel_dicts = {int(label_id): list_isel_dicts for label_id, list_isel_dicts in gen}
-    return dict_isel_dicts
+    return {int(label_id): list_isel_dicts for label_id, list_isel_dicts in gen}
 
 
 def get_patches_from_labels(
