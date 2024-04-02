@@ -69,7 +69,7 @@ def check_patch_size(patch_size, dims, shape):
             raise ValueError("Invalid 'patch_size' values. They must be only positive integer values.")
     # Check patch size is smaller than array shape
     idx_valid = [value <= max_value for value, max_value in zip(patch_size.values(), shape)]
-    max_allowed_patch_size = {dim: value for dim, value in zip(dims, shape)}
+    max_allowed_patch_size = dict(zip(dims, shape))
     if not all(idx_valid):
         raise ValueError(f"The maximum allowed patch_size values are {max_allowed_patch_size}")
     return patch_size
@@ -106,7 +106,7 @@ def check_kernel_size(kernel_size, dims, shape):
             raise ValueError("Invalid 'kernel_size' values. They must be only positive integer values.")
     # Check patch size is smaller than array shape
     idx_valid = [value <= max_value for value, max_value in zip(kernel_size.values(), shape)]
-    max_allowed_kernel_size = {dim: value for dim, value in zip(dims, shape)}
+    max_allowed_kernel_size = dict(zip(dims, shape))
     if not all(idx_valid):
         raise ValueError(f"The maximum allowed patch_size values are {max_allowed_kernel_size}")
     return kernel_size

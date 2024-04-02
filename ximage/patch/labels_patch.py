@@ -437,7 +437,7 @@ def _get_list_isel_dicts(patches_list_slices, dims):
     list_isel_dicts = []
     for patch_list_slices in patches_list_slices:
         # list_isel_dicts.append(dict(zip(dims, patch_list_slices)))
-        list_isel_dicts.append({dim: slc for dim, slc in zip(dims, patch_list_slices)})
+        list_isel_dicts.append(dict(zip(dims, patch_list_slices)))
     return list_isel_dicts
 
 
