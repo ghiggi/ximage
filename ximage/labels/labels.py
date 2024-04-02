@@ -30,7 +30,7 @@ def _mask_buffer(mask, footprint):
     If footprint = 0 or None, no dilation occur.
     If footprint is a positive integer, it create a disk(footprint)
     If footprint is a 2D array, it must represent the neighborhood expressed
-    as a 2-D array of 1’s and 0’s.
+    as a 2-D array of 1's and 0's.
     For more info: https://scikit-image.org/docs/stable/api/skimage.morphology.html#skimage.morphology.binary_dilation
 
     """
@@ -371,7 +371,7 @@ def _get_labels(
         If footprint = 0 or None, no dilation occur.
         If footprint is a positive integer, it create a disk(footprint)
         If footprint is a 2D array, it must represent the neighborhood expressed
-        as a 2-D array of 1’s and 0’s.
+        as a 2-D array of 1's and 0's.
         The default is None (no dilation).
     sort_by : (callable or str), optional
         A function or statistics to define the order of the labels.
@@ -522,7 +522,7 @@ def _xr_get_labels(
         If footprint = 0 or None, no dilation occur.
         If footprint is a positive integer, it create a disk(footprint)
         If footprint is a 2D array, it must represent the neighborhood expressed
-        as a 2-D array of 1’s and 0’s.
+        as a 2-D array of 1's and 0's.
         The default is None (no dilation).
     sort_by : (callable or str), optional
         A function or statistics to define the order of the labels.
@@ -624,7 +624,7 @@ def label(
         If footprint = 0 or None, no dilation occur.
         If footprint is a positive integer, it create a disk(footprint)
         If footprint is a 2D array, it must represent the neighborhood expressed
-        as a 2-D array of 1’s and 0’s.
+        as a 2-D array of 1's and 0's.
         The default is None (no dilation).
     sort_by : (callable or str), optional
         A function or statistics to define the order of the labels.
