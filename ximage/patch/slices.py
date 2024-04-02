@@ -249,7 +249,7 @@ def get_slice_around_index(index, size, min_start=0, max_stop=np.inf):
         slc = enlarge_slice(index_slc, min_size=size, min_start=min_start, max_stop=max_stop)
     except ValueError:
         print(index, size, min_start, max_stop, index_slc)
-        raise ValueError("'size' {size} is to large to be between {min_start} and {max_stop}.")
+        raise ValueError(f"'size' {size} is to large to be between {min_start} and {max_stop}.")
     return slc
 
 
