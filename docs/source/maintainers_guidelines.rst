@@ -121,8 +121,8 @@ This webhook is linked to the ximage core developer.
 Ghiggi Gionata owns the `ReadTheDoc <https://readthedocs.org/>`__ account.
 
 
-Package releases pipeline
-============================
+Package release 
+================== 
 
 A `GitHub Action <https://github.com/ghiggi/ximage/actions>`_ is configured to automate the packaging and uploading process
 to `PyPI <https://pypi.org/project/ximage/>`_.
@@ -186,10 +186,10 @@ The review process is the following:
 
 
 
-Continuous integration (CI) testing tools
-===========================================
+Continuous integration
+========================
 
-Continuous integration (CI) is a crucial practice in modern software development, ensuring that code changes are regularly integrated into the main codebase.
+Continuous Integration (CI) is a crucial practice in modern software development, ensuring that code changes are regularly integrated into the main codebase.
 With CI, each commit or pull request triggers an automated process that verifies the integrity of the codebase, runs tests,
 and performs various checks to catch issues early in the development lifecycle.
 
