@@ -126,7 +126,7 @@ You can create a conda environment (i.e. with python 3.11) with:
 	conda create --name ximage-dev-py311 python=3.11 --no-default-packages
 	conda activate ximage-dev-py311
 
-Install the ximage package dependencies
+Install the package dependencies
 ............................................
 
 .. code-block:: bash
@@ -134,7 +134,7 @@ Install the ximage package dependencies
 	conda install --only-deps ximage
 
 
-Install the ximage package in editable mode
+Install the package in editable mode
 ................................................
 
 Install the ximage package in editable mode by executing the following command in the ximage repository's root:
@@ -144,7 +144,7 @@ Install the ximage package in editable mode by executing the following command i
 	pip install -e ".[dev]"
 
 
-Install pre-commit code quality checks
+Install code quality checks
 ..............................................
 
 Install the pre-commit hook by executing the following command in the ximage repository's root:
