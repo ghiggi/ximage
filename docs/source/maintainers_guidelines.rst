@@ -51,7 +51,7 @@ Ongoing version support
 
 ximage major releases aims to move the community forward, focusing on specifications stabilization and major feature additions, rather than backwards-compatibility. ximage minor releases will be backwards compatible. We strongly recommend adopting the latest release of ximage into production within 6 months for major releases, and 4 months for minor releases.
 
-The maintaners do their best but does not guarantee any period of support or maintenance.
+The maintainers do their best but does not guarantee any period of support or maintenance.
 
 Releases that are 2 years or older may be considered as deprecated.
 
@@ -121,8 +121,8 @@ This webhook is linked to the ximage core developer.
 Ghiggi Gionata owns the `ReadTheDoc <https://readthedocs.org/>`__ account.
 
 
-Package release 
-================== 
+Package release
+==================
 
 A `GitHub Action <https://github.com/ghiggi/ximage/actions>`_ is configured to automate the packaging and uploading process
 to `PyPI <https://pypi.org/project/ximage/>`_.
