@@ -121,8 +121,8 @@ This webhook is linked to the ximage core developer.
 Ghiggi Gionata owns the `ReadTheDoc <https://readthedocs.org/>`__ account.
 
 
-Package release 
-================== 
+Package release
+==================
 
 A `GitHub Action <https://github.com/ghiggi/ximage/actions>`_ is configured to automate the packaging and uploading process
 to `PyPI <https://pypi.org/project/ximage/>`_.
