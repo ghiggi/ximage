@@ -140,7 +140,7 @@ def _check_n_patches_per_partition(n_patches_per_partition, centered_on):
     ----------
     n_patches_per_partition : int
         Number of patches to extract from each partition.
-    centered_on : (str, callable)
+    centered_on : str or callable
         Method to extract the patch around a label point.
 
     Returns
@@ -268,8 +268,8 @@ def _get_point_center_of_mass(arr, integer_index=True):
     """Get the coordinate of the label center of mass.
 
     It uses all cells which have finite values.
-    If 0 value should be a non-label area, mask before with np.nan.
-    It returns None if all values are non-finite (i.e. np.nan).
+    If `0` value should be a non-label area, mask before with `np.nan`.
+    It returns `None` if all values are non-finite (i.e. ``np.nan``).
     """
     indices = np.argwhere(np.isfinite(arr))
     if len(indices) == 0:
@@ -283,7 +283,7 @@ def _get_point_center_of_mass(arr, integer_index=True):
 def find_point(arr, centered_on: Union[str, Callable] = "max"):
     """Find a specific point coordinate of the array.
 
-    If the coordinate can't be find, return None.
+    If the coordinate can't be find, return ``None``.
     """
     centered_on = _check_centered_on(centered_on)
 
@@ -315,7 +315,7 @@ def _get_labels_bbox_slices(arr):
 
     Parameters
     ----------
-    arr : np.ndarray
+    arr : numpy.ndarray
         n-dimensional numpy array.
 
     Returns
@@ -340,8 +340,8 @@ def _get_patch_list_slices_around_label_point(
 ):
     """Get list_slices to extract patch around a label point.
 
-    Assume label_arr must match variable_arr shape.
-    Assume patch_size shape must match variable_arr shape .
+    Assume ``label_arr`` must match ``variable_arr`` shape.
+    Assume ``patch_size`` shape must match ``variable_arr`` shape .
     """
     # Subset variable_arr around label
     list_slices = _get_labels_bbox_slices(label_arr == label_id)
@@ -424,9 +424,9 @@ def _get_patches_from_partitions_list_slices(
     padding,
     verbose=False,
 ):
-    """Return patches list slices from list of partitions list_slices.
+    """Return patches list slices from list of partitions `list_slices`.
 
-    n_patches_per_partition is 1 unless centered_on is 'random' or a callable.
+    ``n_patches_per_partition`` is 1 unless ``centered_on`` is 'random' or a callable.
     """
     patches_list_slices = []
     for partition_list_slices in partitions_list_slices:
@@ -641,10 +641,10 @@ def get_patches_isel_dict_from_labels(
     """
     Returnisel-dictionaries to extract patches around labels.
 
-    The isel-dictionaries are grouped by label_id and returned in a
+    The isel-dictionaries are grouped by ``label_id`` and returned in a
     dictionary.
 
-    Please refer to ``get_patches_from_labels`` for a detailed description of
+    Please refer to ``ximage.patch.get_patches_from_labels`` for a detailed description of
     the function arguments.
 
     Return
@@ -710,148 +710,148 @@ def get_patches_from_labels(
     """
     Routines to extract patches around labels.
 
-    Create a generator extracting (from a prelabeled xr.Dataset) a patch around:
+    Create a generator extracting (from a prelabeled xarray.Dataset) a patch around:
 
     - a label point
     - a label bounding box
 
-    If 'centered_on' is specified, output patches are guaranteed to have equal shape !
-    If 'centered_on' is not specified, output patches are guaranteed to have only have a minimum shape !
+    If ``centered_on`` is specified, output patches are guaranteed to have equal shape !
+    If ``centered_on`` is not specified, output patches are guaranteed to have only have a minimum shape !
 
-    If you want to extract the patch around the label bounding box, 'centered_on'
+    If you want to extract the patch around the label bounding box, ``centered_on``
     must not be specified.
 
-    If you want to extract the patch around a label point, the 'centered_on'
+    If you want to extract the patch around a label point, the ``centered_on``
     method must be specified. If the identified point is close to an array boundary,
     the patch is expanded toward the valid directions.
 
     Tiling or sliding enables to split/slide over each label and extract multiple patch
     for each tile.
 
-    tiling=True
-    - centered_on = "centroid" (tiling around labels bbox)
-    - centered_on = "center_of_mass" (better coverage around label)
+    ``tiling=True``
+    - ``centered_on = "centroid"`` (tiling around labels bbox)
+    - ``centered_on = "center_of_mass"`` (better coverage around label)
 
-    sliding=True
-    - centered_on = "center_of_mass" (better coverage around label) (further data coverage)
+    ``sliding=True``
+    - ``centered_on = "center_of_mass"`` (better coverage around label) (further data coverage)
 
-    Only one parameter between n_patches and labels_id can be specified.
+    Only one parameter between ``n_patches`` and ``labels_id`` can be specified.
 
     Parameters
     ----------
-    xr_obj : xr.Dataset
-        xr.Dataset with a label array named label_name.
+    xr_obj : xarray.Dataset
+        xarray.Dataset with a label array named ``label_name``.
     label_name : str
         Name of the variable/coordinate representing the label array.
-    patch_size : (int, tuple)
+    patch_size : int or tuple
         The dimensions of the n-dimensional patch to extract.
         Only positive values (>1) are allowed.
         The value -1 can be used to specify the full array dimension shape.
-        If the centered_on method is not 'label_bbox', all output patches
+        If the ``centered_on`` method is not ``'label_bbox'``, all output patches
         are ensured to have the same shape.
-        Otherwise, if 'centered_on'='label_bbox', the patch_size argument defines
+        Otherwise, if ``centered_on='label_bbox'``, the ``patch_size`` argument defines
         defined the minimum n-dimensional shape of the output patches.
-        If int, the value is applied to all label array dimensions.
-        If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, the dictionary must have has keys the label array dimensions.
+        If ``int``, the value is applied to all label array dimensions.
+        If ``list`` or ``tuple``, the length must match the number of dimensions of the array.
+        If a ``dict``, the dictionary must have has keys the label array dimensions.
     n_patches : int, optional
         Maximum number of patches to extract.
-        The default (np.Inf) enable to extract all available patches allowed by the
+        The default (``np.Inf``) enable to extract all available patches allowed by the
         specified patch extraction criteria.
     labels_id : list, optional
         List of labels for which to extract the patch.
-        If None, it extracts the patches by label order (1, 2, 3, ...)
-        The default is None.
+        If ``None``, it extracts the patches by label order ``(1, 2, 3, ...)``
+        The default is ``None``.
     n_labels : int, optional
         The number of labels for which extract patches.
-        If None (the default), it extract patches for all labels.
-        This argument can be specified only if labels_id is unspecified !
-    highlight_label_id : (bool), optional
-        If True, the label_name array of each patch is modified to contain only
-        the label_id used to select the patch.
+        If ``None`` (the default), it extract patches for all labels.
+        This argument can be specified only if ``labels_id`` is unspecified !
+    highlight_label_id : bool, optional
+        If ``True``, the ``label_name`` array of each patch is modified to contain only
+        the ``label_id`` used to select the patch.
     variable : str, optional
         Dataset variable to use to identify the patch center when centered_on is defined.
-        This is required only for centered_on='max', 'min' or the custom function.
-
-    centered_on : (str, callable), optional
+        This is required only for ``centered_on='max'``, ``centered_on='min'`` or the custom function.
+    centered_on : str or callable, optional
         The centered_on method characterize the point around which the patch is extracted.
-        Valid pre-implemented centered_on methods are 'label_bbox', 'max', 'min',
-        'centroid', 'center_of_mass', 'random'.
-        The default method is 'max'.
+        Valid pre-implemented centered_on methods are ``'label_bbox'``, ``'max'``, ``'min'``,
+        ``'centroid'``, ``'center_of_mass'``, ``'random'``.
+        The default method is ``'max'``.
 
-        If 'label_bbox' it extract the patches around the (padded) bounding box of the label.
-        If 'label_bbox',the output patch sizes are only ensured to have a minimum patch_size,
+        If ``label_bbox`` it extract the patches around the (padded) bounding box of the label.
+        If ``label_bbox``, the output patch sizes are only ensured to have a minimum ``patch_size``,
         and will likely be of different size.
         Otherwise, the other methods guarantee that the output patches have a common shape.
 
-        If centered_on is 'max', 'min' or a custom function, the 'variable' must be specified.
-        If centered_on is a custom function, it must:
-        - return None if all array values are non-finite (i.e np.nan)
+        If ``centered_on`` is ``'max'``, ``'min'`` or a custom function,
+        the ``variable`` argument must be specified.
+        If ``centered_on`` is a custom function, it must:
+        - return ``None`` if all array values are non-finite (i.e ``np.nan``)
         - return a tuple with same length as the array shape.
-    padding : (int, tuple, dict), optional
+    padding : int, tuple or dict, optional
         The padding to apply in each direction around a label prior to
         partitioning (tiling/sliding) or direct patch extraction.
         The default, 0, applies 0 padding in every dimension.
         Negative padding values are allowed !
-        If int, the value is applied to all label array dimensions.
-        If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, the dictionary must have has keys the label array dimensions.
+        If ``int``, the value is applied to all label array dimensions.
+        If ``list`` or ``tuple``, the length must match the number of dimensions of the array.
+        If a ``dict``, the dictionary must have has keys the label array dimensions.
     n_patches_per_label: int, optional
         The maximum number of patches to extract for each label.
-        The default (np.Inf) enables to extract all the available patches per label.
-        n_patches_per_label must be larger than n_patches_per_partition !
+        The default (``np.Inf``) enables to extract all the available patches per label.
+        ``n_patches_per_label`` must be larger than ``n_patches_per_partition`` !
     n_patches_per_partition, int, optional
         The maximum number of patches to extract from each label partition.
         The default values is 1.
-        This method can be specified only if centered_on='random' or a callable.
+        This method can be specified only if ``centered_on='random'`` or a callable.
     partitioning_method : str
-        Whether to retrieve 'tiling' or 'sliding' slices.
-        If 'tiling', partition start slices are separated by stride + kernel_size
-        If 'sliding', partition start slices are separated by stride.
+        Whether to retrieve ``'tiling'`` or ``'sliding'`` slices.
+        If ``'tiling'``, partition start slices are separated by ``stride`` + ``kernel_size``.
+        If ``'sliding'``, partition start slices are separated by stride.
     n_partitions_per_label : int, optional
         The maximum number of partitions to extract for each label.
-        The default (None) enables to extract all the available partitions per label.
-    stride : (int, tuple, dict), optional
-        If partitioning_method is 'sliding'', default stride is set to 1.
-        If partitioning_method is 'tiling', default stride is set to 0.
+        The default (``None``) enables to extract all the available partitions per label.
+    stride : int, tuple or dict, optional
+        If ``partitioning_method = 'sliding'``, default ``stride`` is set to 1.
+        If ``partitioning_method = 'tiling'``, default ``stride`` is set to 0.
         Step size between slices.
-        When 'tiling', a positive stride make partition slices to not overlap and not touch,
-        while a negative stride make partition slices to overlap by 'stride' amount.
-        If stride is 0, the partition slices are contiguous (no spacing between partitions).
-        When 'sliding', only a positive stride (>= 1) is allowed.
-        If int, the value is applied to all label array dimensions.
-        If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, the dictionary must have has keys the label array dimensions.
-    kernel_size: (int, tuple, dict), optional
+        When ``partitioning_method='tiling'``, a positive stride make partition slices to not overlap and not touch,
+        while a negative stride make partition slices to overlap by ``stride`` amount.
+        If ``stride=0``, the partition slices are contiguous (no spacing between partitions).
+        When ``partitioning_method='sliding'``, only a positive stride (>= 1) is allowed.
+        If ``int``, the value is applied to all label array dimensions.
+        If ``list`` or ``tuple``, the length must match the number of dimensions of the array.
+        If a ``dict``, the dictionary must have has keys the label array dimensions.
+    kernel_size: int, tuple or dict, optional
         The shape of the desired partitions.
         Only positive values (>1) are allowed.
-        The value -1 can be used to specify the full array dimension shape.
-        If int, the value is applied to all label array dimensions.
-        If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, the dictionary must have has keys the label array dimensions.
-    buffer: (int, tuple, dict), optional
-        The default is 0.
+        The value ``-1`` can be used to specify the full array dimension shape.
+        If ``int``, the value is applied to all label array dimensions.
+        If ``list`` or ``tuple``, the length must match the number of dimensions of the array.
+        If a ``dict``, the dictionary must have has keys the label array dimensions.
+    buffer: int, tuple or dict, optional
+        The default is ``0``.
         Value by which to enlarge a partition on each side.
-        The final partition size should be kernel_size + buffer.
-        If 'tiling' and stride=0, a positive buffer value corresponds to
+        The final partition size should be ``kernel_size`` + ``buffer``.
+        If ``partitioning_method='tiling'`` and ``stride=0``, a positive buffer value corresponds to
         the amount of overlap between each partition.
-        Depending on min_start and max_stop values, buffering might cause
+        Depending on ``min_start`` and ``max_stop`` values, buffering might cause
         border partitions to not have same sizes.
-        If int, the value is applied to all label array dimensions.
-        If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, the dictionary must have has keys the label array dimensions.
+        If ``int``, the value is applied to all label array dimensions.
+        If ``list`` or ``tuple``, the length must match the number of dimensions of the array.
+        If a ``dict``, the dictionary must have has keys the label array dimensions.
     include_last : bool, optional
-        Whether to include the last partition if it does not match the kernel_size.
-        The default is True.
-    ensure_slice_size : False, optional
-        Used only if include_last is True.
-        If False, the last partition will not have the specified kernel_size.
-        If True,  the last partition is enlarged to the specified kernel_size by
-        tentatively expandinf it on both sides (accounting for min_start and max_stop).
+        Whether to include the last partition if it does not match the ``kernel_size``.
+        The default is ``True``.
+    ensure_slice_size : bool, optional
+        Used only if include_last is ``True``.
+        If ``False``, the last partition will not have the specified ``kernel_size``.
+        If ``True``,  the last partition is enlarged to the specified ``kernel_size`` by
+        tentatively expanding it on both sides (accounting for ``min_start`` and ``max_stop``).
 
     Yields
     ------
-    (xr.Dataset or xr.DataArray)
+    (xarray.Dataset or xarray.DataArray)
         A xarray object patch.
 
     """

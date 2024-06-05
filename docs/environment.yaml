@@ -7,7 +7,8 @@ dependencies:
   - pandoc
   - pre-commit
   - nbsphinx==0.9.3
-  - sphinx==5.1.1
   - sphinx-book-theme==1.1.0
   - sphinx-mdinclude==0.5.3
   - sphinx-gallery
+  - sphinx==7.2.6
+  - docutils

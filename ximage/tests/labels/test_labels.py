@@ -197,7 +197,7 @@ def test_mask_buffer():
 
 
 def test_check_array():
-    """Test array dimensions checks and conversion to np.ndarray."""
+    """Test array dimensions checks and conversion to numpy.ndarray."""
     # Check error if non-2D
     with pytest.raises(ValueError):
         labels._check_array(np.array([1, 2, 3]))

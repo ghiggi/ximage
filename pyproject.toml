@@ -209,5 +209,17 @@ convention = "numpy"
 "setup.py" = ["D100"]
 "*__init__.py" = ["D104"]
 
+[tool.doc8]
+ignore-path = [
+    "docs/build",
+    "docs/api/generated",
+    "docs/_templates",
+    "docs/tutorials",
+    "docs/examples",
+]
+file-encoding = "utf8"
+max-line-length = 120
+ignore = ["D001"]
+
 [tool.codespell]
     ignore-words-list = 'nD'

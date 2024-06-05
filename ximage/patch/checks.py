@@ -68,8 +68,8 @@ def check_patch_size(patch_size, dims, shape):
     patch_size : (int, list, tuple, dict)
         The size of the patch to extract from the array.
         If int, the patch is a hypercube of size patch_size across all dimensions.
-        If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, it must have as keys all array dimensions.
+        If ``list`` or ``tuple``, the length must match the number of dimensions of the array.
+        If a ``dict``, it must have as keys all array dimensions.
         The value -1 can be used to specify the full array dimension shape.
         Otherwise, only positive integers values (>1) are accepted.
     dims : tuple
@@ -104,9 +104,9 @@ def check_kernel_size(kernel_size, dims, shape):
     ----------
     kernel_size : (int, list, tuple, dict)
         The size of the kernel to extract from the array.
-        If int or float, the kernel is a hypercube of size patch_size across all dimensions.
-        If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, it must have has keys all array dimensions.
+        If ``int`` or ``float``, the kernel is a hypercube of size patch_size across all dimensions.
+        If ``list`` or ``tuple``, the length must match the number of dimensions of the array.
+        If a ``dict``, it must have has keys all array dimensions.
         The value -1 can be used to specify the full array dimension shape.
         Otherwise, only positive integers values (>1) are accepted.
     dims : tuple
@@ -129,7 +129,7 @@ def check_kernel_size(kernel_size, dims, shape):
     idx_valid = [value <= max_value for value, max_value in zip(kernel_size.values(), shape)]
     max_allowed_kernel_size = dict(zip(dims, shape))
     if not all(idx_valid):
-        raise ValueError(f"The maximum allowed patch_size values are {max_allowed_kernel_size}")
+        raise ValueError(f"The maximum allowed patch_size values are {max_allowed_kernel_size}.")
     return kernel_size
 
 
@@ -141,9 +141,9 @@ def check_buffer(buffer, dims, shape):
     ----------
     buffer : (int, float, list, tuple or dict)
         The size of the buffer to apply to the array.
-        If int or float, equal buffer is set on each dimension of the array.
-        If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, it must have has keys all array dimensions.
+        If ``int`` or ``float``, equal buffer is set on each dimension of the array.
+        If ``list`` or ``tuple``, the length must match the number of dimensions of the array.
+        If a ``dict``, it must have has keys all array dimensions.
     dims : tuple
         The names of the array dimensions.
     shape : tuple
@@ -158,6 +158,11 @@ def check_buffer(buffer, dims, shape):
     for value in buffer.values():
         if not are_all_integers(value):
             raise ValueError("Invalid 'buffer' values. They must be only integer values.")
+    # Check buffer is smaller than half the array shape
+    dict_max_values = {dim: int(np.floor(size / 2)) for dim, size in zip(buffer.keys(), shape)}
+    idx_valid = [value <= dict_max_values[dim] for dim, value in buffer.items()]
+    if not all(idx_valid):
+        raise ValueError(f"The maximum allowed 'buffer' values are {dict_max_values}.")
     return buffer
 
 
@@ -169,10 +174,10 @@ def check_padding(padding, dims, shape):
     ----------
     padding : (int, float, list, tuple or dict)
         The size of the padding to apply to the array.
-        If None, zero padding is assumed.
-        If int or float, equal padding is set on each dimension of the array.
-        If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, it must have has keys all array dimensions.
+        If ``None``, zero padding is assumed.
+        If ``int`` or ``float``, equal padding is set on each dimension of the array.
+        If ``list`` or ``tuple``, the length must match the number of dimensions of the array.
+        If a ``dict``, it must have has keys all array dimensions.
     dims : tuple
         The names of the array dimensions.
     shape : tuple
@@ -187,6 +192,11 @@ def check_padding(padding, dims, shape):
     for value in padding.values():
         if not are_all_integers(value):
             raise ValueError("Invalid 'padding' values. They must be only integer values.")
+    # Check padding is smaller than half the array shape
+    dict_max_values = {dim: int(np.floor(size / 2)) for dim, size in zip(padding.keys(), shape)}
+    idx_valid = [value <= dict_max_values[dim] for dim, value in padding.items()]
+    if not all(idx_valid):
+        raise ValueError(f"The maximum allowed 'padding' values are {dict_max_values}.")
     return padding
 
 
@@ -197,7 +207,7 @@ def check_partitioning_method(partitioning_method):
     if isinstance(partitioning_method, str):
         valid_methods = ["sliding", "tiling"]
         if partitioning_method not in valid_methods:
-            raise ValueError(f"Valid 'partitioning_method' are {valid_methods}")
+            raise ValueError(f"Valid 'partitioning_method' are {valid_methods}.")
     return partitioning_method
 
 
@@ -210,9 +220,9 @@ def check_stride(stride, dims, shape, partitioning_method):
     stride : (None, int, float, list, tuple, dict)
         The size of the stride to apply to the array.
         If None, no striding is assumed.
-        If int or float, equal stride is set on each dimension of the array.
-        If list or tuple, the length must match the number of dimensions of the array.
-        If a dict, it must have has keys all array dimensions.
+        If ``int`` or ``float``, equal stride is set on each dimension of the array.
+        If ``list`` or ``tuple``, the length must match the number of dimensions of the array.
+        If a ``dict``, it must have has keys all array dimensions.
     dims : tuple
         The names of the array dimensions.
     shape : tuple
@@ -231,12 +241,22 @@ def check_stride(stride, dims, shape, partitioning_method):
     if stride is None:
         stride = 0 if partitioning_method == "tiling" else 1
     stride = _ensure_is_dict_argument(stride, dims=dims, arg_name="stride")
+    # If tiling, check just that are integers
+    # --> Negative strides lead to overlapping
+    # --> Positive strides lead to not contiguous tiles
     if partitioning_method == "tiling":
         for value in stride.values():
             if not are_all_integers(value):
                 raise ValueError("Invalid 'stride' values. They must be only integer values.")
+    # If sliding, check are only positive numbers !
     else:  # sliding
         for value in stride.values():
             if not are_all_natural_numbers(value):
                 raise ValueError("Invalid 'stride' values. They must be only positive integer (>=1) values.")
+    # Check stride values are smaller than half the array shape
+    # --> A stride with value exactly equal to half the array shape is equivalent to tiling
+    dict_max_values = {dim: int(np.floor(size / 2)) for dim, size in zip(stride.keys(), shape)}
+    idx_valid = [value <= dict_max_values[dim] for dim, value in stride.items()]
+    if not all(idx_valid):
+        raise ValueError(f"The maximum allowed 'stride' values are {dict_max_values}.")
     return stride
