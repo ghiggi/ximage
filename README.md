@@ -1,22 +1,21 @@
 # 📦 Welcome to ximage
 
-|                      |                                                |
-| -------------------- | ---------------------------------------------- |
-| Deployment           | [![PyPI](https://badge.fury.io/py/ximage.svg?style=flat)](https://pypi.org/project/ximage/) [![Conda](https://img.shields.io/conda/vn/conda-forge/ximage.svg?logo=conda-forge&logoColor=white&style=flat)](https://anaconda.org/conda-forge/ximage) |
-| Activity             | [![PyPI Downloads](https://img.shields.io/pypi/dm/ximage.svg?label=PyPI%20downloads&style=flat)](https://pypi.org/project/ximage/) [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/ximage.svg?label=Conda%20downloads&style=flat)](https://anaconda.org/conda-forge/ximage) |
-| Python Versions      | [![Python Versions](https://img.shields.io/badge/Python-3.8%20%203.9%20%203.10%20%203.11%20%203.12-blue?style=flat)](https://www.python.org/downloads/) |
-| Supported Systems    | [![Linux](https://img.shields.io/github/actions/workflow/status/ghiggi/ximage/.github/workflows/tests.yml?label=Linux&style=flat)](https://github.com/ghiggi/ximage/actions/workflows/tests.yml) [![macOS](https://img.shields.io/github/actions/workflow/status/ghiggi/ximage/.github/workflows/tests.yml?label=macOS&style=flat)](https://github.com/ghiggi/ximage/actions/workflows/tests.yml) [![Windows](https://img.shields.io/github/actions/workflow/status/ghiggi/ximage/.github/workflows/tests_windows.yml?label=Windows&style=flat)](https://github.com/ghiggi/ximage/actions/workflows/tests_windows.yml) |
-| Project Status       | [![Project Status](https://www.repostatus.org/badges/latest/active.svg?style=flat)](https://www.repostatus.org/#active) |
-| Build Status         | [![Tests](https://github.com/ghiggi/ximage/actions/workflows/tests.yml/badge.svg?style=flat)](https://github.com/ghiggi/ximage/actions/workflows/tests.yml) [![Lint](https://github.com/ghiggi/ximage/actions/workflows/lint.yml/badge.svg?style=flat)](https://github.com/ghiggi/ximage/actions/workflows/lint.yml) [![Docs](https://readthedocs.org/projects/ximage/badge/?version=latest&style=flat)](https://ximage.readthedocs.io/en/latest/) |
-| Linting              | [![Black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat)](https://github.com/psf/black) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&style=flat)](https://github.com/astral-sh/ruff) [![Codespell](https://img.shields.io/badge/Codespell-enabled-brightgreen?style=flat)](https://github.com/codespell-project/codespell) |
-| Code Coverage        | [![Coveralls](https://coveralls.io/repos/github/ghiggi/ximage/badge.svg?branch=main&style=flat)](https://coveralls.io/github/ghiggi/ximage?branch=main) [![Codecov](https://codecov.io/gh/ghiggi/ximage/branch/main/graph/badge.svg?style=flat)](https://codecov.io/gh/ghiggi/ximage) |
-| Code Quality         | [![Codefactor](https://www.codefactor.io/repository/github/ghiggi/ximage/badge?style=flat)](https://www.codefactor.io/repository/github/ghiggi/ximage) [![Codebeat](https://codebeat.co/badges/3eab0b92-5b00-4eb7-9834-2e5f9a083b5e?style=flat)](https://codebeat.co/projects/github-com-ghiggi-ximage-main) [![Codacy](https://app.codacy.com/project/badge/Grade/d823c50a7ad14268bd347b5aba384623?style=flat)](https://app.codacy.com/gh/ghiggi/ximage/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) [![CodeScene](https://codescene.io/projects/41869/status-badges/code-health?style=flat)](https://codescene.io/projects/41869) |
-| License              | [![License](https://img.shields.io/github/license/ghiggi/ximage?style=flat)](https://github.com/ghiggi/ximage/blob/main/LICENSE) |
-| Community            | [![Slack](https://img.shields.io/badge/Slack-ximage-green.svg?logo=slack&style=flat)](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA) [![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-green?logo=github&style=flat)](https://github.com/ghiggi/ximage/discussions) |
-| Citation             | [![DOI](https://zenodo.org/badge/664629093.svg?style=flat)](https://zenodo.org/records/8131553) |
+|                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Deployment        | [![PyPI](https://badge.fury.io/py/ximage.svg?style=flat)](https://pypi.org/project/ximage/) [![Conda](https://img.shields.io/conda/vn/conda-forge/ximage.svg?logo=conda-forge&logoColor=white&style=flat)](https://anaconda.org/conda-forge/ximage)                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Activity          | [![PyPI Downloads](https://img.shields.io/pypi/dm/ximage.svg?label=PyPI%20downloads&style=flat)](https://pypi.org/project/ximage/) [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/ximage.svg?label=Conda%20downloads&style=flat)](https://anaconda.org/conda-forge/ximage)                                                                                                                                                                                                                                                                                                                                                                               |
+| Python Versions   | [![Python Versions](https://img.shields.io/badge/Python-3.8%20%203.9%20%203.10%20%203.11%20%203.12-blue?style=flat)](https://www.python.org/downloads/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Supported Systems | [![Linux](https://img.shields.io/github/actions/workflow/status/ghiggi/ximage/.github/workflows/tests.yml?label=Linux&style=flat)](https://github.com/ghiggi/ximage/actions/workflows/tests.yml) [![macOS](https://img.shields.io/github/actions/workflow/status/ghiggi/ximage/.github/workflows/tests.yml?label=macOS&style=flat)](https://github.com/ghiggi/ximage/actions/workflows/tests.yml) [![Windows](https://img.shields.io/github/actions/workflow/status/ghiggi/ximage/.github/workflows/tests_windows.yml?label=Windows&style=flat)](https://github.com/ghiggi/ximage/actions/workflows/tests_windows.yml)                                                    |
+| Project Status    | [![Project Status](https://www.repostatus.org/badges/latest/active.svg?style=flat)](https://www.repostatus.org/#active)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Build Status      | [![Tests](https://github.com/ghiggi/ximage/actions/workflows/tests.yml/badge.svg?style=flat)](https://github.com/ghiggi/ximage/actions/workflows/tests.yml) [![Lint](https://github.com/ghiggi/ximage/actions/workflows/lint.yml/badge.svg?style=flat)](https://github.com/ghiggi/ximage/actions/workflows/lint.yml) [![Docs](https://readthedocs.org/projects/ximage/badge/?version=latest&style=flat)](https://ximage.readthedocs.io/en/latest/)                                                                                                                                                                                                                        |
+| Linting           | [![Black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat)](https://github.com/psf/black) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&style=flat)](https://github.com/astral-sh/ruff) [![Codespell](https://img.shields.io/badge/Codespell-enabled-brightgreen?style=flat)](https://github.com/codespell-project/codespell)                                                                                                                                                                                                                                             |
+| Code Coverage     | [![Coveralls](https://coveralls.io/repos/github/ghiggi/ximage/badge.svg?branch=main&style=flat)](https://coveralls.io/github/ghiggi/ximage?branch=main) [![Codecov](https://codecov.io/gh/ghiggi/ximage/branch/main/graph/badge.svg?style=flat)](https://codecov.io/gh/ghiggi/ximage)                                                                                                                                                                                                                                                                                                                                                                                     |
+| Code Quality      | [![Codefactor](https://www.codefactor.io/repository/github/ghiggi/ximage/badge?style=flat)](https://www.codefactor.io/repository/github/ghiggi/ximage) [![Codebeat](https://codebeat.co/badges/3eab0b92-5b00-4eb7-9834-2e5f9a083b5e?style=flat)](https://codebeat.co/projects/github-com-ghiggi-ximage-main) [![Codacy](https://app.codacy.com/project/badge/Grade/d823c50a7ad14268bd347b5aba384623?style=flat)](https://app.codacy.com/gh/ghiggi/ximage/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) [![CodeScene](https://codescene.io/projects/41869/status-badges/code-health?style=flat)](https://codescene.io/projects/41869) |
+| License           | [![License](https://img.shields.io/github/license/ghiggi/ximage?style=flat)](https://github.com/ghiggi/ximage/blob/main/LICENSE)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Community         | [![Slack](https://img.shields.io/badge/Slack-ximage-green.svg?logo=slack&style=flat)](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA) [![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-green?logo=github&style=flat)](https://github.com/ghiggi/ximage/discussions)                                                                                                                                                                                                                                                                                                                                        |
+| Citation          | [![DOI](https://zenodo.org/badge/664629093.svg?style=flat)](https://zenodo.org/records/8131553)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
- [**Slack**](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA) | [**Docs**](https://x-image.readthedocs.io/en/latest/)
-
+[**Slack**](https://join.slack.com/t/xarray-tools/shared_invite/zt-28f5r0n75-ygNZN5omemhz72NM~WKUHA) | [**Docs**](https://x-image.readthedocs.io/en/latest/)
 
 ## ℹ️ Software Overview
 
@@ -74,7 +73,7 @@ padding = 0
 n_patches_per_label = np.Inf
 n_patches_per_partition = 1
 # Tiling/Sliding Options
-partitioning_method = None # "tiling" / "sliding"
+partitioning_method = None  # "tiling" / "sliding"
 n_partitions_per_label = None
 kernel_size = None
 buffer = 0
@@ -109,7 +108,6 @@ da_patch_gen = xr_obj.ximage.label_patches(
     debug=debug,
     verbose=verbose,
 )
-
 ```
 
 #### 📖 Explore the ximage documentation
@@ -129,9 +127,6 @@ conda install ximage
 
 In case conda-forge is not set up for your system yet, see the easy to follow instructions on [conda-forge][conda_forge_link].
 
-[conda_link]: https://docs.conda.io/en/latest/miniconda.html
-[conda_forge_link]: https://github.com/conda-forge/ximage-feedstock#installing-ximage
-
 ### pip
 
 `ximage` can be installed also via [pip][pip_link] on Linux, Mac, and Windows.
@@ -145,10 +140,6 @@ pip install ximage
 
 To install the latest development version via pip, see the [documentation][dev_install_link].
 
-[pip_link]: https://pypi.org/project/gpm-api
-[winpy_link]: https://winpython.github.io/
-[dev_install_link]: https://gpm-api.readthedocs.io/en/latest/02_installation.html#installation-for-contributors
-
 ## 💭 Feedback and Contributing Guidelines
 
 If you aim to contribute or discuss the future development of ximage,
@@ -159,8 +150,8 @@ Feel free to also open a [GitHub Issue](https://github.com/ghiggi/ximage/issues)
 
 ## ✍️  Contributors
 
-* [Gionata Ghiggi](https://people.epfl.ch/gionata.ghiggi)
-* [Son Pham-Ba](https://people.epfl.ch/son.phamba?lang=en)
+- [Gionata Ghiggi](https://people.epfl.ch/gionata.ghiggi)
+- [Son Pham-Ba](https://people.epfl.ch/son.phamba?lang=en)
 
 ## Citation
 
@@ -180,3 +171,9 @@ The content of this repository is released under the terms of the [MIT](LICENSE)
 - [dask](https://www.dask.org/)
 - [dask_image](https://image.dask.org/en/latest/)
 - [skimage](https://scikit-image.org/)
+
+[conda_forge_link]: https://github.com/conda-forge/ximage-feedstock#installing-ximage
+[conda_link]: https://docs.conda.io/en/latest/miniconda.html
+[dev_install_link]: https://gpm-api.readthedocs.io/en/latest/02_installation.html#installation-for-contributors
+[pip_link]: https://pypi.org/project/gpm-api
+[winpy_link]: https://winpython.github.io/

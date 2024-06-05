@@ -32,13 +32,13 @@ or `conda <https://docs.conda.io/en/latest/>`__ (recommended).
   or `anaconda <https://docs.anaconda.com/anaconda/install/>`__
   if you don't have it already installed.
 
-* Create the `ximage-py311` (or any other custom name) conda environment:
+* Create the *ximage-py311* (or any other custom name) conda environment:
 
 .. code-block:: bash
 
 	conda create --name ximage-py311 python=3.11 --no-default-packages
 
-* Activate the `ximage-py311` conda environment:
+* Activate the *ximage-py311* conda environment:
 
 .. code-block:: bash
 
@@ -169,10 +169,10 @@ Run ximage on Jupyter Notebooks
 If you want to run ximage on a `Jupyter Notebook <https://jupyter.org/>`__,
 you have to take care to set up the IPython kernel environment where ximage is installed.
 
-For example, if your conda/virtual environment is named `ximage-dev`, run:
+For example, if your conda/virtual environment is named ``ximage-dev``, run:
 
 .. code-block:: bash
 
    python -m ipykernel install --user --name=ximage-dev
 
-When you will use the Jupyter Notebook, by clicking on `Kernel` and then `Change Kernel`, you will be able to select the `ximage-dev` kernel.
+When you will use the Jupyter Notebook, by clicking on ``Kernel`` and then ``Change Kernel``, you will be able to select the ``ximage-dev`` kernel.
