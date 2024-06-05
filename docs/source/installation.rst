@@ -9,7 +9,7 @@ We define here two types of installation:
 
 - `Installation for contributors`_: for contributors who want to enrich the project (eg. add a new reader).
 
-We recommend users and contributors to first set up a virtual environment where to install ximage.
+We recommend users and contributors first set up a virtual environment to install ximage.
 
 
 .. _virtual_environment:
@@ -22,7 +22,7 @@ While not mandatory, utilizing a virtual environment when installing ximage is r
 Using a virtual environment for installing packages provides isolation of dependencies,
 easier package management, easier maintenance, improved security, and improved development workflow.
 
-Here below we provide two options to set up a virtual environment,
+Below we provide two options to set up a virtual environment,
 using `venv <https://docs.python.org/3/library/venv.html>`__
 or `conda <https://docs.conda.io/en/latest/>`__ (recommended).
 
@@ -73,7 +73,7 @@ on the `Python Packaging Index (PyPI) <https://pypi.org/project/ximage/>`__
 and on the `conda-forge channel <https://anaconda.org/conda-forge/ximage>`__.
 
 Therefore you can either install the package with pip or conda (recommended).
-Please install the package in the virtual environment you created before !
+Please install the package in the virtual environment you created before!
 
 **With conda:**
 
@@ -83,7 +83,7 @@ Please install the package in the virtual environment you created before !
 
 
 .. note::
-   In alternative to conda, if you are looking for a lightweight package manager you could use `micromamba <https://micromamba.readthedocs.io/en/latest/>`__.
+   In an alternative to conda, if you are looking for a lightweight package manager you could use `micromamba <https://micromamba.readthedocs.io/en/latest/>`__.
 
 **With pip:**
 
@@ -99,7 +99,7 @@ Installation for contributors
 
 The latest ximage version is available on the GitHub repository `ximage <https://github.com/ghiggi/ximage>`_.
 You can install the package in editable mode, so that you can modify the code and see the changes immediately.
-Here below we provide the steps to install the package in editable mode.
+Below we provide the steps to install the package in editable mode.
 
 Clone the repository from GitHub
 ......................................
@@ -118,7 +118,7 @@ Then create a local copy of the repository you forked with:
 Create the development environment
 ......................................
 
-We recommend to create a dedicated conda environment for development purposes.
+We recommend creating a dedicated conda environment for development purposes.
 You can create a conda environment (i.e. with python 3.11) with:
 
 .. code-block:: bash
@@ -158,7 +158,7 @@ Pre-commit hooks are automated scripts that run during each commit to detect bas
 If a hook identifies an issue (signified by the pre-commit script exiting with a non-zero status), it halts the commit process and displays the error messages.
 
 .. note::
-	The versions of the software used in the pre-commit hooks is specified in the `.pre-commit-config.yaml <https://github.com/ghiggi/ximage/blob/main/.pre-commit-config.yaml>`__ file. This file serves as a configuration guide, ensuring that the hooks are executed with the correct versions of each tool, thereby maintaining consistency and reliability in the code quality checks.
+	The versions of the software used in the pre-commit hooks are specified in the `.pre-commit-config.yaml <https://github.com/ghiggi/ximage/blob/main/.pre-commit-config.yaml>`__ file. This file serves as a configuration guide, ensuring that the hooks are executed with the correct versions of each tool, thereby maintaining consistency and reliability in the code quality checks.
 
 Further details about pre-commit hooks can be found in the Contributors Guidelines, specifically in the provided in the :ref:`Code quality control <code_quality_control>` section.
 
