@@ -77,14 +77,14 @@ class XImage_Base_Accessor:
         variable=None,
         label_name="label",
         # Output options
-        n_patches=np.Inf,
+        n_patches=np.inf,
         n_labels=None,
         labels_id=None,
         highlight_label_id=True,
         # Label Patch Extraction Options
         centered_on="max",
         padding=0,
-        n_patches_per_label=np.Inf,
+        n_patches_per_label=np.inf,
         n_patches_per_partition=1,
         # Label Tiling/Sliding Options
         partitioning_method=None,
@@ -134,13 +134,13 @@ class XImage_Base_Accessor:
         patch_size,
         variable=None,
         # Output options
-        n_patches=np.Inf,
+        n_patches=np.inf,
         n_labels=None,
         labels_id=None,
         # Label Patch Extraction Settings
         centered_on="max",
         padding=0,
-        n_patches_per_label=np.Inf,
+        n_patches_per_label=np.inf,
         n_patches_per_partition=1,
         # Label Tiling/Sliding Options
         partitioning_method=None,

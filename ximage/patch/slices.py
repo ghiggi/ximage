@@ -32,7 +32,7 @@ def get_slice_size(slc):
     """Get size of the slice.
 
     Note: The actual slice size must not be representative of the true slice if
-    slice.stop is larger than the length of object to be sliced.
+    ``slice.stop`` is larger than the length of object to be sliced.
     """
     if not isinstance(slc, slice):
         raise TypeError("Expecting slice object")
@@ -56,11 +56,11 @@ def pad_slice(slc, padding, min_start=0, max_stop=np.inf):
        The default is 0.
     max_stop : int
         The maximum value for the stop of the new slice.
-        The default is np.inf.
+        The default is ``np.inf``.
 
     Returns
     -------
-    list_slices : TYPE
+    list_slices : list
         The list of slices after applying padding.
     """
     return slice(max(slc.start - padding, min_start), min(slc.stop + padding, max_stop))
@@ -81,7 +81,7 @@ def pad_slices(list_slices, padding, valid_shape):
 
     Returns
     -------
-    list_slices : TYPE
+    list_slices : list
         The list of slices after applying padding.
     """
     # Check the inputs
@@ -114,27 +114,27 @@ def enlarge_slice(slc, min_size, min_start=0, max_stop=np.inf):
     """
     Enlarge a slice object to have at least a size of min_size.
 
-    The function enforces the left and right bounds of the slice by max_stop and min_start.
-    If the original slice size is larger than min_size, the original slice will be returned.
+    The function enforces the left and right bounds of the slice by ``max_stop`` and ``min_start``.
+    If the original slice size is larger than ``min_size``, the original slice will be returned.
 
     Parameters
     ----------
     slc : slice
         The original slice object to be enlarged.
-    min_size : min_size
+    min_size : int
         The desired minimum size of the new slice.
     min_start : int, optional
        The minimum value for the start of the new slice.
        The default is 0.
-    max_stop : int
+    max_stop : int, optional
         The maximum value for the stop of the new slice.
-        The default is np.inf.
+        The default is ``np.inf``.
 
     Returns
     -------
     slice
-        The new slice object with a size of at least min_size and respecting the left and right bounds.
-        If the original slice object is already larger than min_size, the original slice is returned.
+        The new slice object with a size of at least ``min_size`` and respecting the left and right bounds.
+        If the original slice object is already larger than ``min_size``, the original slice is returned.
 
     """
     # Get slice size
@@ -182,10 +182,10 @@ def enlarge_slice(slc, min_size, min_start=0, max_stop=np.inf):
 
 def enlarge_slices(list_slices, min_size, valid_shape):
     """
-    Enlarge a list of slice object to have at least a size of min_size.
+    Enlarge a list of slice object to have at least a size of ``min_size``.
 
-    The function enforces the left and right bounds of the slice to be between 0 and valid_shape.
-    If the original slice size is larger than min_size, the original slice will be returned.
+    The function enforces the left and right bounds of the slice to be between 0 and ``valid_shape``.
+    If the original slice size is larger than ``min_size``, the original slice will be returned.
 
     Parameters
     ----------
@@ -222,7 +222,7 @@ def enlarge_slices(list_slices, min_size, valid_shape):
 def get_idx_bounds_from_slice(slc):
     """Get start and end indices of the slice.
 
-    Note: For index based selection, use idx_start:idx_end+1 !
+    Note: For index based selection, use ``idx_start:idx_end+1`` !
     """
     if not isinstance(slc, slice):
         raise TypeError("Expecting slice object")
@@ -238,9 +238,9 @@ def get_slice_from_idx_bounds(idx_start, idx_end):
 
 def get_slice_around_index(index, size, min_start=0, max_stop=np.inf):
     """
-    Get a slice object of `size` around `index` value.
+    Get a slice object of size ``size`` around the ``index`` value.
 
-    If size is larger than (max_stop-min_start), raise an error.
+    If size is larger than ``max_stop-min_start``, raise an error.
 
     Parameters
     ----------
@@ -249,7 +249,7 @@ def get_slice_around_index(index, size, min_start=0, max_stop=np.inf):
     size : int
         The desired size of the slice around the index.
     min_start : int, optional
-       The default is np.inf.
+       The default is ``np.inf``.
        The minimum value for the start of the new slice.
        The default is 0.
     max_stop : int
@@ -349,39 +349,39 @@ def get_partitions_slices(
     slice_size : int
         Slice size.
     method : str
-        Whether to retrieve 'tiling' or 'sliding' slices.
-        If 'tiling', start slices are separated by stride+slice_size
-        If 'sliding', start slices are separated by stride.
+        Whether to retrieve ``'tiling'`` or ``'sliding'`` slices.
+        If ``'tiling'``, start slices are separated by ``stride`` + ``slice_size``
+        If ``'sliding'``, start slices are separated by ``stride``.
     stride : int, optional
         Step size between slices.
-        When 'tiling', the default is 0
-        When 'sliding', the default is 1.
-        When 'tiling', a positive stride make slices to not overlap and not touch,
-        while a negative stride make slices to overlap by 'stride' amount. If stride is 0,
-        the slices are contiguous (touch).
-        When 'sliding', only a positive stride (>= 1) is allowed.
+        When ``'tiling'``, the default is 0
+        When ``'sliding'``, the default is 1.
+        When ``'tiling'``, a positive stride make slices to not overlap and not touch,
+        while a negative stride make slices to overlap by ``stride`` amount.
+        If stride is 0, the slices are contiguous (touch).
+        When ``'sliding'``, only a positive stride (>= 1) is allowed.
     buffer:
         The default is 0.
         Value by which to enlarge a slice on each side.
-        If stride=0 and buffer is positive, it corresponds to
+        If ``stride=0`` and buffer is positive, it corresponds to
         the amount of overlap between each tile.
-        The final slice size should be slice_size + buffer.
-        Depending on min_start and max_stop values, buffering might cause
+        The final slice size should be ``slice_size`` + ``buffer``.
+        Depending on ``min_start`` and ``max_stop`` values, buffering might cause
         border slices to not have same sizes.
     include_last : bool, optional
-        Whether to include the last slice if not match slice_size.
-        The default is True.
+        Whether to include the last slice if not match ``slice_size``.
+        The default is ``True``.
     ensure_slice_size : False, optional
-        Used only if include_last is True.
-        If False, the last slice does not have size 'slice_size'.
-        If True,  the last slice is enlarged to have 'slice_size', by
-        tentatively expanded the slice on both sides (accounting for min_start and max_stop).
+        Used only if include_last is ``True``.
+        If ``False``, the last slice does not have size ``slice_size``.
+        If ``True``,  the last slice is enlarged to have ``slice_size``, by
+        tentatively expanded the slice on both sides (accounting for ``min_start`` and ``max_stop``).
     min_start: int, optional
         The minimum value that the slices start value can have (after i.e. buffering).
-        If None (the default), assumed to be equal to start.
+        If ``None`` (the default), assumed to be equal to start.
     max_stop: int, optional
         Maximum value that the slices stop value can have (after i.e. buffering).
-        If None (the default), assumed to be equal to stop.
+        If ``None`` (the default), assumed to be equal to stop.
 
     Returns
     -------

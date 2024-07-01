@@ -72,7 +72,7 @@ def _mask_buffer(mask, footprint):
 
 
 def _check_array(arr):
-    """Check array and return a numpy array."""
+    """Check array and return a numpy.ndarray."""
     shape = arr.shape
     if len(shape) != 2:
         raise ValueError("Expecting a 2D array.")
@@ -91,11 +91,11 @@ def _no_labels_result(arr):
     return labels, n_labels, values
 
 
-def _check_sort_by(stats):
-    """Check 'sort_by' argument."""
-    if not (callable(stats) or isinstance(stats, str)):
+def _check_sort_by(sort_by):
+    """Check ``sort_by`` argument."""
+    if not (callable(sort_by) or isinstance(sort_by, str)):
         raise TypeError("'sort_by' must be a string or a function.")
-    if isinstance(stats, str):
+    if isinstance(sort_by, str):
         valid_stats = [
             "area",
             "maximum",
@@ -106,12 +106,12 @@ def _check_sort_by(stats):
             "standard_deviation",
             "variance",
         ]
-        if stats not in valid_stats:
+        if sort_by not in valid_stats:
             raise ValueError(f"Valid 'sort_by' values are: {valid_stats}.")
 
 
 def _check_stats(stats):
-    """Check 'stats' argument."""
+    """Check ``stats`` argument."""
     if not (callable(stats) or isinstance(stats, str)):
         raise TypeError("'stats' must be a string or a function.")
     if isinstance(stats, str):
@@ -134,9 +134,9 @@ def _check_stats(stats):
 def _get_label_value_stats(arr, label_arr, label_indices=None, stats="area", labeled_comprehension_kwargs=None):
     """Compute label value statistics over which to later sort on.
 
-    If label_indices is None, by default would return the stats of the entire array
-    If label_indices is 0, return nan
-    If label_indices is not inside label_arr, return 0
+    If ``label_indices`` is None, by default would return the stats of the entire array.
+    If ``label_indices`` is 0, return ``np.nan``.
+    If ``label_indices`` is not inside ``label_arr``, return 0.
     """
     # Check stats argument and label indices
     if labeled_comprehension_kwargs is None:
@@ -222,7 +222,7 @@ def _get_labels_with_requested_occurrence(label_arr, vmin, vmax):
 
 
 def _ensure_valid_label_arr(label_arr):
-    """Ensure label_arr does contain only positive values.
+    """Ensure ``label_arr`` does contain only positive values.
 
     NaN values are converted to 0.
     The output array type is int.
@@ -249,9 +249,9 @@ def _ensure_valid_label_indices(label_indices):
 
 
 def get_label_indices(arr):
-    """Get label indices from numpy.ndarray, dask.Array and xr.DataArray.
+    """Get label indices from numpy.ndarray, dask.Array and xarray.DataArray.
 
-    It removes 0 and NaN values. Output type is int.
+    It removes 0 and ``np.NaN`` values. Output type is ``int``.
     """
     arr = np.asanyarray(arr)
     arr = arr[~np.isnan(arr)]
@@ -316,7 +316,7 @@ def _np_redefine_label_array(label_arr, label_indices=None):
 
 
 def _xr_redefine_label_array(dataarray, label_indices=None):
-    """Relabel a xr.DataArray from 0 to len(label_indices)."""
+    """Relabel a xarray.DataArray from 0 to len(label_indices)."""
     relabeled_arr = _np_redefine_label_array(dataarray.data, label_indices=label_indices)
     da_label = dataarray.copy()
     da_label.data = relabeled_arr
@@ -326,12 +326,12 @@ def _xr_redefine_label_array(dataarray, label_indices=None):
 def redefine_label_array(data, label_indices=None):
     """Redefine labels of a label array from 0 to len(label_indices).
 
-    If label_indices is None, it takes the unique values of label_arr.
-    If label_indices contains a 0, it is discarded !
-    If label_indices is not unique, raise an error !
+    If ``label_indices`` is ``None``, it takes the unique values of ``label_arr``.
+    If ``label_indices`` contains a 0, it is discarded !
+    If ``label_indices`` is not unique, raise an error !
 
     Native label values not present in label_indices are set to 0.
-    The first label in label_indices becomes 1, the second 2, and so on.
+    The first label in ``label_indices`` becomes 1, the second 2, and so on.
     """
     if isinstance(data, xr.DataArray):
         return _xr_redefine_label_array(data, label_indices=label_indices)
@@ -371,8 +371,8 @@ def _get_labels(
 
     Parameters
     ----------
-    arr : TYPE
-        DESCRIPTION.
+    arr : numpy.ndarray
+        Array to be labelled.
     min_value_threshold : float, optional
         The minimum value to define the interior of a label.
         The default is -np.inf.
@@ -385,7 +385,7 @@ def _get_labels(
     max_area_threshold : float, optional
         The maximum number of connected pixels to be defined as a label.
         The default is np.inf.
-    footprint : (int, np.ndarray or None), optional
+    footprint : (int, numpy.ndarray or None), optional
         This argument enables to dilate the mask derived after applying
         min_value_threshold and max_value_threshold.
         If footprint = 0 or None, no dilation occur.
@@ -417,11 +417,11 @@ def _get_labels(
 
     Returns
     -------
-    labels_arr, np.ndarray
+    labels_arr, numpy.ndarray
         Label array. 0 values corresponds to no label.
     n_labels, int
         Number of labels in the labels array.
-    values, np.arrays
+    values, numpy.arrays
         Array of length n_labels with the stats values associated to each label.
     """
     # ---------------------------------.
@@ -522,59 +522,59 @@ def _xr_get_labels(
 
     Parameters
     ----------
-    data_array : xr.DataArray
+    data_array : xarray.DataArray
         DataArray object.
     min_value_threshold : float, optional
         The minimum value to define the interior of a label.
-        The default is -np.inf.
+        The default is ``-np.inf``.
     max_value_threshold : float, optional
         The maximum value to define the interior of a label.
-        The default is np.inf.
+        The default is ``np.inf``.
     min_area_threshold : float, optional
         The minimum number of connected pixels to be defined as a label.
         The default is 1.
     max_area_threshold : float, optional
         The maximum number of connected pixels to be defined as a label.
-        The default is np.inf.
-    footprint : (int, np.ndarray or None), optional
+        The default is ``np.inf``.
+    footprint : (int, numpy.ndarray or None), optional
         This argument enables to dilate the mask derived after applying
         min_value_threshold and max_value_threshold.
-        If footprint = 0 or None, no dilation occur.
-        If footprint is a positive integer, it create a disk(footprint)
-        If footprint is a 2D array, it must represent the neighborhood expressed
+        If ``footprint = 0`` or ``None``, no dilation occur.
+        If ``footprint`` is a positive integer, it create a disk(footprint)
+        If ``footprint`` is a 2D array, it must represent the neighborhood expressed
         as a 2-D array of 1's and 0's.
-        The default is None (no dilation).
-    sort_by : (callable or str), optional
+        The default is ``None`` (no dilation).
+    sort_by : callable or str, optional
         A function or statistics to define the order of the labels.
-        Valid string statistics are "area", "maximum", "minimum", "mean",
-        "median", "sum", "standard_deviation", "variance".
-        The default is "area".
+        Valid string statistics are ``"area"``, ``"maximum"``, ``"minimum"``, ``"mean"``,
+        ``"median"``,  ``"sum"``, ``"standard_deviation"``, ``"variance"``.
+        The default is ``"area"``.
     sort_decreasing : bool, optional
-        If True, sort labels by decreasing 'sort_by' value.
-        The default is True.
+        If ``True``, sort labels by decreasing ``sort_by`` value.
+        The default is ``True``.
     labeled_comprehension_kwargs : dict, optional
-        Additional arguments to be passed to dask_image.ndmeasure.labeled_comprehension
-        if sort_by is a callable. May contain
-            out_dtype : dtype, optional
+        Additional arguments to be passed to `dask_image.ndmeasure.labeled_comprehension`.
+        If ``sort_by`` is a callable. May contain:
+            ``out_dtype`` : dtype, optional
                 Dtype to use for result.
-                The default is float.
-            default : (int, float or None), optional
+                The default is ``float``.
+            ``default`` : (int, float or None), optional
                 Default return value when a element of index does not exist in the label array.
-                The default is None.
-            pass_positions : bool, optional
-                If True, pass linear indices to 'sort_by' as a second argument.
-                The default is False.
-        The default is {}.
+                The default is ``None``.
+            ``pass_positions`` : bool, optional
+                If ``True``, pass linear indices to ``sort_by`` as a second argument.
+                The default is ``False``.
+        The default is ``{}``.
 
     Returns
     -------
-    labels_arr, xr.DataArray
+    labels_arr, xarray.DataArray
         Label DataArray. 0 values corresponds to no label.
-        The DataArray name is defined as "labels_{sort_by}".
+        The DataArray name is defined as `labels_{sort_by}`.
     n_labels, int
         Number of labels in the labels array.
     values, np.arrays
-        Array of length n_labels with the stats values associated to each label.
+        Array of length ``n_labels`` with the stats values associated to each label.
     """
     # Extract data from DataArray
     if labeled_comprehension_kwargs is None:
@@ -621,46 +621,46 @@ def label(
 
     Parameters
     ----------
-    xr_obj : (xr.DataArray or xr.Dataset)
+    xr_obj : xarray.DataArray or xarray.Dataset
         xarray object.
     variable : str, optional
         Dataset variable to exploit to derive the labels array.
-        Must be specified only if the input object is an xr.Dataset.
+        Must be specified only if the input object is an `xarray.Dataset`.
     min_value_threshold : float, optional
         The minimum value to define the interior of a label.
-        The default is -np.inf.
+        The default is ``-np.inf``.
     max_value_threshold : float, optional
         The maximum value to define the interior of a label.
-        The default is np.inf.
+        The default is ``np.inf``.
     min_area_threshold : float, optional
         The minimum number of connected pixels to be defined as a label.
         The default is 1.
     max_area_threshold : float, optional
         The maximum number of connected pixels to be defined as a label.
-        The default is np.inf.
-    footprint : (int, np.ndarray or None), optional
+        The default is ``np.inf``.
+    footprint : int, numpy.ndarray or None, optional
         This argument enables to dilate the mask derived after applying
         min_value_threshold and max_value_threshold.
-        If footprint = 0 or None, no dilation occur.
-        If footprint is a positive integer, it create a disk(footprint)
-        If footprint is a 2D array, it must represent the neighborhood expressed
+        If ``footprint = 0`` or ``None``, no dilation occur.
+        If ``footprint`` is a positive integer, it create a ``disk(footprint)``
+        If ``footprint`` is a 2D array, it must represent the neighborhood expressed
         as a 2-D array of 1's and 0's.
-        The default is None (no dilation).
-    sort_by : (callable or str), optional
+        The default is ``None`` (no dilation).
+    sort_by : callable or str, optional
         A function or statistics to define the order of the labels.
-        Valid string statistics are "area", "maximum", "minimum", "mean",
-        "median", "sum", "standard_deviation", "variance".
-        The default is "area".
+        Valid string statistics are ``"area"``, ``"maximum"``, ``"minimum"``, ``"mean"``,
+        ``"median"``, ``"sum"``, ``"standard_deviation"``, ``"variance"``.
+        The default is ``"area"``.
     sort_decreasing : bool, optional
-        If True, sort labels by decreasing 'sort_by' value.
-        The default is True.
+        If ``True``, sort labels by decreasing ``sort_by`` value.
+        The default is ``True``.
     labeled_comprehension_kwargs : dict, optional
-        Additional arguments to be passed to dask_image.ndmeasure.labeled_comprehension
-        if `sort_by` is a callable.
+        Additional arguments to be passed to `dask_image.ndmeasure.labeled_comprehension`.
+        if ``sort_by`` is a callable.
 
     Returns
     -------
-    xr_obj : (xr.DataArray or xr.Dataset)
+    xr_obj : (xarray.DataArray or xarray.Dataset)
         xarray object with the new label coordinate.
         In the label coordinate, non-labels values are set to np.nan.
     """

@@ -34,7 +34,7 @@ def are_all_integers(arr, negative_allowed=True, zero_allowed=True):
 
     Parameters
     ----------
-    arr : (list, tuple, np.ndarray)
+    arr : (list, tuple, numpy.ndarray)
        List, tuple or array of values to be checked.
     negative_allowed: bool, optional
         If False, return True only for integers >=1 (natural numbers)
@@ -65,7 +65,7 @@ def are_all_natural_numbers(arr, zero_allowed=False):
 
     Parameters
     ----------
-    arr : (list, tuple, np.ndarray)
+    arr : (list, tuple, numpy.ndarray)
        List, tuple or array of values to be checked.
 
     Returns

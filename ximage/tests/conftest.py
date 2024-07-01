@@ -49,7 +49,7 @@ class SaneEqualityArray(np.ndarray):
 
 
 def apply_to_all_array_types(func, array, *args, **kwargs):
-    """Apply a function to np.ndarray, dask.Array, and xr.DataArray."""
+    """Apply a function to numpy.ndarray, dask.Array, and xarray.DataArray."""
     np_array = np.array(array)
     dask_array = dask.array.from_array(array)
     xr_array = xr.DataArray(array)
