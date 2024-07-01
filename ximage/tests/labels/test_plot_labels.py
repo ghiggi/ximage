@@ -10,7 +10,8 @@ def test_plot_labels():
     """Test plot_labels."""
     n_labels = 10
     shape = (10, 10)
-    array = np.random.randint(0, n_labels, size=shape)
+    rng = np.random.default_rng()
+    array = rng.integers(0, n_labels, size=shape)
     array = array.astype(float)
     array[array == 0] = np.nan
 

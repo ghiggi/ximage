@@ -475,14 +475,14 @@ def _get_patches_isel_dict_generator(
     patch_size,
     variable=None,
     # Output options
-    n_patches=np.Inf,
+    n_patches=np.inf,
     n_labels=None,
     labels_id=None,
     grouped_by_labels_id=False,
     # (Tile) label patch extraction
     padding=0,
     centered_on="max",
-    n_patches_per_label=np.Inf,
+    n_patches_per_label=np.inf,
     n_patches_per_partition=1,
     debug=False,
     # Label Tiling/Sliding Options
@@ -619,13 +619,13 @@ def get_patches_isel_dict_from_labels(
     patch_size,
     variable=None,
     # Output options
-    n_patches=np.Inf,
+    n_patches=np.inf,
     n_labels=None,
     labels_id=None,
     # Label Patch Extraction Settings
     centered_on="max",
     padding=0,
-    n_patches_per_label=np.Inf,
+    n_patches_per_label=np.inf,
     n_patches_per_partition=1,
     # Label Tiling/Sliding Options
     partitioning_method=None,
@@ -687,14 +687,14 @@ def get_patches_from_labels(
     patch_size,
     variable=None,
     # Output options
-    n_patches=np.Inf,
+    n_patches=np.inf,
     n_labels=None,
     labels_id=None,
     highlight_label_id=True,
     # Label Patch Extraction Options
     centered_on="max",
     padding=0,
-    n_patches_per_label=np.Inf,
+    n_patches_per_label=np.inf,
     n_patches_per_partition=1,
     # Label Tiling/Sliding Options
     partitioning_method=None,
@@ -756,7 +756,7 @@ def get_patches_from_labels(
         If a ``dict``, the dictionary must have has keys the label array dimensions.
     n_patches : int, optional
         Maximum number of patches to extract.
-        The default (``np.Inf``) enable to extract all available patches allowed by the
+        The default (``np.inf``) enable to extract all available patches allowed by the
         specified patch extraction criteria.
     labels_id : list, optional
         List of labels for which to extract the patch.
@@ -798,7 +798,7 @@ def get_patches_from_labels(
         If a ``dict``, the dictionary must have has keys the label array dimensions.
     n_patches_per_label: int, optional
         The maximum number of patches to extract for each label.
-        The default (``np.Inf``) enables to extract all the available patches per label.
+        The default (``np.inf``) enables to extract all the available patches per label.
         ``n_patches_per_label`` must be larger than ``n_patches_per_partition`` !
     n_patches_per_partition, int, optional
         The maximum number of patches to extract from each label partition.

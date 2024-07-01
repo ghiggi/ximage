@@ -495,7 +495,8 @@ def test_check_centered_on():
 
 def test_get_variable_arr():
     """Test _get_variable_arr."""
-    array = np.random.rand(2, 3)
+    rng = np.random.default_rng()
+    array = rng.random((2, 3))
     variable_name = None
     centered_on = None
 
@@ -524,12 +525,13 @@ def test_check_variable_arr():
     shape = (2, 3)
 
     # Check valid variable array (same shape as label arary)
-    variable_array = np.random.rand(*shape)
-    label_array = np.random.randint(1, 5, shape)
+    rng = np.random.default_rng()
+    variable_array = rng.random(shape)
+    label_array = rng.integers(1, 5, size=shape)
     assert labels_patch._check_variable_arr(variable_array, label_array) is variable_array
 
     # Check invalid variable array (different shape as label arary)
-    variable_array = np.random.rand(3, 3)
+    variable_array = rng.random((3, 3))
     with pytest.raises(ValueError):
         labels_patch._check_variable_arr(variable_array, label_array)
 
@@ -537,7 +539,8 @@ def test_check_variable_arr():
 def test_get_point_centroid():
     """Test _get_point_centroid."""
     shape = (4, 5)
-    array = np.random.rand(*shape)
+    rng = np.random.default_rng()
+    array = rng.random(shape)
     expected_centroid = tuple(np.array(shape) / 2)
     assert labels_patch._get_point_centroid(array) == expected_centroid
 
@@ -549,7 +552,8 @@ def test_get_point_centroid():
 def test_get_point_random():
     """Test _get_point_random."""
     shape = (4, 5)
-    array = np.random.rand(*shape)
+    rng = np.random.default_rng()
+    array = rng.random(shape)
     returned_point = labels_patch._get_point_random(array)
     assert len(returned_point) == len(shape)
     for max_value, coordinate in zip(shape, returned_point):
@@ -564,7 +568,8 @@ def test_get_point_random():
 def test_get_point_with_max_value():
     """Test _get_point_with_max_value."""
     shape = (4, 5)
-    array = np.random.rand(*shape)
+    rng = np.random.default_rng()
+    array = rng.random(shape)
     max_value = np.max(array)
 
     returned_point = labels_patch._get_point_with_max_value(array)
@@ -578,7 +583,8 @@ def test_get_point_with_max_value():
 def test_get_point_with_min_value():
     """Test _get_point_with_min_value."""
     shape = (4, 5)
-    array = np.random.rand(*shape)
+    rng = np.random.default_rng()
+    array = rng.random(shape)
     min_value = np.min(array)
 
     returned_point = labels_patch._get_point_with_min_value(array)

@@ -70,7 +70,7 @@ highlight_label_id = False
 patch_size = (100, 100)
 centered_on = "label_bbox"
 padding = 0
-n_patches_per_label = np.Inf
+n_patches_per_label = np.inf
 n_patches_per_partition = 1
 # Tiling/Sliding Options
 partitioning_method = None  # "tiling" / "sliding"
