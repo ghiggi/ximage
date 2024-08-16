@@ -101,7 +101,7 @@ contribute to the project!
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Each contribution should be made in a separate new branch of your forked repository.
-Working on the main branch is reserved for `Core Contributors` only.
+Working on the main branch is reserved for *Core Contributors* only.
 Core Contributors are developers that actively work and maintain the repository.
 They are the only ones who accept Pull Requests and push commits directly to the ximage repository.
 
@@ -136,7 +136,7 @@ We follow the `PEP 8 <https://pep8.org/>`__ style guide for python code.
 Another relevant style guide can be found in the `The Hitchhiker's Guide to Python <https://docs.python-guide.org/writing/style/>`__.
 
 To ensure a minimal style consistency, we use `black <https://black.readthedocs.io/en/stable/>`__ to auto-format the source code.
-The `black` configuration used in the ximage project is
+The *black* configuration used in the ximage project is
 defined in the `pyproject.toml <https://github.com/ghiggi/ximage/blob/main/pyproject.toml>`__.
 
 
@@ -237,7 +237,8 @@ Refer to the table below for a comprehensive summary of all CI tools employed to
 +----------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
 | `CodeFactor <https://www.codefactor.io/>`__        | Automated code review and analysis tools                                                                                            |
 +----------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
-
+| `Codacy <https://www.codacy.com/>`__               | Automated code review and analysis tools                                                                                            |
++----------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
 
 
 5. Code testing with pytest

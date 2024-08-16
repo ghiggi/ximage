@@ -51,7 +51,7 @@ Ongoing version support
 
 ximage major releases aims to move the community forward, focusing on specifications stabilization and major feature additions, rather than backwards-compatibility. ximage minor releases will be backwards compatible. We strongly recommend adopting the latest release of ximage into production within 6 months for major releases, and 4 months for minor releases.
 
-The maintaners do their best but does not guarantee any period of support or maintenance.
+The maintainers do their best but does not guarantee any period of support or maintenance.
 
 Releases that are 2 years or older may be considered as deprecated.
 
@@ -218,4 +218,6 @@ The table below summarizes the software tools utilized in our CI pipeline, descr
 | `CodeScene <https://codescene.com/>`__                                                             | Automated code review and analysis tools                         | `ximage <https://codescene.io/projects/41869/>`__                                            |
 +----------------------------------------------------------------------------------------------------+------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
 | `CodeFactor <https://www.codefactor.io/>`__                                                        | Automated code review and analysis tools                         | `ximage <https://www.codefactor.io/repository/github/ghiggi/ximage>`__                       |
++----------------------------------------------------------------------------------------------------+------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
+| `Codacy      <https://www.codacy.com/>`__                                                          | Automated code review and analysis tools                         | `ximage <https://app.codacy.com/gh/ghiggi/ximage/dashboard>`__                               |
 +----------------------------------------------------------------------------------------------------+------------------------------------------------------------------+----------------------------------------------------------------------------------------------+

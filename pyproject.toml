@@ -56,7 +56,7 @@ homepage = "https://github.com/ghiggi/ximage"
 repository = "https://github.com/ghiggi/ximage"
 source = "https://github.com/ghiggi/ximage"
 tracker = "https://github.com/ghiggi/ximage/issues"
-documentation = "https://ximage.readthedocs.io"
+documentation = "https://x-image.readthedocs.io/"
 changelog = "https://github.com/ghiggi/ximage/blob/main/CHANGELOG.md"
 
 [tool.setuptools_scm]
@@ -161,14 +161,13 @@ select = [
     # flake8-comprehensions
     "C4",
     # Ruff custom rules
-    "RUF"
-
+    "RUF",
+    # NumPy-specific rules  (for 2.0)
+    "NPY",
     #---------------------
     #### Future rules ####
     # flake8-use-pathlib
     # "PTH",
-    # NumPy-specific rules  (for 2.0)
-    # "NPY",
     # refurb
     # "FURB", # require preview
 ]
@@ -208,6 +207,18 @@ convention = "numpy"
 ]
 "setup.py" = ["D100"]
 "*__init__.py" = ["D104"]
+
+[tool.doc8]
+ignore-path = [
+    "docs/build",
+    "docs/api/generated",
+    "docs/_templates",
+    "docs/tutorials",
+    "docs/examples",
+]
+file-encoding = "utf8"
+max-line-length = 120
+ignore = ["D001"]
 
 [tool.codespell]
     ignore-words-list = 'nD'
