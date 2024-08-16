@@ -61,7 +61,7 @@ def _replace_full_dimension_flag_value(arg, shape):
 
 def check_patch_size(patch_size, dims, shape):
     """
-    Check the validity of the patch_size argument based on the array shape.
+    Check the validity of the ``patch_size`` argument based on the array shape.
 
     Parameters
     ----------
