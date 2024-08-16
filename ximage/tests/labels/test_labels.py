@@ -702,7 +702,7 @@ def test_xr_get_labels():
     )
     n_labels_expected = 2
     values_expected = np.array([3.5, 6.5])
-    assert type(labels_array_returned) == xr.DataArray
+    assert isinstance(labels_array_returned, xr.DataArray)
     assert np.array_equal(labels_array_returned, labels_array_expected)
     assert n_labels_returned == n_labels_expected
     assert np.array_equal(values_returned, values_expected)

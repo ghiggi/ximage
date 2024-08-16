@@ -276,8 +276,7 @@ def _get_new_label_value_dict(label_indices, max_label):
     n_labels = len(label_indices)
     label_indices = label_indices.tolist()
     label_indices_new = np.arange(1, n_labels + 1, dtype=int).tolist()
-    for k, v in zip(label_indices, label_indices_new):
-        val_dict[k] = v
+    val_dict.update(dict(zip(label_indices, label_indices_new)))
     return val_dict
 
 
