@@ -1,3 +1,4 @@
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
@@ -19,15 +20,20 @@ def test_plot_labels():
     y_dim = "y"
     dataarray = xr.DataArray(array, dims=[y_dim, x_dim])
 
-    # Default arguments
+    # Default arguments (use pcolormesh)
     p = plot_labels(dataarray)
-    assert isinstance(p, AxesImage)
+    assert isinstance(p, matplotlib.collections.QuadMesh)
+
+    # Passing arguments to xarray pcolormesh
+    ax = plt.gca()
+    p = plot_labels(dataarray, x=x_dim, y=y_dim, ax=ax, use_imshow=False)
+    assert isinstance(p, matplotlib.collections.QuadMesh)
 
     # Passing arguments to xarray imshow
     ax = plt.gca()
-    p = plot_labels(dataarray, x=x_dim, y=y_dim, ax=ax)
+    p = plot_labels(dataarray, x=x_dim, y=y_dim, ax=ax, use_imshow=True)
     assert isinstance(p, AxesImage)
 
     # Cap max_n_labels to hide colorbar
-    p = plot_labels(dataarray, max_n_labels=1)
+    p = plot_labels(dataarray, max_n_labels=1, use_imshow=True)
     assert isinstance(p, AxesImage)

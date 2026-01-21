@@ -4,6 +4,9 @@ import xarray as xr
 from pytest import apply_to_all_array_types  # noqa PT013
 
 from ximage.labels import labels
+from ximage.labels.labels import (
+    check_core_dims,
+)
 
 # Fixtures used
 # - apply_to_all_array_types
@@ -112,7 +115,7 @@ def test_labels():
     # Test with Dataset
     variable_name = "data"
     dataset = xr.Dataset({variable_name: data_array})
-    dataset_returned = labels.label(dataset, variable_name)
+    dataset_returned = labels.label(dataset, variable=variable_name)
     labels_array_expected = np.array(
         [
             [3, 3, _, _, 2],
@@ -123,6 +126,68 @@ def test_labels():
         ],
     )
     assert np.array_equal(dataset_returned.coords["label"], labels_array_expected, equal_nan=True)
+
+
+def test_labels_custom_sorting():
+    """Test label with custom sorting. Argument are passed correctly to get_labels."""
+    # Define array
+    _ = float("nan")
+    array = np.array(
+        [
+            [1, 2, _, _, 3],
+            [_, _, _, _, 4],
+            [_, _, _, _, _],
+            [5, _, _, _, _],
+            [6, 7, _, 8, _],
+        ],
+    )
+
+    # Check that all arguments are passed correctly to _get_labels
+    array = xr.DataArray(array)
+    min_value = 3
+    max_value = 8
+    min_area = 2
+    max_area = 4
+    footprint = np.array(
+        [
+            [1, 1],
+            [1, 1],
+        ],
+    )
+
+    def my_sort_function(array):
+        return np.mean(array)
+
+    sort_by = my_sort_function
+    sort_decreasing = False
+    labeled_comprehension_kwargs = {
+        "out_dtype": np.float16,
+    }
+    labels_array = labels.label(
+        array,
+        min_value_threshold=min_value,
+        max_value_threshold=max_value,
+        min_area_threshold=min_area,
+        max_area_threshold=max_area,
+        footprint=footprint,
+        sort_by=sort_by,
+        sort_decreasing=sort_decreasing,
+        labeled_comprehension_kwargs=labeled_comprehension_kwargs,
+    )
+    labels_array_expected = np.array(
+        [
+            [0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0],
+            [2, 0, 0, 0, 0],
+            [2, 2, 0, 2, 0],
+        ],
+        dtype="float",
+    )
+    labels_array_expected[labels_array_expected == 0] = np.nan
+
+    assert isinstance(labels_array, xr.DataArray)
+    np.testing.assert_allclose(labels_array["label"].data, labels_array_expected)
 
 
 def test_highlight_label():
@@ -149,7 +214,7 @@ def test_highlight_label():
     assert np.array_equal(dataset_returned[label_name], labels_array_expected)
 
 
-# Tests for internal functions #################################################
+#### Tests for internal functions #################################################
 
 
 def test_mask_buffer():
@@ -225,10 +290,13 @@ def test_no_labels_result():
     array = np.ones((2, 3))
     labels_target = np.zeros(array.shape)
 
-    labels_result, n_labels, values = labels._no_labels_result(array)
+    labels_result, n_labels, values = labels._no_labels_result(array, return_labels_stats=True)
     assert np.array_equal(labels_result, labels_target)
     assert n_labels == 0
     assert values == []
+
+    labels_result = labels._no_labels_result(array, return_labels_stats=False)
+    assert np.array_equal(labels_result, labels_target)
 
 
 def test_check_sort_by_and_stats():
@@ -453,34 +521,146 @@ def test_xr_redefine_label_array():
     assert np.array_equal(array_returned, array_expected)
 
 
-def test_check_xr_obj():
-    """Test _check_xr_obj."""
+class TestCheckCoreDims:
+    """Unit tests for the `check_core_dims` helper function."""
+
+    def test_2d_infer_core_dims(self):
+        """Infer core dimensions automatically for a 2D DataArray."""
+        da = xr.DataArray(
+            np.zeros((4, 5)),
+            dims=("x", "y"),
+        )
+
+        core_dims = check_core_dims(None, da)
+
+        assert core_dims == ("x", "y")
+
+    def test_2d_explicit_core_dims(self):
+        """Accept explicitly provided core dimensions for a 2D DataArray."""
+        da = xr.DataArray(
+            np.zeros((4, 5)),
+            dims=("x", "y"),
+        )
+
+        core_dims = check_core_dims(("x", "y"), da)
+
+        assert core_dims == ("x", "y")
+
+    def test_3d_explicit_core_dims(self):
+        """Apply explicitly provided core dimensions for a >2D DataArray."""
+        da = xr.DataArray(
+            np.zeros((2, 4, 5)),
+            dims=("time", "x", "y"),
+        )
+
+        core_dims = check_core_dims(("x", "y"), da)
+
+        assert core_dims == ("x", "y")
+
+    def test_3d_missing_core_dims_raises(self):
+        """Raise an error if core dimensions are missing for >2D DataArray."""
+        da = xr.DataArray(
+            np.zeros((2, 4, 5)),
+            dims=("time", "x", "y"),
+        )
+
+        with pytest.raises(
+            ValueError,
+            match="ndim > 2, `core_dims` must be specified",
+        ):
+            check_core_dims(None, da)
+
+    def test_core_dims_too_few_raises(self):
+        """Raise an error if fewer than two core dimensions are provided."""
+        da = xr.DataArray(
+            np.zeros((4, 5)),
+            dims=("x", "y"),
+        )
+
+        with pytest.raises(
+            ValueError,
+            match="exactly two dimensions",
+        ):
+            check_core_dims(("x",), da)
+
+    def test_core_dims_too_many_raises(self):
+        """Raise an error if more than two core dimensions are provided."""
+        da = xr.DataArray(
+            np.zeros((2, 4, 5)),
+            dims=("time", "x", "y"),
+        )
+
+        with pytest.raises(
+            ValueError,
+            match="exactly two dimensions",
+        ):
+            check_core_dims(("time", "x", "y"), da)
+
+    def test_core_dims_not_in_dataarray_raises(self):
+        """Raise an error if core dimensions are not present in the DataArray."""
+        da = xr.DataArray(
+            np.zeros((2, 4, 5)),
+            dims=("time", "x", "y"),
+        )
+
+        with pytest.raises(
+            ValueError,
+            match="are not all dimensions of the DataArray",
+        ):
+            check_core_dims(("lat", "lon"), da)
+
+    def test_core_dims_order_preserved(self):
+        """Preserve the order of user-provided core dimensions."""
+        da = xr.DataArray(
+            np.zeros((4, 5)),
+            dims=("x", "y"),
+        )
+
+        core_dims = check_core_dims(("y", "x"), da)
+
+        assert core_dims == ("y", "x")
+
+    def test_core_dims_list_input(self):
+        """Accept core dimensions provided as a list."""
+        da = xr.DataArray(
+            np.zeros((4, 5)),
+            dims=("x", "y"),
+        )
+
+        core_dims = check_core_dims(["x", "y"], da)
+
+        assert isinstance(core_dims, tuple)
+        assert core_dims == ("x", "y")
+
+
+def test_get_data_array():
+    """Test get_data_array."""
     data = [[1, 2, 3]]
 
     # Check invalid type
     with pytest.raises(TypeError):
-        labels._check_xr_obj(np.array(data))
+        labels.get_data_array(np.array(data))
 
     # Check DataArray
     array = xr.DataArray(data)
-    labels._check_xr_obj(array)
+    assert isinstance(labels.get_data_array(array), xr.DataArray)
 
     # Check DataArray with provided variable name
     with pytest.raises(ValueError):
-        labels._check_xr_obj(array, "test")
+        labels.get_data_array(array, "test")
 
     # Check Dataset
     variable_name = "test"
     dataset = xr.Dataset({variable_name: array})
-    labels._check_xr_obj(dataset, variable_name)
+    assert isinstance(labels.get_data_array(dataset, variable_name), xr.DataArray)
 
     # Check Dataset with invalid variable name
     with pytest.raises(ValueError):
-        labels._check_xr_obj(dataset, "invalid")
+        labels.get_data_array(dataset, "invalid")
 
     # Check Dataset with no variable name
     with pytest.raises(ValueError):
-        labels._check_xr_obj(dataset)
+        labels.get_data_array(dataset)
 
 
 def test_get_labels():
@@ -641,26 +821,7 @@ def test_get_labels():
     assert n_labels_returned == n_labels_expected
     assert np.array_equal(values_returned, values_expected)
 
-
-def test_xr_get_labels():
-    """Test _xr_get_labels. See test_get_labels for extensive tests of all arguments."""
-    _ = float("nan")
-    array = np.array(
-        [
-            [1, 2, _, _, 3],
-            [_, _, _, _, 4],
-            [_, _, _, _, _],
-            [5, _, _, _, _],
-            [6, 7, _, 8, _],
-        ],
-    )
-
-    # Try wrong array type
-    with pytest.raises(TypeError):
-        labels._xr_get_labels(array)
-
-    # Check that all arguments are passed correctly to _get_labels
-    array = xr.DataArray(array)
+    # Test custom sorting method
     min_value = 3
     max_value = 8
     min_area = 2
@@ -680,7 +841,7 @@ def test_xr_get_labels():
     labeled_comprehension_kwargs = {
         "out_dtype": np.float16,
     }
-    labels_array_returned, n_labels_returned, values_returned = labels._xr_get_labels(
+    labels_array_returned, n_labels_returned, values_returned = labels._get_labels(
         array,
         min_value_threshold=min_value,
         max_value_threshold=max_value,
@@ -691,6 +852,7 @@ def test_xr_get_labels():
         sort_decreasing=sort_decreasing,
         labeled_comprehension_kwargs=labeled_comprehension_kwargs,
     )
+
     labels_array_expected = np.array(
         [
             [0, 0, 0, 0, 1],
@@ -699,11 +861,10 @@ def test_xr_get_labels():
             [2, 0, 0, 0, 0],
             [2, 2, 0, 2, 0],
         ],
+        dtype="float",
     )
     n_labels_expected = 2
     values_expected = np.array([3.5, 6.5])
-    assert isinstance(labels_array_returned, xr.DataArray)
     assert np.array_equal(labels_array_returned, labels_array_expected)
     assert n_labels_returned == n_labels_expected
     assert np.array_equal(values_returned, values_expected)
-    assert values_returned.dtype == np.float16

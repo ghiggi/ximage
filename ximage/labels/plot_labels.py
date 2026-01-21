@@ -29,7 +29,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 
-from ximage.labels.labels import get_label_indices, redefine_label_array
+from ximage.labels.labels import get_label_indices
 
 
 def get_label_colorbar_settings(label_indices, cmap="Paired"):
@@ -77,13 +77,21 @@ def plot_labels(
     max_n_labels=50,
     add_colorbar=True,
     cmap="Paired",
+    use_imshow=False,
     **plot_kwargs,
 ):
     """Plot labels.
 
     The maximum allowed number of labels to plot is 'max_n_labels'.
     """
+    # Check that datarray has two dimensions only
+    if len(dataarray.dims) != 2:
+        raise ValueError(f"The dataarray must have two dimensions only to be plotted. Got {dataarray.dims}")
+
+    # Compute the dataarray if needed
     dataarray = dataarray.compute()
+
+    # Retrieve label indices
     label_indices = get_label_indices(dataarray)
     n_labels = len(label_indices)
     if add_colorbar and n_labels > max_n_labels:
@@ -91,24 +99,38 @@ def plot_labels(
             is set to {max_n_labels}. The colorbar is not displayed!"""
         print(msg)
         add_colorbar = False
-    dataarray = redefine_label_array(dataarray, label_indices=label_indices)
+
+    # Redefine label array to have consecutive integers starting from 1
+    # dataarray = redefine_label_array(dataarray, label_indices=label_indices)
+
     # Replace 0 with nan
     dataarray = dataarray.where(dataarray > 0)
+
     # Define appropriate colormap
     plot_kwargs, cbar_kwargs = get_label_colorbar_settings(label_indices, cmap=cmap)
+
     # Plot image
     ticklabels = cbar_kwargs.pop("ticklabels", None)
     if not add_colorbar:
         cbar_kwargs = {}
-
-    p = dataarray.plot.imshow(
-        x=x,
-        y=y,
-        ax=ax,
-        add_colorbar=add_colorbar,
-        cbar_kwargs=cbar_kwargs,
-        **plot_kwargs,
-    )
+    if use_imshow:
+        p = dataarray.plot.imshow(
+            x=x,
+            y=y,
+            ax=ax,
+            add_colorbar=add_colorbar,
+            cbar_kwargs=cbar_kwargs,
+            **plot_kwargs,
+        )
+    else:
+        p = dataarray.plot.pcolormesh(
+            x=x,
+            y=y,
+            ax=ax,
+            add_colorbar=add_colorbar,
+            cbar_kwargs=cbar_kwargs,
+            **plot_kwargs,
+        )
     plt.title(dataarray.name)
     if add_colorbar and ticklabels is not None:
         p.colorbar.ax.set_yticklabels(ticklabels)

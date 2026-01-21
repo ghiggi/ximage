@@ -40,7 +40,9 @@ class XImage_Base_Accessor:
 
     def label(
         self,
+        *,
         variable=None,
+        core_dims=None,
         min_value_threshold=0.1,
         max_value_threshold=np.inf,
         min_area_threshold=1,
@@ -59,6 +61,7 @@ class XImage_Base_Accessor:
         return label(
             self._obj,
             variable=variable,
+            core_dims=core_dims,
             label_name=label_name,
             # Labels options
             min_value_threshold=min_value_threshold,
@@ -73,6 +76,7 @@ class XImage_Base_Accessor:
 
     def label_patches(
         self,
+        *,
         patch_size,
         variable=None,
         label_name="label",
@@ -130,6 +134,7 @@ class XImage_Base_Accessor:
 
     def label_patches_isel_dicts(
         self,
+        *,
         label_name,
         patch_size,
         variable=None,
@@ -203,12 +208,14 @@ class XImage_DataArray_Accessor(XImage_Base_Accessor):
 
     def plot_labels(
         self,
+        *,
         x=None,
         y=None,
         ax=None,
         max_n_labels=50,
         add_colorbar=True,
         cmap="Paired",
+        use_imshow=False,
         **plot_kwargs,
     ):
         """Plot the labels on the xarray object."""
@@ -222,5 +229,6 @@ class XImage_DataArray_Accessor(XImage_Base_Accessor):
             max_n_labels=max_n_labels,
             add_colorbar=add_colorbar,
             cmap=cmap,
+            use_imshow=use_imshow,
             **plot_kwargs,
         )

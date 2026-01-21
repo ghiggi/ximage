@@ -33,7 +33,8 @@ import dask_image.ndmeasure
 import numpy as np
 import xarray as xr
 from skimage.measure import label as label_image
-from skimage.morphology import binary_dilation, disk
+from skimage.morphology import dilation as skimage_dilation
+from skimage.morphology import disk
 
 from ximage.utils.checks import are_all_natural_numbers
 
@@ -44,6 +45,11 @@ from ximage.utils.checks import are_all_natural_numbers
 
 
 ####--------------------------------------------------------------------------.
+
+
+def _binary_dilation(mask, footprint):
+    mask = skimage_dilation(mask, footprint=footprint)
+    return mask  # noqa: RET504
 
 
 def _mask_buffer(mask, footprint):
@@ -67,7 +73,7 @@ def _mask_buffer(mask, footprint):
         footprint = None if footprint == 0 else disk(radius=footprint)
     # Apply dilation
     if footprint is not None:
-        mask = binary_dilation(mask, footprint=footprint)
+        mask = _binary_dilation(mask, footprint=footprint)
     return mask
 
 
@@ -83,12 +89,14 @@ def _check_array(arr):
     return np.asanyarray(arr)
 
 
-def _no_labels_result(arr):
+def _no_labels_result(arr, return_labels_stats):
     """Define results for array without labels."""
     labels = np.zeros(arr.shape)
     n_labels = 0
     values = []
-    return labels, n_labels, values
+    if return_labels_stats:
+        return labels, n_labels, values
+    return labels
 
 
 def _check_sort_by(sort_by):
@@ -339,7 +347,7 @@ def redefine_label_array(data, label_indices=None):
     raise TypeError(f"This method does not accept {type(data)}")
 
 
-def _check_xr_obj(xr_obj, variable=None):
+def get_data_array(xr_obj, variable=None):
     """Check xarray object and variable validity."""
     # Check inputs
     if not isinstance(xr_obj, (xr.Dataset, xr.DataArray)):
@@ -352,6 +360,34 @@ def _check_xr_obj(xr_obj, variable=None):
             raise ValueError(f"'{variable}' is not a variable of the xr.Dataset.")
     elif variable is not None:
         raise ValueError("'variable' must not be specified when providing a xr.DataArray.")
+    # Return DataArray
+    return xr_obj[variable] if isinstance(xr_obj, xr.Dataset) else xr_obj
+
+
+def check_core_dims(core_dims, data_array):
+    """Check core_dims argument and infer if needed."""
+    # Infer core_dims if 2D array
+    if data_array.ndim == 2:
+        core_dims = tuple(data_array.dims) if core_dims is None else tuple(core_dims)
+    # Otherwise should be specified
+    else:
+        if core_dims is None:
+            raise ValueError(
+                "For DataArray with ndim > 2, `core_dims` must be specified.",
+            )
+        core_dims = tuple(core_dims)
+
+    # Check core_dims are two  (currently) !
+    if len(core_dims) != 2:
+        raise ValueError("`core_dims` must contain exactly two dimensions. 3D-array labelling not yet implemented.")
+
+    # Check valid core_dims
+    missing = set(core_dims) - set(data_array.dims)
+    if missing:
+        raise ValueError(
+            f"`core_dims` {core_dims} are not all dimensions of the DataArray. " f"Missing: {missing}",
+        )
+    return core_dims
 
 
 def _get_labels(
@@ -364,6 +400,7 @@ def _get_labels(
     sort_by="area",
     sort_decreasing=True,
     labeled_comprehension_kwargs=None,
+    return_labels_stats=True,
 ):
     """
     Function deriving the labels array and associated labels info.
@@ -413,6 +450,9 @@ def _get_labels(
                 If True, pass linear indices to 'sort_by' as a second argument.
                 The default is False.
         The default is {}.
+    return_labels_stats: bool
+        Whether to return label statistics. The default is True.
+        If False, it returns just the labelled array.
 
     Returns
     -------
@@ -433,9 +473,6 @@ def _get_labels(
     if labeled_comprehension_kwargs is None:
         labeled_comprehension_kwargs = {}
     arr = _check_array(arr)
-
-    # Check input arguments
-    _check_sort_by(sort_by)
 
     # ---------------------------------.
     # Define masks
@@ -462,7 +499,7 @@ def _get_labels(
     label_indices = np.unique(label_arr, return_counts=False)
     n_initial_labels = len(label_indices)
     if n_initial_labels == 1:  # only 0 label
-        return _no_labels_result(arr)
+        return _no_labels_result(arr, return_labels_stats=return_labels_stats)
 
     # ---------------------------------.
     # Set areas outside the mask_native to label value 0
@@ -479,7 +516,7 @@ def _get_labels(
         vmax=max_area_threshold,
     )
     if len(label_indices) == 0:
-        return _no_labels_result(arr)
+        return _no_labels_result(arr, return_labels_stats=return_labels_stats)
 
     # ---------------------------------.
     # Sort labels by statistics (i.e. label area, label max value ...)
@@ -500,111 +537,19 @@ def _get_labels(
     # Relabel labels array (from 1 to n_labels)
     labels_arr = redefine_label_array(label_arr, label_indices=label_indices)
     n_labels = len(label_indices)
+
     # ---------------------------------.
-    # Return infos
-    return labels_arr, n_labels, values
-
-
-def _xr_get_labels(
-    data_array,
-    min_value_threshold=-np.inf,
-    max_value_threshold=np.inf,
-    min_area_threshold=1,
-    max_area_threshold=np.inf,
-    footprint=None,
-    sort_by="area",
-    sort_decreasing=True,
-    labeled_comprehension_kwargs=None,
-):
-    """
-    Function deriving the labels array and associated labels info.
-
-    Parameters
-    ----------
-    data_array : xarray.DataArray
-        DataArray object.
-    min_value_threshold : float, optional
-        The minimum value to define the interior of a label.
-        The default is ``-np.inf``.
-    max_value_threshold : float, optional
-        The maximum value to define the interior of a label.
-        The default is ``np.inf``.
-    min_area_threshold : float, optional
-        The minimum number of connected pixels to be defined as a label.
-        The default is 1.
-    max_area_threshold : float, optional
-        The maximum number of connected pixels to be defined as a label.
-        The default is ``np.inf``.
-    footprint : (int, numpy.ndarray or None), optional
-        This argument enables to dilate the mask derived after applying
-        min_value_threshold and max_value_threshold.
-        If ``footprint = 0`` or ``None``, no dilation occur.
-        If ``footprint`` is a positive integer, it create a disk(footprint)
-        If ``footprint`` is a 2D array, it must represent the neighborhood expressed
-        as a 2-D array of 1's and 0's.
-        The default is ``None`` (no dilation).
-    sort_by : callable or str, optional
-        A function or statistics to define the order of the labels.
-        Valid string statistics are ``"area"``, ``"maximum"``, ``"minimum"``, ``"mean"``,
-        ``"median"``,  ``"sum"``, ``"standard_deviation"``, ``"variance"``.
-        The default is ``"area"``.
-    sort_decreasing : bool, optional
-        If ``True``, sort labels by decreasing ``sort_by`` value.
-        The default is ``True``.
-    labeled_comprehension_kwargs : dict, optional
-        Additional arguments to be passed to `dask_image.ndmeasure.labeled_comprehension`.
-        If ``sort_by`` is a callable. May contain:
-            ``out_dtype`` : dtype, optional
-                Dtype to use for result.
-                The default is ``float``.
-            ``default`` : (int, float or None), optional
-                Default return value when a element of index does not exist in the label array.
-                The default is ``None``.
-            ``pass_positions`` : bool, optional
-                If ``True``, pass linear indices to ``sort_by`` as a second argument.
-                The default is ``False``.
-        The default is ``{}``.
-
-    Returns
-    -------
-    labels_arr, xarray.DataArray
-        Label DataArray. 0 values corresponds to no label.
-        The DataArray name is defined as `labels_{sort_by}`.
-    n_labels, int
-        Number of labels in the labels array.
-    values, np.arrays
-        Array of length ``n_labels`` with the stats values associated to each label.
-    """
-    # Extract data from DataArray
-    if labeled_comprehension_kwargs is None:
-        labeled_comprehension_kwargs = {}
-    if not isinstance(data_array, xr.DataArray):
-        raise TypeError("Expecting xr.DataArray.")
-
-    # Get labels
-    labels_arr, n_labels, values = _get_labels(
-        arr=data_array.data,
-        min_value_threshold=min_value_threshold,
-        max_value_threshold=max_value_threshold,
-        min_area_threshold=min_area_threshold,
-        max_area_threshold=max_area_threshold,
-        footprint=footprint,
-        sort_by=sort_by,
-        sort_decreasing=sort_decreasing,
-        labeled_comprehension_kwargs=labeled_comprehension_kwargs,
-    )
-
-    # Conversion to DataArray if needed
-    da_labels = data_array.copy()
-    da_labels.data = labels_arr
-    da_labels.name = f"labels_{sort_by}"
-    da_labels.attrs = {}
-    return da_labels, n_labels, values
+    # Return results
+    if return_labels_stats:
+        return labels_arr, n_labels, values
+    return labels_arr
 
 
 def label(
     xr_obj,
+    *,
     variable=None,
+    core_dims=None,
     min_value_threshold=-np.inf,
     max_value_threshold=np.inf,
     min_area_threshold=1,
@@ -625,6 +570,15 @@ def label(
     variable : str, optional
         Dataset variable to exploit to derive the labels array.
         Must be specified only if the input object is an `xarray.Dataset`.
+    core_dims : tuple of str, optional
+        Names of the two dimensions along which the labeling is applied.
+        If the xarray DataArray is two-dimensional and ``core_dims`` is not provided,
+        the core dimensions are inferred automatically from DataArray.dims.
+        If the xarray DataArray  has more than two dimensions, ``core_dims`` must be
+        specified explicitly. In this case, labeling is applied independently
+        over all remaining (non-core) dimensions.
+        Example: for a 3D DataArray with dimensions ``(x, y, time)``,
+        use ``core_dims=("x", "y")`` to apply labeling to each timestep.
     min_value_threshold : float, optional
         The minimum value to define the interior of a label.
         The default is ``-np.inf``.
@@ -666,24 +620,49 @@ def label(
     # Check xarray input
     if labeled_comprehension_kwargs is None:
         labeled_comprehension_kwargs = {}
-    _check_xr_obj(xr_obj=xr_obj, variable=variable)
 
-    # Retrieve labels (if available)
-    data_array_to_label = xr_obj[variable] if isinstance(xr_obj, xr.Dataset) else xr_obj
+    # Retrieve datarray to label
+    data_array = get_data_array(xr_obj=xr_obj, variable=variable)
 
-    da_labels, n_labels, values = _xr_get_labels(  # noqa: RUF059
-        data_array=data_array_to_label,
-        min_value_threshold=min_value_threshold,
-        max_value_threshold=max_value_threshold,
-        min_area_threshold=min_area_threshold,
-        max_area_threshold=max_area_threshold,
-        footprint=footprint,
-        sort_by=sort_by,
-        sort_decreasing=sort_decreasing,
-        labeled_comprehension_kwargs=labeled_comprehension_kwargs,
+    # Check arguments
+    _check_sort_by(sort_by)
+    core_dims = check_core_dims(core_dims, data_array)
+
+    # Define kwargs
+    kwargs = {
+        "min_value_threshold": min_value_threshold,
+        "max_value_threshold": max_value_threshold,
+        "min_area_threshold": min_area_threshold,
+        "max_area_threshold": max_area_threshold,
+        "footprint": footprint,
+        "sort_by": sort_by,
+        "sort_decreasing": sort_decreasing,
+        "labeled_comprehension_kwargs": labeled_comprehension_kwargs,
+        "return_labels_stats": False,
+    }
+
+    # Apply over non-core dimensions
+    da_labels = xr.apply_ufunc(
+        _get_labels,
+        data_array,
+        kwargs=kwargs,
+        input_core_dims=[list(core_dims)],
+        output_core_dims=[list(core_dims)],
+        vectorize=True,
+        dask="parallelized",
+        output_dtypes=[int, int, float],
+        dask_gufunc_kwargs={"output_sizes": {"parameters": 3}},
     )
-    if n_labels == 0:
-        raise ValueError("No patch available. You might want to change the patch generator parameters.")
+
+    # If input array was in memory compute labels
+    if hasattr(data_array, "chunks"):
+        da_labels = da_labels.compute()
+        if da_labels.max() == 0:
+            raise ValueError("No labels identified. You might want to change the labeling parameters.")
+
+    # Conversion to DataArray if needed
+    da_labels.name = f"labels_{sort_by}"
+    da_labels.attrs = {}
 
     # Set labels values == 0 to np.nan (useful for plotting)
     da_labels = da_labels.where(da_labels > 0)
