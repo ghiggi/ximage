@@ -25,10 +25,8 @@
 
 # -----------------------------------------------------------------------------.
 """Utility functions to test ximage."""
-import dask.array
 import numpy as np
 import pytest
-import xarray as xr
 
 
 class SaneEqualityArray(np.ndarray):  # noqa: PLW1641
@@ -48,17 +46,6 @@ class SaneEqualityArray(np.ndarray):  # noqa: PLW1641
         )
 
 
-def apply_to_all_array_types(func, array, *args, **kwargs):
-    """Apply a function to numpy.ndarray, dask.Array, and xarray.DataArray."""
-    np_array = np.array(array)
-    dask_array = dask.array.from_array(array)
-    xr_array = xr.DataArray(array)
-
-    for x_array in [np_array, dask_array, xr_array]:
-        func(x_array, *args, **kwargs)
-
-
 def pytest_configure():
     """Custom functions for testing ximage."""
     pytest.SaneEqualityArray = SaneEqualityArray
-    pytest.apply_to_all_array_types = apply_to_all_array_types

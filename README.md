@@ -36,6 +36,7 @@ The `ximage` xarray accessor provides a convenient way to labelling and extract 
 ##### Image labelling
 
 ```python
+# Define labelling parameters
 min_value_threshold = 1
 max_value_threshold = np.inf
 min_area_threshold = 5
@@ -45,7 +46,7 @@ sort_by = "area"
 sort_decreasing = True
 label_name = "label"
 
-### Label xarray object
+# Label xarray object
 xr_obj = da.ximage.label(
     min_value_threshold=min_value_threshold,
     max_value_threshold=max_value_threshold,
@@ -56,23 +57,26 @@ xr_obj = da.ximage.label(
     sort_decreasing=sort_decreasing,
     label_name=label_name,
 )
+# Display labels
+xr_obj[label_name].ximage.plot.labels()
 ```
 
 ##### Extract patches around labels
 
 ```python
-# Output Options
+# Define labelling parameters
+# - Output Options
 n_patches = 10
 n_labels = None
 labels_id = None
 highlight_label_id = False
-# Patch Extraction Options
+# - Patch Extraction Options
 patch_size = (100, 100)
 centered_on = "label_bbox"
 padding = 0
 n_patches_per_label = np.inf
 n_patches_per_partition = 1
-# Tiling/Sliding Options
+# - Tiling/Sliding Options
 partitioning_method = None  # "tiling" / "sliding"
 n_partitions_per_label = None
 kernel_size = None
@@ -83,6 +87,7 @@ ensure_slice_size = True
 debug = True
 verbose = True
 
+# Run patch extraction
 da_patch_gen = xr_obj.ximage.label_patches(
     label_name=label_name,
     patch_size=patch_size,

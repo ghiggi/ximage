@@ -650,7 +650,7 @@ def label(
         output_core_dims=[list(core_dims)],
         vectorize=True,
         dask="parallelized",
-        output_dtypes=[int, int, float],
+        output_dtypes=[float],
         dask_gufunc_kwargs={"output_sizes": {"parameters": 3}},
     )
 

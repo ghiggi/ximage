@@ -1,9 +1,21 @@
+import dask.array
 import numpy as np
 import pytest
 import xarray as xr
-from pytest import SaneEqualityArray, apply_to_all_array_types  # noqa PT013
+from pytest import SaneEqualityArray  # noqa PT013
 
 from ximage.patch import labels_patch
+
+
+def apply_to_all_array_types(func, array, *args, **kwargs):
+    """Apply a function to numpy.ndarray, dask.Array, and xarray.DataArray."""
+    np_array = np.array(array)
+    dask_array = dask.array.from_array(array)
+    xr_array = xr.DataArray(array)
+
+    for x_array in [np_array, dask_array, xr_array]:
+        func(x_array, *args, **kwargs)
+
 
 # Utils functions ##############################################################
 
