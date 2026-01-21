@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------.
 # MIT License
 
-# Copyright (c) 2024 ximage developers
+# Copyright (c) 2024-2026 ximage developers
 #
 # This file is part of ximage.
 
@@ -25,6 +25,8 @@
 
 # -----------------------------------------------------------------------------.
 """Slices utility functions."""
+import itertools
+
 import numpy as np
 
 
@@ -98,7 +100,7 @@ def pad_slices(list_slices, padding, valid_shape):
     # Apply padding
     return [
         pad_slice(s, padding=p, min_start=0, max_stop=valid_shape[i])
-        for i, (s, p) in enumerate(zip(list_slices, padding))
+        for i, (s, p) in enumerate(zip(list_slices, padding, strict=True))
     ]
 
 
@@ -215,7 +217,7 @@ def enlarge_slices(list_slices, min_size, valid_shape):
     # Enlarge the slice
     return [
         enlarge_slice(slc, min_size=s, min_start=0, max_stop=valid_shape[i])
-        for i, (slc, s) in enumerate(zip(list_slices, min_size))
+        for i, (slc, s) in enumerate(zip(list_slices, min_size, strict=True))
     ]
 
 
@@ -424,8 +426,6 @@ def get_nd_partitions_list_slices(
     ensure_slice_size,
 ):
     """Return the n-dimensional partitions list of slices of a initial list of slices."""
-    import itertools
-
     l_iterables = []
     for i in range(len(list_slices)):
         slice_size = kernel_size[i]

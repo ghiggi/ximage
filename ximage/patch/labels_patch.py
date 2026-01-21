@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------.
 # MIT License
 
-# Copyright (c) 2024 ximage developers
+# Copyright (c) 2024-2026 ximage developers
 #
 # This file is part of ximage.
 
@@ -27,7 +27,7 @@
 """Functions to extract patch around labels."""
 import random
 import warnings
-from typing import Callable, Union
+from collections.abc import Callable
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -174,7 +174,7 @@ def _check_callable_centered_on(centered_on):
         raise ValueError(
             "The 'centered_on' function should return point coordinates having same dimensions has input array.",
         )
-    for c, max_value in zip(point, input_shape):
+    for c, max_value in zip(point, input_shape, strict=True):
         if c < 0:
             raise ValueError("The point coordinate must be a positive integer.")
         if c >= max_value:
@@ -280,7 +280,7 @@ def _get_point_center_of_mass(arr, integer_index=True):
     return tuple(center_of_mass.tolist())
 
 
-def find_point(arr, centered_on: Union[str, Callable] = "max"):
+def find_point(arr, centered_on: str | Callable = "max"):
     """Find a specific point coordinate of the array.
 
     If the coordinate can't be find, return ``None``.
@@ -357,11 +357,11 @@ def _get_patch_list_slices_around_label_point(
     # Define patch list_slices
     if point_subset_arr is not None:
         # Find point in original array
-        point = [slc.start + c for slc, c in zip(list_slices, point_subset_arr)]
+        point = [slc.start + c for slc, c in zip(list_slices, point_subset_arr, strict=True)]
         # Find patch list slices
         patch_list_slices = [
             get_slice_around_index(p, size=size, min_start=0, max_stop=shape)
-            for p, size, shape in zip(point, patch_size, variable_arr.shape)
+            for p, size, shape in zip(point, patch_size, variable_arr.shape, strict=True)
         ]
         # TODO: also return a flag if the p midpoint is conserved (by +/- 1) or not
     else:
@@ -455,7 +455,7 @@ def _get_patches_from_partitions_list_slices(
 
 def _get_list_isel_dicts(patches_list_slices, dims):
     """Return a list with isel dictionaries."""
-    return [dict(zip(dims, patch_list_slices)) for patch_list_slices in patches_list_slices]
+    return [dict(zip(dims, patch_list_slices, strict=True)) for patch_list_slices in patches_list_slices]
 
 
 def _extract_xr_patch(xr_obj, isel_dict, label_name, label_id, highlight_label_id):

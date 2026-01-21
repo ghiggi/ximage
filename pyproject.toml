@@ -40,7 +40,7 @@ dependencies = [
     "matplotlib",
     "scikit-image",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 dynamic = ["version"]
 
 [project.optional-dependencies]
@@ -186,6 +186,7 @@ ignore = [
     "PLR2004",
     "PLR0912",
     "PLR0915",
+    "PLC0415",
 ]
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.

@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------.
 # MIT License
 
-# Copyright (c) 2024 ximage developers
+# Copyright (c) 2024-2026 ximage developers
 #
 # This file is part of ximage.
 
@@ -269,14 +269,14 @@ def _check_unique_label_indices(label_indices):
 def _get_new_label_value_dict(label_indices, max_label):
     """Create dictionary mapping from current label value to new label value."""
     # Initialize dictionary with keys corresponding to all possible labels indices
-    val_dict = {k: 0 for k in range(0, max_label + 1)}
+    val_dict = dict.fromkeys(range(0, max_label + 1), 0)
 
     # Update the dictionary keys with the selected label_indices
     # - Assume 0 not in label_indices
     n_labels = len(label_indices)
     label_indices = label_indices.tolist()
     label_indices_new = np.arange(1, n_labels + 1, dtype=int).tolist()
-    val_dict.update(dict(zip(label_indices, label_indices_new)))
+    val_dict.update(dict(zip(label_indices, label_indices_new, strict=True)))
     return val_dict
 
 
@@ -459,7 +459,7 @@ def _get_labels(
 
     # ---------------------------------.
     # Count initial label occurrence
-    label_indices, label_occurrence = np.unique(label_arr, return_counts=True)
+    label_indices = np.unique(label_arr, return_counts=False)
     n_initial_labels = len(label_indices)
     if n_initial_labels == 1:  # only 0 label
         return _no_labels_result(arr)
@@ -671,7 +671,7 @@ def label(
     # Retrieve labels (if available)
     data_array_to_label = xr_obj[variable] if isinstance(xr_obj, xr.Dataset) else xr_obj
 
-    da_labels, n_labels, values = _xr_get_labels(
+    da_labels, n_labels, values = _xr_get_labels(  # noqa: RUF059
         data_array=data_array_to_label,
         min_value_threshold=min_value_threshold,
         max_value_threshold=max_value_threshold,

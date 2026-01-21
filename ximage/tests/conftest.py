@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------.
 # MIT License
 
-# Copyright (c) 2024 ximage developers
+# Copyright (c) 2024-2026 ximage developers
 #
 # This file is part of ximage.
 
@@ -31,7 +31,7 @@ import pytest
 import xarray as xr
 
 
-class SaneEqualityArray(np.ndarray):
+class SaneEqualityArray(np.ndarray):  # noqa: PLW1641
     """Wrapper class for numpy array allowing deep equality tests on objects containing numpy arrays.
 
     From https://stackoverflow.com/a/14276901

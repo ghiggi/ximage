@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------.
 # MIT License
 
-# Copyright (c) 2024 ximage developers
+# Copyright (c) 2024-2026 ximage developers
 #
 # This file is part of ximage.
 
@@ -33,11 +33,11 @@ from ximage.utils.checks import are_all_integers, are_all_natural_numbers
 def _ensure_is_dict_argument(arg, dims, arg_name):
     """Ensure argument is a dictionary with same order as dims."""
     if isinstance(arg, (int, float)):
-        arg = {dim: arg for dim in dims}
+        arg = dict.fromkeys(dims, arg)
     if isinstance(arg, (list, tuple)):
         if len(arg) != len(dims):
             raise ValueError(f"{arg_name} must match the number of dimensions of the label array.")
-        arg = dict(zip(dims, arg))
+        arg = dict(zip(dims, arg, strict=True))
     if isinstance(arg, dict):
         dict_dims = np.array(list(arg))
         invalid_dims = dict_dims[np.isin(dict_dims, dims, invert=True)].tolist()
@@ -89,8 +89,8 @@ def check_patch_size(patch_size, dims, shape):
         if not are_all_natural_numbers(value):
             raise ValueError("Invalid 'patch_size' values. They must be only positive integer values.")
     # Check patch size is smaller than array shape
-    idx_valid = [value <= max_value for value, max_value in zip(patch_size.values(), shape)]
-    max_allowed_patch_size = dict(zip(dims, shape))
+    idx_valid = [value <= max_value for value, max_value in zip(patch_size.values(), shape, strict=True)]
+    max_allowed_patch_size = dict(zip(dims, shape, strict=True))
     if not all(idx_valid):
         raise ValueError(f"The maximum allowed patch_size values are {max_allowed_patch_size}")
     return patch_size
@@ -126,8 +126,8 @@ def check_kernel_size(kernel_size, dims, shape):
         if not are_all_natural_numbers(value):
             raise ValueError("Invalid 'kernel_size' values. They must be only positive integer values.")
     # Check patch size is smaller than array shape
-    idx_valid = [value <= max_value for value, max_value in zip(kernel_size.values(), shape)]
-    max_allowed_kernel_size = dict(zip(dims, shape))
+    idx_valid = [value <= max_value for value, max_value in zip(kernel_size.values(), shape, strict=True)]
+    max_allowed_kernel_size = dict(zip(dims, shape, strict=True))
     if not all(idx_valid):
         raise ValueError(f"The maximum allowed patch_size values are {max_allowed_kernel_size}.")
     return kernel_size
@@ -159,7 +159,7 @@ def check_buffer(buffer, dims, shape):
         if not are_all_integers(value):
             raise ValueError("Invalid 'buffer' values. They must be only integer values.")
     # Check buffer is smaller than half the array shape
-    dict_max_values = {dim: int(np.floor(size / 2)) for dim, size in zip(buffer.keys(), shape)}
+    dict_max_values = {dim: int(np.floor(size / 2)) for dim, size in zip(buffer.keys(), shape, strict=True)}
     idx_valid = [value <= dict_max_values[dim] for dim, value in buffer.items()]
     if not all(idx_valid):
         raise ValueError(f"The maximum allowed 'buffer' values are {dict_max_values}.")
@@ -193,7 +193,7 @@ def check_padding(padding, dims, shape):
         if not are_all_integers(value):
             raise ValueError("Invalid 'padding' values. They must be only integer values.")
     # Check padding is smaller than half the array shape
-    dict_max_values = {dim: int(np.floor(size / 2)) for dim, size in zip(padding.keys(), shape)}
+    dict_max_values = {dim: int(np.floor(size / 2)) for dim, size in zip(padding.keys(), shape, strict=True)}
     idx_valid = [value <= dict_max_values[dim] for dim, value in padding.items()]
     if not all(idx_valid):
         raise ValueError(f"The maximum allowed 'padding' values are {dict_max_values}.")
@@ -255,7 +255,7 @@ def check_stride(stride, dims, shape, partitioning_method):
                 raise ValueError("Invalid 'stride' values. They must be only positive integer (>=1) values.")
     # Check stride values are smaller than half the array shape
     # --> A stride with value exactly equal to half the array shape is equivalent to tiling
-    dict_max_values = {dim: int(np.floor(size / 2)) for dim, size in zip(stride.keys(), shape)}
+    dict_max_values = {dim: int(np.floor(size / 2)) for dim, size in zip(stride.keys(), shape, strict=True)}
     idx_valid = [value <= dict_max_values[dim] for dim, value in stride.items()]
     if not all(idx_valid):
         raise ValueError(f"The maximum allowed 'stride' values are {dict_max_values}.")

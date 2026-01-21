@@ -148,7 +148,7 @@ we highly suggest to join the [**Slack Workspace**](https://join.slack.com/t/xar
 Feel free to also open a [GitHub Issue](https://github.com/ghiggi/ximage/issues) or a
 [GitHub Discussion](https://github.com/ghiggi/ximage/discussions) specific to your questions or ideas.
 
-## ✍️  Contributors
+## ✍️ Contributors
 
 - [Gionata Ghiggi](https://people.epfl.ch/gionata.ghiggi)
 - [Son Pham-Ba](https://people.epfl.ch/son.phamba?lang=en)
