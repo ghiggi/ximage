@@ -62,9 +62,6 @@ Changelog = "https://github.com/ghiggi/ximage/blob/main/CHANGELOG.md"
 [tool.setuptools_scm]
 write_to = "ximage/_version.py"
 
-[tool.setuptools]
-license-files = ["LICENSE"]
-
 [tool.setuptools.packages.find]
 include = ["ximage*"]
 
