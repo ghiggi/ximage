@@ -25,6 +25,7 @@
 
 # -----------------------------------------------------------------------------.
 """Slices utility functions."""
+
 import itertools
 
 import numpy as np
