@@ -25,6 +25,7 @@
 
 # -----------------------------------------------------------------------------.
 """Utility functions to test ximage."""
+
 import numpy as np
 import pytest
 
