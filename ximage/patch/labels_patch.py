@@ -25,6 +25,7 @@
 
 # -----------------------------------------------------------------------------.
 """Functions to extract patch around labels."""
+
 import random
 import warnings
 from collections.abc import Callable
