@@ -25,6 +25,7 @@
 
 # -----------------------------------------------------------------------------.
 """Utility functions for checking input values."""
+
 import numpy as np
 
 
