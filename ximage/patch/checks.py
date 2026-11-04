@@ -25,6 +25,7 @@
 
 # -----------------------------------------------------------------------------.
 """Checks for patch extraction function arguments."""
+
 import numpy as np
 
 from ximage.utils.checks import are_all_integers, are_all_natural_numbers
