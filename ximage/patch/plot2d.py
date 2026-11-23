@@ -25,6 +25,7 @@
 
 # -----------------------------------------------------------------------------.
 """Utility functions to display the patch extraction process around labels."""
+
 import matplotlib.pyplot as plt
 
 
